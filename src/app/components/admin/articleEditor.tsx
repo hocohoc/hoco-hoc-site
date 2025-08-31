@@ -144,6 +144,8 @@ export default function ArticleEditor(props: Props) {
                     <input type="text" placeholder="Sponsor image URL" value={article.sponsor ? article.sponsor.imageUrl : ""} onChange={(e) => setArticle({ ...article, sponsor: { ...article.sponsor, imageUrl: e.target.value } })}></input>
                     <p>Sponsor Website URL</p>
                     <input type="text" placeholder="Sponsor website URL" value={article.sponsor ? article.sponsor.siteUrl : ""} onChange={(e) => setArticle({ ...article, sponsor: { ...article.sponsor, siteUrl: e.target.value } })}></input>
+                    <p>Sponsor Message</p>
+                    <input type="text" placeholder="e.g. Powered by XYZ" value={article.sponsor?.message || ""} onChange={(e) => setArticle({ ...article, sponsor: { ...article.sponsor, message: e.target.value } })} />
                 </div>
             }
             <div className="flex flex-row gap-1">

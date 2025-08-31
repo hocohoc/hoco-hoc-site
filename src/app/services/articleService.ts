@@ -14,6 +14,7 @@ export type Article = {
         name: string,
         imageUrl: string,
         siteUrl: string
+        message?: string; 
     }
     quiz?: {
         points: number

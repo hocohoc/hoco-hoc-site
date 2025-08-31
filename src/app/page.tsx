@@ -20,12 +20,14 @@ export default function Home() {
     })
     return unsub
   }, [])
-
+/*   Congrats Banner
+<span className='text-center bg-gradient-to-r from-sky-500 to-blue-700 p-2'>
+Congrats to <strong>Bonnie Branch Middle School</strong> for winning the 2024 Howard County Hour of Code!
+</span>
+*/
   return (
     <main className="flex flex-col bg-black">
-      <span className='text-center bg-gradient-to-r from-sky-500 to-blue-700 p-2'>
-        Congrats to <strong>Bonnie Branch Middle School</strong> for winning the 2024 Howard County Hour of Code!
-      </span>
+
       <Hero />
       <div className="bg-slate-900" id="about" >
         <AboutSection></AboutSection>
