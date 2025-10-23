@@ -6,15 +6,14 @@ export default function TeamSection() {
         //directors
         { name: "Daniel Gao", position: "Director", image: "/headshots/daniel_headshot.png" },
         { name: "Ankit Mohanty", position: "Director", image: "/headshots/ankit_headshot.png" },
-        { name: "Jayson Liu", position: "Web Dev", image: "/headshots/jayson_headshot.jpg" },
         { name: "Oluwadarasimi Adedeji", position: "Web Dev", image: "/headshots/dara_headshot.jpg" },
         { name: "Jay Patel", position: "Article Lead", image: "/headshots/jay_headshot.jpg" },
+        { name: "Jayson Liu", position: "Website", image: "/headshots/jayson_headshot.jpg" },
         { name: "Sai Chandra", position: "Articles", image: "/headshots/sai_headshot.png" },
         { name: "Suhas Anumolu", position: "Articles", image: "/headshots/suhas_headshot.png" },
         { name: "Ayaan Kalra", position: "Articles", image: "/headshots/ayaan_headshot.jpg" },
         // { name: "Austen Shaheen", position: "Articles", image: "/headshots/austen_headshot.jpg" },
         { name: "Raj Bhagat", position: "Articles", image: "/headshots/raj_headshot.jpg" },
-        { name: "Yoan Fodjong", position: "Articles", image: "/headshots/yoan_headshot.png" },
         { name: "Daniel Oh", position: "Outreach", image: "/headshots/daniel_oh_headshot.png" },
         // { name: "Shalin Vakil", position: "Sponsorships", image: "/headshots/shalin_headshot.jpg" },
     ];
