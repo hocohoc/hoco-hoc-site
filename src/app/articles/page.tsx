@@ -103,7 +103,7 @@ export default function Articles() {
     return <main className="h-[calc(100vh-3.5rem-4rem)] overflow-hidden">
         {error ? <ErrorPopup error={error}>
             <p className="mb-4">An error occured while fetching articles and sections. Try again or contact us if the problem persists.</p>
-            <button onClick={() => refetch()} className={`font-mono btn-secondary text-left`}> Try Again </button>
+            <button onClick={() => refetch()} type="button" className={`font-mono btn-secondary text-left`}> Try Again </button>
         </ErrorPopup> : ""}
         <div className="flex flex-col lg:flex-row h-full">
             <div className="lg:flex-1 p-4 lg:p-16 bg-gradient-to-tr from-sky-800 to-blue-800 border-r flex flex-col items-end border-r-slate-800">
@@ -135,9 +135,13 @@ export default function Articles() {
                     {!isLoading && !error && sections.map((section, index) => {
                         return (
                             <div key={index} className="flex flex-col w-full">
-                                <div
+                                <button
+                                    type="button"
                                     onClick={() => toggleSectionExpansion(section.id)}
-                                    className={`z-[20] cursor-pointer p-4 border-b border-r drop-shadow-2xl bg-slate-800 ${!expandedSections[section.id] ? " border-slate-700" : "border-b-4 border-r-slate-700 border-b-sky-300"} ease-in-out duration-300`}>
+                                    className={`text-left z-[20] w-full p-4 border-b border-r drop-shadow-2xl bg-slate-800 ${!expandedSections[section.id] ? " border-slate-700" : "border-b-4 border-r-slate-700 border-b-sky-300"} ease-in-out duration-300`}
+                                    aria-expanded={Boolean(expandedSections[section.id])}
+                                    aria-controls={`section-${section.id}`}
+                                >
                                     <div className="flex gap-2 items-center">
                                         <h2 className="font-bold flex-1 font-mono text-xl md:text-2xl">{section.title}</h2>
                                         <ChevronDownIcon className={`h-6 w-6 duration-300 ease-in-out ${expandedSections[section.id] ? 'rotate-180' : 'rotate-0'}`} />
@@ -147,41 +151,53 @@ export default function Articles() {
                                         <div style={{ width: `${Math.round(getSectionProgress(section.id).percent * 100)}%` }} className={`h-full bg-sky-300`} />
                                     </div>}
                                     {profile && <p className="font-mono text-sm text-slate-400 mt-2">Earned {getSectionProgress(section.id).points}/{getSectionProgress(section.id).total} section points</p>}
-                                </div>
+                                </button>
                                 <AnimatePresence>
-                                    {expandedSections[section.id] &&
-                                        section.articles.map((article, articleIndex) => (
-                                            <motion.div key={articleIndex}
-                                                initial={{ y: -50, height: 0, opacity: 0 }}
-                                                animate={{ y: 0, height: 'auto', opacity: 1 }}
-                                                exit={{ y: -50, height: 0, opacity: 0 }}
-                                                transition={{ delay: articleIndex / 40 }}
-                                            >
-                                                <Link href={`/articles/read?article=${article.id}`} passHref>
-                                                    <div className="content-box flex bg-slate-700/50 flex-col justify-left cursor-pointer p-4 border-b border-r hover:border-b-sky-300 ease-in-out duration-75 hover:shadow-xl border-slate-700">
-                                                        <div className="flex flex-row gap-2 items-start justify-left">
-                                                            <div className="text-xl flex-1 font-bold">{article.title}</div>
-                                                            <div className="p-1 font-mono bg-sky-300 rounded-sm text-slate-900 text-xs md:text-sm">
-                                                                {getArticleStatus(article.id)}
+                                    {expandedSections[section.id] && (
+                                        <motion.div
+                                            key={`${section.id}-panel`}
+                                            id={`section-${section.id}`}
+                                            initial={{ opacity: 0, height: 0 }}
+                                            animate={{ opacity: 1, height: 'auto' }}
+                                            exit={{ opacity: 0, height: 0 }}
+                                            className="overflow-hidden"
+                                        >
+                                            <div>
+                                                {section.articles.map((article, articleIndex) => (
+                                                    <motion.div key={articleIndex}
+                                                        initial={{ y: -50, opacity: 0 }}
+                                                        animate={{ y: 0, opacity: 1 }}
+                                                        exit={{ y: -50, opacity: 0 }}
+                                                        transition={{ delay: articleIndex / 40 }}
+                                                    >
+                                                        <Link href={`/articles/read?article=${article.id}`} passHref>
+                                                            <div className="content-box flex bg-slate-700/50 flex-col justify-left cursor-pointer p-4 border-b border-r hover:border-b-sky-300 ease-in-out duration-75 hover:shadow-xl border-slate-700">
+                                                                <div className="flex flex-row gap-2 items-start justify-left">
+                                                                    <div className="text-xl flex-1 font-bold">{article.title}</div>
+                                                                    <div className="p-1 font-mono bg-sky-300 rounded-sm text-slate-900 text-xs md:text-sm">
+                                                                        {getArticleStatus(article.id)}
+                                                                    </div>
+                                                                    <div className="flex p-1 items-center justify-center bg-slate-600 font-mono rounded-sm text-xs md:text-sm">
+                                                                        {
+                                                                            article.quiz ? `${article.quiz.points}pts` : "NQ"
+                                                                        }
+                                                                    </div>
+                                                                </div>
+                                                                <div className="flex flex-row gap-2 mt-2">
+                                                                    {article.tags.map((tag, tagIndex) => (
+                                                                        <div key={tagIndex} className="p-1 text-xs bg-sky-300 text-slate-900 font-mono rounded-sm"> {tag} </div>
+                                                                    ))}
+                                                                </div>
+                                                                <div className="mt-2">
+                                                                    <p className="text-slate-400"> {article.description}</p>
+                                                                </div>
                                                             </div>
-                                                            <div className="flex p-1 items-center justify-center bg-slate-600 font-mono rounded-sm text-xs md:text-sm">
-                                                                {
-                                                                    article.quiz ? `${article.quiz.points}pts` : "NQ"
-                                                                }
-                                                            </div>
-                                                        </div>
-                                                        <div className="flex flex-row gap-2 mt-2">
-                                                            {article.tags.map((tag, tagIndex) => (
-                                                                <div key={tagIndex} className="p-1 text-xs bg-sky-300 text-slate-900 font-mono rounded-sm"> {tag} </div>
-                                                            ))}
-                                                        </div>
-                                                        <div className="mt-2">
-                                                            <p className="text-slate-400"> {article.description}</p>
-                                                        </div>
-                                                    </div>
-                                                </Link>
-                                            </motion.div>
-                                        ))}
+                                                        </Link>
+                                                    </motion.div>
+                                                ))}
+                                            </div>
+                                        </motion.div>
+                                    )}
                                 </AnimatePresence>
                             </div>
                         );

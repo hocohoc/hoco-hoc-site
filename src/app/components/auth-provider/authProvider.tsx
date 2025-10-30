@@ -47,6 +47,7 @@ export default function AuthProvider(props: Props) {
     let [school, setSchool] = useState<School>(schools[0])
     let [language, setLanguage] = useState<string>(ALL_LANGUAGES[0])
     let [loading, setLoading] = useState(false)
+    const registerHeadingId = "create-profile-heading";
 
     useEffect(() => {
         //console.log("Update")
@@ -96,11 +97,17 @@ export default function AuthProvider(props: Props) {
         })
     }
 
+    function handleRegisterCancel() {
+        if (!loading) {
+            logout();
+        }
+    }
+
     return (
         <AuthContext.Provider value={profileContext}>
-            {showRegisterModal && <ModalContainer>
+            {showRegisterModal && <ModalContainer labelledBy={registerHeadingId} onDismiss={loading ? undefined : handleRegisterCancel}>
                 <Modal className="flex flex-col">
-                    <h1 className={`font-mono text-2xl font-bold mb-2`}>Create your profile</h1>
+                    <h1 className={`font-mono text-2xl font-bold mb-2`} id={registerHeadingId}>Create your profile</h1>
                     <p className="mb-4 text-slate-300 text-sm md:text-base">It looks like this is your first time logging in to Howard County Hour of Code, welcome! Please fill out the following information to create your profile and start learning.</p>
 
                     <div>
@@ -117,7 +124,7 @@ export default function AuthProvider(props: Props) {
                             <p className="font-bold text-md">Select your preferred programming language</p>
                             <p className="text-sm text-slate-300">This is the language you will see code examples in by default (when they are available in that language).</p>
                         </div>
-                        <select className="font-mono bg-gray-700 p-2 rounded border-2 border-gray-600 hover:bg-gray-600 w-full cursor-pointer" value={ALL_LANGUAGES.indexOf(language)} onChange={(e) => { setLanguage(ALL_LANGUAGES[e.target.value]) }}>
+                        <select className="font-mono bg-gray-700 p-2 rounded border-2 border-gray-600 hover:bg-gray-600 w-full cursor-pointer" value={ALL_LANGUAGES.indexOf(language)} onChange={(e) => { const selectedIndex = Number(e.target.value); setLanguage(ALL_LANGUAGES[selectedIndex]); }}>
                             {ALL_LANGUAGES.map((lang, index) =>
                                 <option key={index} value={index}>{lang}</option>
                             )}
@@ -125,8 +132,8 @@ export default function AuthProvider(props: Props) {
                     </div>
 
                     <div className="mt-2 flex flex-row gap-2">
-                        <button className="btn-primary font-mono flex-1" onClick={() => registerProfile()} disabled={loading}>{loading ? "Creating..." : "Create"}</button>
-                        <button className="btn-secondary font-mono" onClick={() => logout()} disabled={loading}>Cancel</button>
+                        <button className="btn-primary font-mono flex-1" type="button" onClick={() => registerProfile()} disabled={loading}>{loading ? "Creating..." : "Create"}</button>
+                        <button className="btn-secondary font-mono" type="button" onClick={handleRegisterCancel} disabled={loading}>Cancel</button>
                     </div>
                 </Modal>
             </ModalContainer>}

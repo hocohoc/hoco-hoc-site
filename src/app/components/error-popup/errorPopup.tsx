@@ -15,7 +15,7 @@ type Props = {
 }
 
 export default function ErrorPopup(props: Props) {
-  return <ModalContainer>
+  return <ModalContainer ariaLabel="Error dialog" onDismiss={props.close}>
     <Modal className="flex flex-col">
       <div className="flex flex-row items-start">
         <div className="flex-1">
@@ -23,7 +23,7 @@ export default function ErrorPopup(props: Props) {
           <h1 className={`font-mono text-2xl font-bold text-red-400 mb-2`}>Something went wrong...</h1>
         </div>
         {props.close &&
-          <button className="bg-slate-700 rounded-full p-1 flex items-center hover:bg-slate-600 justify-center" onClick={props.close}>
+          <button className="bg-slate-700 rounded-full p-1 flex items-center hover:bg-slate-600 justify-center" type="button" onClick={props.close} aria-label="Close error dialog">
             <XMarkIcon className="h-5 w-5 text-slate-200" />
           </button>
         }

@@ -26,10 +26,11 @@ export default function RootLayout({ children }) {
           <ReactQueryClientProvider>
             <AuthProvider>
               <div className="w-full min-h-screen flex flex-col relative">
+                <a href="#main-content" className="skip-link absolute left-2 top-2 -translate-y-[200%] focus-visible:translate-y-0 bg-sky-300 text-slate-900 px-4 py-2 rounded font-medium transition-transform">Skip to main content</a>
                 <NavBar />
-                <section className="flex-1">
+                <main id="main-content" className="flex-1">
                   {children}
-                </section>
+                </main>
                 <Footer />
               </div>
             </AuthProvider>

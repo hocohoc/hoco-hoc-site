@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react";
+import { useId, useState } from "react";
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { dracula as theme } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
@@ -14,15 +14,26 @@ type Props = {
 
 export default function MultiCodeView(props: Props) {
     let [idx, setIdx] = useState(props.selected ? findIndex() : 0);
+    const groupId = useId();
 
     function findIndex() {
         const i = props.langs.indexOf(props.selected)
         return i == -1 ? 0 : i;
     }
     return <div className={`${props.className}`}>
-        {props.langs.map((lang, i) => (
-            <button className={`${(i == idx) ? "btn-primary" : "btn-secondary"} p-1 mr-2 text-xs`} key={i} onClick={() => setIdx(i)}>{lang.toUpperCase()}</button>
-        ))}
+        <div role="group" aria-label="Code sample languages" className="mb-2 flex flex-wrap gap-2">
+            {props.langs.map((lang, i) => (
+                <button
+                    className={`${(i == idx) ? "btn-primary" : "btn-secondary"} p-1 text-xs`}
+                    key={`${groupId}-${lang}`}
+                    type="button"
+                    onClick={() => setIdx(i)}
+                    aria-pressed={i === idx}
+                >
+                    {lang.toUpperCase()}
+                </button>
+            ))}
+        </div>
         <div className="m-0">
             <SyntaxHighlighter
                 PreTag="div"

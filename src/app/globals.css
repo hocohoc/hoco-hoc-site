@@ -7,6 +7,11 @@ body {
   @apply text-slate-200 bg-slate-900
 }
 
+:is(a, button, input, select, textarea):focus-visible {
+  outline: 2px solid theme('colors.sky.300');
+  outline-offset: 2px;
+}
+
 .katex-html {
   @apply sr-only;
 }

@@ -190,7 +190,7 @@ export default function Read() {
             quizError &&
             <ErrorPopup error={new Error(quizError)}>
                 <p className="mb-4">An error occurred while trying to submit your quiz.</p>
-                <button onClick={() => setQuizError(undefined)} className="btn-secondary font-mono">Close</button>
+                <button onClick={() => setQuizError(undefined)} type="button" className="btn-secondary font-mono">Close</button>
             </ErrorPopup>
         }
         {
@@ -203,7 +203,7 @@ export default function Read() {
                     <div className="bg-slate-300 text-slate-950 p-4 rounded">
                         <div className="flex flex-row items-center">
                             <h1 className="text-xl flex-1">Sponsored by {article.sponsor.name}</h1>
-                            <button className="p-1 rounded" onClick={() => setShowSponsor(false)}><EyeSlashIcon className="h-5 w-5" /></button>
+                            <button className="p-1 rounded" type="button" onClick={() => setShowSponsor(false)} aria-label="Hide sponsor"><EyeSlashIcon className="h-5 w-5" aria-hidden="true" /></button>
                         </div>
                         <a href={article.sponsor.siteUrl} target="_blank"> <Image width={100} height={100} className="max-h-40 w-auto mt-2" alt={"Sponsor Logo"} src={article.sponsor.imageUrl} /></a>
                         {article.sponsor.message && (
@@ -243,10 +243,10 @@ export default function Read() {
         <div className="max-w-3xl w-full h-full p-4 flex flex-col gap-2">
             {profile && (
                 (!loadingQuiz && quiz) ? <QuizPrompt quiz={quiz} onSumbit={handleQuizSubmit} working={quizCheckWorking} completed={progress == "complete"} wrongAns={wrongAns} /> :
-                    (!loadingQuiz && progress != "complete") ? <button className="btn-primary font-mono w-full" onClick={() => markArticleComplete(true)}>Mark Article Completed</button> : ""
+                    (!loadingQuiz && progress != "complete") ? <button className="btn-primary font-mono w-full" type="button" onClick={() => markArticleComplete(true)}>Mark Article Completed</button> : ""
             )}
             {
-                !loadingQuiz && !quiz && progress == "complete" ? <div className="flex items-center justify-center p-3 border-2 border-emerald-400 rounded bg-emerald-400/30 font-mono gap-2 font-bold text-lg">
+                !loadingQuiz && !quiz && progress == "complete" ? <div className="flex items-center justify-center p-3 border-2 border-emerald-400 rounded bg-emerald-400/30 font-mono gap-2 font-bold text-lg" role="status" aria-live="polite">
                     <CheckCircleIcon height={10} width={15} className="h-7 w-7 text-emerald-300" />
                     <p className="text-2xl">Complete</p>
                 </div> : ""
@@ -256,9 +256,9 @@ export default function Read() {
                     <div className="">
                         <h1 className="font-bold text-2xl"> Log in to complete quizzes and track your progress! </h1>
                     </div>
-                    <div className="min-w-48">
-                        <button className="font-mono btn-primary w-full" onClick={() => signInOrRegister()}> Log in / Sign up </button>
-                    </div>
+                     <div className="min-w-48">
+                        <button className="font-mono btn-primary w-full" type="button" onClick={() => signInOrRegister()}> Log in / Sign up </button>
+                     </div>
                 </div>
             )}
         </div>
