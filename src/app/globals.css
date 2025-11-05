@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Dark mode (default) */
+:root {
+  color-scheme: dark;
+}
 
 body {
   @apply text-slate-200 bg-slate-900
@@ -10,6 +14,17 @@ body {
 :is(a, button, input, select, textarea):focus-visible {
   outline: 2px solid theme('colors.sky.300');
   outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 .katex-html {
@@ -30,7 +45,7 @@ body {
   .btn-primary,
   .btn-secondary,
   .btn-danger {
-    @apply p-2 rounded text-sm;
+    @apply p-2 rounded text-sm min-h-10 min-w-10;
   }
 
   .btn-primary {

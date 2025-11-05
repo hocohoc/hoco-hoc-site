@@ -23,18 +23,18 @@ export default function RootLayout({ children }) {
       </head>
       <body className={`${inter.className} ${inter.variable} ${jbm.variable} w-full h-full antialiased`}>
         <Suspense>
-          <ReactQueryClientProvider>
-            <AuthProvider>
-              <div className="w-full min-h-screen flex flex-col relative">
-                <a href="#main-content" className="skip-link absolute left-2 top-2 -translate-y-[200%] focus-visible:translate-y-0 bg-sky-300 text-slate-900 px-4 py-2 rounded font-medium transition-transform">Skip to main content</a>
-                <NavBar />
-                <main id="main-content" className="flex-1">
-                  {children}
-                </main>
-                <Footer />
-              </div>
-            </AuthProvider>
-          </ReactQueryClientProvider>
+            <ReactQueryClientProvider>
+              <AuthProvider>
+                <div className="w-full min-h-screen flex flex-col relative">
+                  <a href="#main-content" className="skip-link absolute left-2 top-2 -translate-y-[200%] focus-visible:translate-y-0 bg-sky-300 text-slate-900 px-4 py-2 rounded font-medium transition-transform">Skip to main content</a>
+                  <NavBar />
+                  <main id="main-content" className="flex-1">
+                    {children}
+                  </main>
+                  <Footer />
+                </div>
+              </AuthProvider>
+            </ReactQueryClientProvider>
         </Suspense>
       </body>
     </html>

@@ -9,9 +9,11 @@ export default function TeamSection() {
         { name: "Oluwadarasimi Adedeji", position: "Web Dev", image: "/headshots/dara_headshot.jpg" },
         { name: "Jay Patel", position: "Article Lead", image: "/headshots/jay_headshot.jpg" },
         { name: "Sai Chandra", position: "Articles", image: "/headshots/sai_headshot.png" },
-        { name: "Suhas Anumolu", position: "Articles", image: "/headshots/suhas_headshot.png" },
+        { name: "Austen", position: "Articles", image: "/headshots/austen_img.jpg" },
         { name: "Ayaan Kalra", position: "Articles", image: "/headshots/ayaan_headshot.jpg" },
         { name: "Raj Bhagat", position: "Articles", image: "/headshots/raj_headshot.jpg" },
+        { name: "Nicholas Chen", position: "Articles", image: "/headshots/NicholasChen_headshot.jpg" },
+        { name: "Suhas Anumolu", position: "Articles", image: "/headshots/suhas_headshot.png" },
         { name: "Daniel Oh", position: "Outreach", image: "/headshots/daniel_oh_headshot.png" },
     ];
 
