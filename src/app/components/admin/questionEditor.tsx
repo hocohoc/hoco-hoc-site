@@ -58,14 +58,20 @@ export default function QuestionEditor(props: Props) {
     return <main className={`flex flex-col gap-1 border rounded bg-slate-800/50 border-slate-700 p-2 ${props.className}`}>
         <div className="flex flex-row gap-2 items-center">
             <p className="flex-1">Question {props.number + 1}</p>
-            <button className="btn-danger font-mono" onClick={() => props.onDelete(props.number)}>Delete</button>
+            <button className="btn-danger font-mono" type="button" onClick={() => props.onDelete(props.number)}>Delete</button>
         </div>
         <textarea value={question.question} onChange={e => handleQuestionTextChange(e.target.value)} />
         <p>Options (Hover over option text and click to delete)</p>
         {
             question.options.map((opt, i) => {
                 return <div key={i} className="flex flex-row items-center border rounded p-2 border-slate-700">
-                    <p className="hover:line-through cursor-pointer hover:text-red-400 hover:font-bold" onClick={() => removeOption(i)}>{i + 1}:
+                    <button
+                        className="text-left flex-1 hover:line-through hover:text-red-400 hover:font-bold"
+                        type="button"
+                        onClick={() => removeOption(i)}
+                        aria-label={`Delete option ${i + 1}`}
+                    >
+                        <span className="sr-only">Option {i + 1}</span>
                         <Markdown className="w-full"
                             components={{
                                 code(code_props) {
@@ -73,15 +79,15 @@ export default function QuestionEditor(props: Props) {
                                 }
                             }}
                         >{opt}</Markdown>
-                    </p>
+                    </button>
                     <div className="flex-1"></div>
-                    <button className={`btn-secondary font-mono ${correctIndex == i && "bg-green-400"}`} onClick={() => handleMarkCorrect(i)}>[Mark Correct]</button>
+                    <button className={`btn-secondary font-mono ${correctIndex == i && "bg-green-400"}`} type="button" onClick={() => handleMarkCorrect(i)}>[Mark Correct]</button>
                 </div>
             })
         }
         <div className="flex flex-row gap-2 items-center">
             <textarea className="flex-1" value={newOpt} placeholder="Add another option..." onChange={e => setNewOpt(e.target.value)} />
-            <button className="btn-primary font-mono" onClick={handleAddOption} disabled={newOpt.length == 0}>Add Option</button>
+            <button className="btn-primary font-mono" type="button" onClick={handleAddOption} disabled={newOpt.length == 0}>Add Option</button>
         </div>
     </main>
 }

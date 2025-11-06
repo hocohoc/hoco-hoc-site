@@ -1,5 +1,5 @@
 import { Question } from "@/app/services/quizService"
-import { useState } from "react"
+import { useId, useState } from "react"
 import Markdown from "react-markdown"
 import { useProfile } from "../auth-provider/authProvider"
 import { mdCodeBlockParser } from "@/app/services/utils"
@@ -18,6 +18,7 @@ type Props = {
 export default function QuizQuestion(props: Props) {
     let [selected, setSelected] = useState<number>(-1)
     let profile = useProfile()
+    const groupId = useId()
 
     function handleSelectionChange(selectionIndex: number) {
         console.log("Selected ", selectionIndex)
@@ -25,7 +26,7 @@ export default function QuizQuestion(props: Props) {
         props.onChange(selectionIndex)
     }
 
-    return <main className={`flex flex-col ${props.className} gap-2`}>
+    return <section className={`flex flex-col ${props.className} gap-2`}>
         <div className={`flex flex-row items-start gap-2 ${props.wrong && "border rounded border-red-400 bg-red-400/30"}`}>
             <div>
                 <h1 className="ml-1 font-bold font-mono text-lg">{props.number}.</h1>
@@ -42,11 +43,27 @@ export default function QuizQuestion(props: Props) {
                 >{props.question.question}</Markdown>
             </div>
         </div>
-        <form>
-            <fieldset className="flex flex-col gap-1">
-                {props.question.options.map((opt, i) => <div key={i} onClick={() => handleSelectionChange(i)} className={`flex flex-row gap-2 items-center rounded border p-2 py-4 cursor-pointer hover:bg-sky-700/30 ${i == selected ? "bg-sky-700/30 border-sky-300" : "bg-slate-9000/30 border-slate-700"}`}>
-                    <div className={`min-w-4 min-h-4 rounded-full overflow-hidden ${i == selected ? "bg-sky-300" : "bg-slate-600"}`}></div>
-                    <label htmlFor={props.number + "-opt-" + i}>
+        <fieldset className="flex flex-col gap-1" aria-invalid={props.wrong}>
+            <legend className="sr-only">Question {props.number} answer choices</legend>
+            {props.question.options.map((opt, i) => {
+                const optionId = `${groupId}-opt-${i}`;
+                const isSelected = i === selected;
+                return (
+                    <label
+                        key={optionId}
+                        htmlFor={optionId}
+                        className={`flex flex-row gap-2 items-center rounded border p-2 py-4 cursor-pointer hover:bg-sky-700/30 ${isSelected ? "bg-sky-700/30 border-sky-300" : "bg-slate-9000/30 border-slate-700"}`}
+                    >
+                        <input
+                            id={optionId}
+                            type="radio"
+                            name={groupId}
+                            value={i}
+                            checked={isSelected}
+                            onChange={() => handleSelectionChange(i)}
+                            className="sr-only"
+                        />
+                        <span aria-hidden="true" className={`min-w-4 min-h-4 rounded-full ${isSelected ? "bg-sky-300" : "bg-slate-600"}`}></span>
                         <Markdown className=""
                             remarkPlugins={[remarkParse, remarkMath]}
                             rehypePlugins={[rehypeKatex]}
@@ -57,9 +74,8 @@ export default function QuizQuestion(props: Props) {
                             }}
                         >{opt}</Markdown>
                     </label>
-                </div>
-                )}
-            </fieldset>
-        </form>
-    </main>
+                );
+            })}
+        </fieldset>
+    </section>
 }

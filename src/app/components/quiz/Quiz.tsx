@@ -13,12 +13,14 @@ type Props = {
 }
 
 export default function QuizPrompt(props: Props) {
-    let [answers, setAnswers] = useState<number[]>(props.quiz.questions.map(_ => -1));
+    let [answers, setAnswers] = useState<number[]>(props.quiz.questions.map(() => -1));
 
     function handleQuestionAnswered(questionIndex: number, answerIndex: number) {
-        let newAnswers = answers.copyWithin(0, answers.length)
-        newAnswers[questionIndex] = answerIndex
-        setAnswers(newAnswers)
+        setAnswers(prev => {
+            const updated = [...prev];
+            updated[questionIndex] = answerIndex;
+            return updated;
+        });
     }
 
     return <main className={`flex flex-col bg-slate-800 rounded-md overflow-hidden border gap-2 ${props.completed ? "border-2 border-emerald-400" : "border-gray-600"}`}>
@@ -31,7 +33,7 @@ export default function QuizPrompt(props: Props) {
             {props.quiz.questions.map((question, index) => <QuizQuestion wrong={props.wrongAns.includes((index))} onChange={(ans) => handleQuestionAnswered(index, ans)} key={index} question={question} number={index + 1} />)}
         </div>}
         {!props.completed && <div className="p-2 pt-0">
-            <button className={`btn-primary font-mono w-full ${props.working && "bg-opacity-50 hover:bg-opacity-50 cursor-wait"}`} disabled={props.working} onClick={() => props.onSumbit(answers)}>{props.working ? "Submitting..." : "Submit"}</button>
+            <button className={`btn-primary font-mono w-full ${props.working && "bg-opacity-50 hover:bg-opacity-50 cursor-wait"}`} type="button" disabled={props.working} onClick={() => props.onSumbit(answers)}>{props.working ? "Submitting..." : "Submit"}</button>
         </div>}
     </main>
 }

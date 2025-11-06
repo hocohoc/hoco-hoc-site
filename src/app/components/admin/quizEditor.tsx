@@ -1,7 +1,7 @@
 "use client"
 
 import { Question, Quiz } from "@/app/services/quizService"
-import { useEffect, useState } from "react"
+import { useEffect, useId, useState } from "react"
 import QuestionEditor from "./questionEditor"
 
 type Props = {
@@ -15,6 +15,7 @@ type Props = {
 export default function QuizEditor(props: Props) {
     let [quiz, setQuiz] = useState<Quiz>(props.quiz)
     let [correctOpts, setCorrectOpts] = useState<number[]>([])
+    const pointsFieldId = useId();
 
     useEffect(() => {
         setQuiz(props.quiz)
@@ -30,33 +31,52 @@ export default function QuizEditor(props: Props) {
     }, [props.answers, props.quiz])
 
     function handleQuestionSave(index: number, question: Question, correctIndex: number) {
-        let newQuiz = { ...quiz } as Quiz
+        setQuiz(prevQuiz => {
+            const nextQuiz: Quiz = {
+                ...prevQuiz,
+                questions: [...prevQuiz.questions]
+            };
 
-        if (index >= newQuiz.questions.length) {
-            newQuiz.questions.push(question)
-            correctOpts.push(correctIndex)
-            setCorrectOpts(correctOpts)
-        } else {
-            newQuiz.questions[index] = question
-            correctOpts[index] = correctIndex
-        }
-        setQuiz(newQuiz)
+            if (index >= nextQuiz.questions.length) {
+                nextQuiz.questions.push(question);
+                setCorrectOpts(prev => {
+                    const next = [...prev];
+                    next[index] = correctIndex;
+                    return next;
+                });
+            } else {
+                nextQuiz.questions[index] = question;
+                setCorrectOpts(prev => {
+                    const next = [...prev];
+                    next[index] = correctIndex;
+                    return next;
+                });
+            }
+
+            return nextQuiz;
+        });
     }
 
     function handleQuestionDelete(index: number) {
-        let newQuiz = { ...quiz } as Quiz
-
-        newQuiz.questions.splice(index, 1)
-        setQuiz(newQuiz)
+        setQuiz(prevQuiz => {
+            const nextQuiz: Quiz = {
+                ...prevQuiz,
+                questions: prevQuiz.questions.filter((_, i) => i !== index)
+            };
+            setCorrectOpts(prev => prev.filter((_, i) => i !== index));
+            return nextQuiz;
+        });
     }
 
     function handleQuestionAdd() {
-        let newQuiz = { ...quiz } as Quiz
-        newQuiz.questions.push({
-            question: "Sample Question Text",
-            options: ["a", "b", "c"]
-        })
-        setQuiz(newQuiz)
+        setQuiz(prevQuiz => ({
+            ...prevQuiz,
+            questions: [...prevQuiz.questions, {
+                question: "Sample Question Text",
+                options: ["a", "b", "c"]
+            }]
+        }));
+        setCorrectOpts(prev => [...prev, -1]);
     }
 
     function validate(): boolean {
@@ -89,19 +109,19 @@ export default function QuizEditor(props: Props) {
     }
     return props.quiz && <main className="flex flex-col gap-2 p-2">
         <h1 className="text-xl font-bold">{props.editing ? "Edit Quiz" : "Create Quiz"}</h1>
-        <p>Point Value</p>
-        <input type="number" value={quiz.points} onChange={e => setQuiz({ ...quiz, points: parseInt(e.target.value ?? "0") })} />
+        <label className="block" htmlFor={pointsFieldId}>Point Value</label>
+        <input id={pointsFieldId} type="number" value={quiz.points ?? 0} onChange={e => setQuiz({ ...quiz, points: Number(e.target.value) })} />
         <div className="flex flex-col gap-5">
             {
-                props.quiz.questions.map((question, i) => {
+                quiz.questions.map((question, i) => {
                     return <QuestionEditor key={i} number={i} answer={correctOpts[i]} question={question} onChange={handleQuestionSave} onDelete={handleQuestionDelete} />
                 })
             }
         </div>
-        <button className="btn-secondary font-mono" onClick={handleQuestionAdd}>Add Question</button>
+        <button className="btn-secondary font-mono" type="button" onClick={handleQuestionAdd}>Add Question</button>
         <div className="flex flex-row gap-2">
-            <button className="btn-primary flex-1 font-mono" onClick={handleSave}>Save</button>
-            <button className="btn-secondary font-mono" onClick={props.onCancel}>Cancel</button>
+            <button className="btn-primary flex-1 font-mono" type="button" onClick={handleSave}>Save</button>
+            <button className="btn-secondary font-mono" type="button" onClick={props.onCancel}>Cancel</button>
         </div>
     </main>
 }

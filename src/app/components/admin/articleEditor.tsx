@@ -2,7 +2,7 @@
 
 import { Article, setArticleQuiz } from "@/app/services/articleService"
 import MDEditor from "@uiw/react-md-editor"
-import { useEffect, useState } from "react"
+import { useEffect, useId, useState } from "react"
 import ArticleRenderer from "../article-renderer/articleRenderer"
 import ModalContainer from "../modal/modalContainer"
 import QuizEditor from "./quizEditor"
@@ -35,6 +35,17 @@ export default function ArticleEditor(props: Props) {
     let [sponsored, setSponsored] = useState(props.article.sponsor ? true : false)
     let [quizModal, setQuizModal] = useState<boolean>(false)
     let [hasQuiz, setHasQuiz] = useState<boolean>(false)
+    const articleIdFieldId = useId();
+    const sectionIdFieldId = useId();
+    const indexFieldId = useId();
+    const titleFieldId = useId();
+    const descriptionFieldId = useId();
+    const tagsFieldId = useId();
+    const sponsorToggleId = useId();
+    const sponsorNameId = useId();
+    const sponsorImageId = useId();
+    const sponsorSiteId = useId();
+    const sponsorMessageId = useId();
 
     useEffect(() => {
         console.log("effect!")
@@ -70,7 +81,7 @@ export default function ArticleEditor(props: Props) {
         setSponsored(sponsored)
 
         if (sponsored) {
-            setArticle({ ...article, sponsor: props.article.sponsor })
+            setArticle({ ...article, sponsor: props.article.sponsor ?? { name: "", imageUrl: "", siteUrl: "", message: "" } })
         } else {
             setArticle({ ...article, sponsor: null })
         }
@@ -99,8 +110,9 @@ export default function ArticleEditor(props: Props) {
 
     return <div className="flex flex-row w-full flex-1 h-[calc(100vh-7.5rem)]">
         {
-            quizModal ? <ModalContainer>
+            quizModal ? <ModalContainer labelledBy="quiz-editor-heading" onDismiss={() => setQuizModal(false)}>
                 <Modal>
+                    <h2 id="quiz-editor-heading" className="text-xl font-bold mb-2">{hasQuiz ? "Edit Quiz" : "Create Quiz"}</h2>
                     <QuizEditor quiz={quiz} editing={false} onCancel={() => setQuizModal(false)} answers={quizAnswers} onSave={handleSave} />
                 </Modal>
             </ModalContainer> : ""
@@ -109,52 +121,53 @@ export default function ArticleEditor(props: Props) {
             <h1 className="text-xl font-bold">{props.editing ? "Edit Article" : "Create Article"}</h1>
 
             {!props.editing ? <div>
-                <label>Article ID: </label>
-                <input type="text" placeholder="ID" value={article.id} onChange={(e) => setArticle({ ...article, id: e.target.value })}></input>
+                <label className="block" htmlFor={articleIdFieldId}>Article ID</label>
+                <input id={articleIdFieldId} type="text" placeholder="ID" value={article.id} onChange={(e) => setArticle({ ...article, id: e.target.value })}></input>
             </div> : ""}
 
             <div>
-                <label>Article Section ID: </label>
-                <input type="text" placeholder="Section ID" value={props.sectionID} onChange={(e) => {
+                <label className="block" htmlFor={sectionIdFieldId}>Article Section ID</label>
+                <input id={sectionIdFieldId} type="text" placeholder="Section ID" value={sectionID} onChange={(e) => {
                     setSectionID(e.target.value)
                 }}></input>
             </div>
-            <p>Index of article in section: </p>
-            <input type="number" value={article.index} onChange={e => setArticle({ ...article, index: parseInt(e.target.value) })} />
+            <label className="block" htmlFor={indexFieldId}>Index of article in section</label>
+            <input id={indexFieldId} type="number" value={article.index ?? 0} onChange={e => setArticle({ ...article, index: Number(e.target.value) })} />
 
-            <p>Article Title</p>
-            <input type="text" placeholder="Title" value={article.title} onChange={(e) => setArticle({ ...article, title: e.target.value })}></input>
+            <label className="block" htmlFor={titleFieldId}>Article Title</label>
+            <input id={titleFieldId} type="text" placeholder="Title" value={article.title} onChange={(e) => setArticle({ ...article, title: e.target.value })}></input>
 
-            <p>Description</p>
-            <textarea value={article.description} onChange={e => setArticle({ ...article, description: e.target.value })}></textarea>
+            <label className="block" htmlFor={descriptionFieldId}>Description</label>
+            <textarea id={descriptionFieldId} value={article.description} onChange={e => setArticle({ ...article, description: e.target.value })}></textarea>
 
-            <p>Tags (Comma separated)</p>
-            <input type="text" value={article.tags.join(",")} onChange={(e) => setArticle({ ...article, tags: (e.target.value.split(",")) })}></input>
+            <label className="block" htmlFor={tagsFieldId}>Tags (Comma separated)</label>
+            <input id={tagsFieldId} type="text" value={article.tags.join(",")} onChange={(e) => setArticle({ ...article, tags: (e.target.value.split(",")) })}></input>
 
             <div>
-                <label className="mr-2">Sponsored?</label><input type="checkbox" checked={sponsored} onChange={e => handleSponsor(e.target.checked)} />
+                <input id={sponsorToggleId} type="checkbox" className="mr-2" checked={sponsored} onChange={e => handleSponsor(e.target.checked)} />
+                <label htmlFor={sponsorToggleId}>Sponsored?</label>
             </div>
 
             {
                 sponsored &&
                 <div className="flex flex-col gap-2 p-2 bg-gray-800 rounded border-2 border-gray-700">
-                    <p>Sponsor name</p>
-                    <input type="text" placeholder="Sponsor name" value={article.sponsor ? article.sponsor.name : ""} onChange={(e) => setArticle({ ...article, sponsor: { ...article.sponsor, name: e.target.value } })}></input>
-                    <p>Sponsor Image URL</p>
-                    <input type="text" placeholder="Sponsor image URL" value={article.sponsor ? article.sponsor.imageUrl : ""} onChange={(e) => setArticle({ ...article, sponsor: { ...article.sponsor, imageUrl: e.target.value } })}></input>
-                    <p>Sponsor Website URL</p>
-                    <input type="text" placeholder="Sponsor website URL" value={article.sponsor ? article.sponsor.siteUrl : ""} onChange={(e) => setArticle({ ...article, sponsor: { ...article.sponsor, siteUrl: e.target.value } })}></input>
-                    <p>Sponsor Message</p>
-                    <input type="text" placeholder="e.g. Powered by XYZ" value={article.sponsor?.message || ""} onChange={(e) => setArticle({ ...article, sponsor: { ...article.sponsor, message: e.target.value } })} />
+                    <label className="block" htmlFor={sponsorNameId}>Sponsor name</label>
+                    <input id={sponsorNameId} type="text" placeholder="Sponsor name" value={article.sponsor ? article.sponsor.name : ""} onChange={(e) => setArticle({ ...article, sponsor: { ...article.sponsor, name: e.target.value } })}></input>
+                    <label className="block" htmlFor={sponsorImageId}>Sponsor Image URL</label>
+                    <input id={sponsorImageId} type="text" placeholder="Sponsor image URL" value={article.sponsor ? article.sponsor.imageUrl : ""} onChange={(e) => setArticle({ ...article, sponsor: { ...article.sponsor, imageUrl: e.target.value } })}></input>
+                    <label className="block" htmlFor={sponsorSiteId}>Sponsor Website URL</label>
+                    <input id={sponsorSiteId} type="text" placeholder="Sponsor website URL" value={article.sponsor ? article.sponsor.siteUrl : ""} onChange={(e) => setArticle({ ...article, sponsor: { ...article.sponsor, siteUrl: e.target.value } })}></input>
+                    <label className="block" htmlFor={sponsorMessageId}>Sponsor Message</label>
+                    <input id={sponsorMessageId} type="text" placeholder="e.g. Powered by XYZ" value={article.sponsor?.message || ""} onChange={(e) => setArticle({ ...article, sponsor: { ...article.sponsor, message: e.target.value } })} />
                 </div>
             }
             <div className="flex flex-row gap-1">
-                <button className="btn-secondary font-mono flex-1" onClick={() => setQuizModal(true)}> {hasQuiz ? "Edit Quiz" : "Create Quiz"} </button>
-                {hasQuiz && <button className="btn-danger font-mono" onClick={() => deleteQuiz()}>Delete Quiz </button>}
+                <button className="btn-secondary font-mono flex-1" type="button" onClick={() => setQuizModal(true)}> {hasQuiz ? "Edit Quiz" : "Create Quiz"} </button>
+                {hasQuiz && <button className="btn-danger font-mono" type="button" onClick={() => deleteQuiz()}>Delete Quiz </button>}
             </div>
             <div className="flex flex-row gap-1">
-                <button className="btn-primary font-mono flex-1" onClick={() => props.onSave(article, sectionID)}> {props.editing ? "Save" : "Create"} </button>
-                <button className="btn-secondary font-mono" onClick={props.onCancel}> Cancel </button>
+                <button className="btn-primary font-mono flex-1" type="button" onClick={() => props.onSave(article, sectionID)}> {props.editing ? "Save" : "Create"} </button>
+                <button className="btn-secondary font-mono" type="button" onClick={props.onCancel}> Cancel </button>
             </div>
         </div>
         <div className="flex-1 flex-col h-[calc(100vh-7.5rem)]">

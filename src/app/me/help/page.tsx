@@ -21,7 +21,7 @@ export default function HelpPage() {
       </div>
       <hr className="border border-slate-600 mb-4" />
       <p className="text-lg mb-4">
-        Encounter issues or have questions? Contact us on <a href="https://discord.gg/FrP9ahy7Gr" target="_blank" className="font-bold underline">Discord</a> or at <a className="font-bold underline" href="mailto:mdhocohoc@gmail.com"> mdhocohoc@gmail.com </a>.
+        Encounter issues or have questions? Contact us on <a href="https://discord.gg/FrP9ahy7Gr" target="_blank" rel="noopener noreferrer" className="font-bold underline">Discord</a> or at <a className="font-bold underline" href="mailto:mdhocohoc@gmail.com"> mdhocohoc@gmail.com </a>.
       </p>
       {status && status.statusMessage.length > 0 ?
         <div className="p-2 bg-amber-400/50 rounded border border-amber-400">
