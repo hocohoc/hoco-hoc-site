@@ -48,6 +48,7 @@ export default function NavBar() {
                 <Link onClick={() => setMenuShown(false)} className={`font-mono text-sky-300 text-xl md:text-2xl font-bold`} href={"/"} aria-label="Howard County Hour of Code home">&lt;HocoHOC/&gt;</Link>
                 <div className="flex-1"></div>
                 <div className="flex max-md:hidden flex-row text-xs gap-5 md:text-md items-stretch">
+                    <Link className={`font-mono rounded text-sm items-center justify-center md:flex font-bold hover:text-sky-300 hover:underline`} href={"/game"}>Games</Link>
                     <Link className={`font-mono rounded text-sm items-center justify-center md:flex font-bold hover:text-sky-300 hover:underline`} href={"/articles"}>Articles</Link>
                     <Link className={`font-mono rounded text-sm items-center justify-center md:flex font-bold hover:text-sky-300 hover:underline`} href={"/leaderboard"}>Leaderboard</Link>
                     {
