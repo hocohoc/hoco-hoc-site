@@ -51,7 +51,7 @@ const extraTestImages = [
   { url: "/game/cat/fish/fish13.png", isCat: false },
 ];
 
-type Phase = "label" | "train" | "test";
+type Phase = "label" | "train" | "test" | "upload";
 
 export default function CatTrainerGame() {
   const [phase, setPhase] = useState<Phase>("label");
@@ -61,6 +61,7 @@ export default function CatTrainerGame() {
   const [results, setResults] = useState<any[]>([]);
   const [accuracy, setAccuracy] = useState<number | null>(null);
   const [model, setModel] = useState<tf.LayersModel | null>(null);
+  const [uploadedResults, setUploadedResults] = useState<any[]>([]);
   const [shuffledImages, setShuffledImages] = useState(allImages);
 
   useEffect(() => {
@@ -69,6 +70,7 @@ export default function CatTrainerGame() {
 
   const current = shuffledImages[index];
 
+  // 🧠 Train and test automatically on extra images
   async function handleTrain() {
     setPhase("train");
     setStatus("Training CatBot...");
@@ -85,7 +87,7 @@ export default function CatTrainerGame() {
     setModel(m);
     setStatus("Training done! Testing on unseen images...");
 
-    // ✅ test on new cat11–13 + fish11–13
+    // ✅ Test on cat11–13 and fish11–13
     const { results, accuracy } = await evaluateModel(
       m,
       extraTestImages.map((i) => ({
@@ -109,47 +111,57 @@ export default function CatTrainerGame() {
     setPhase("label");
     setLabels({});
     setResults([]);
+    setUploadedResults([]);
     setAccuracy(null);
     setIndex(0);
     setStatus("");
     setShuffledImages(shuffleArray(allImages));
   }
 
-  return (
-    
-    <div className="p-6 text-center text-slate-100">
-        <div className="max-w-2xl mx-auto text-left bg-slate-800 p-6 rounded-2xl shadow-lg mb-8">
-      <h2 className="text-xl font-bold text-yellow-300 mb-2">Welcome to CatBot’s Training Lab!</h2>
-      <p className="text-slate-200 mb-3">
-        Computers can learn by looking at examples, just like us! In this game, you will teach
-        <span className="text-sky-300 font-semibold"> CatBot</span> how to tell the difference between
-        pictures of <span className="text-sky-400 font-semibold">cats 🐱</span> and
-        <span className="text-pink-400 font-semibold"> fish 🐟</span>.
-      </p>
-    
-      <h3 className="text-lg font-semibold text-emerald-300 mb-1">How it works:</h3>
-      <ul className="list-disc list-inside text-slate-200 mb-3">
-        <li>Machine learning means giving the computer lots of examples so it can “learn” patterns.</li>
-        <li>Each picture you label helps CatBot understand what cats and fish look like.</li>
-        <li>After training, CatBot will test itself on new pictures it has <em>never seen before!</em></li>
-      </ul>
-    
-      <h3 className="text-lg font-semibold text-sky-300 mb-1">How to play:</h3>
-      <ol className="list-decimal list-inside text-slate-200">
-        <li>Look at each picture carefully.</li>
-        <li>Click <span className="text-sky-400 font-semibold">“🐱 Cat”</span> if it’s a cat, or <span className="text-pink-400 font-semibold">“🐟 Fish</span> if it’s a fish.</li>
-        <li>After you label all the pictures, click <span className="text-emerald-300 font-semibold">“Train CatBot”</span>.</li>
-        <li>Watch CatBot learn! When it’s done, see how well it can tell cats and fish apart!</li>
-      </ol>
-    
-      <p className="text-slate-300 mt-4 italic">
-        Tip: If CatBot makes mistakes, try training again!
-      </p>
-    </div>
-      <h1 className="text-2xl font-bold text-sky-300 mb-3">
-        🐱 Train the Cat Detector
-      </h1>
+  // 🧩 After model is trained, let user upload custom images to classify
+  async function handleUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    if (!model) return;
+    const files = Array.from(e.target.files || []);
+    const urls = files.map((file) => URL.createObjectURL(file));
 
+    const { results } = await evaluateModel(
+      model,
+      urls.map((u) => ({ imageUrl: u, groundTruth: 0 }))
+    );
+
+    setUploadedResults((prev) => [...prev, ...results]);
+  }
+
+  return (
+    <div className="p-6 text-center text-slate-100">
+      <div className="max-w-2xl mx-auto text-left bg-slate-800 p-6 rounded-2xl shadow-lg mb-8">
+        <h2 className="text-xl font-bold text-yellow-300 mb-2">Welcome to CatBot!</h2> 
+        <p className="text-slate-200 mb-3"> Computers can learn by looking at examples, just like us! In this game, you will teach
+           <span className="text-sky-300 font-semibold"> CatBot</span> how to tell the difference between pictures of 
+           <span className="text-sky-400 font-semibold">cats 🐱</span> and <span className="text-pink-400 font-semibold"> fish 🐟</span>. 
+        </p> 
+        <h3 className="text-lg font-semibold text-emerald-300 mb-1">How it works:</h3> 
+          <ul className="list-disc list-inside text-slate-200 mb-3"> 
+            <li>Machine learning means giving the computer lots of examples so it can “learn” patterns.</li>
+            <li>Each picture you label helps CatBot understand what cats and fish look like.</li>
+            <li>After training, CatBot will test itself on new pictures it has <em>never seen before!</em></li> 
+          </ul> 
+        <h3 className="text-lg font-semibold text-sky-300 mb-1">How to play:</h3> 
+        <ol className="list-decimal list-inside text-slate-200"> 
+          <li>Look at each picture carefully.</li> 
+          <li>Click <span className="text-sky-400 font-semibold">“🐱 Cat”</span> if it’s a cat, or 
+            <span className="text-pink-400 font-semibold">“🐟 Fish</span> if it’s a fish.</li>
+          <li>After you label all the pictures, click <span className="text-emerald-300 font-semibold">“Train CatBot”</span>.
+          </li> 
+          <li>Watch CatBot learn! When it’s done, see how well it can tell cats and fish apart!</li> 
+        </ol>
+        <p className="text-slate-300 mt-4 italic"> Tip: If CatBot makes mistakes, try training again! </p>
+      </div>
+  
+
+      <h1 className="text-2xl font-bold text-sky-300 mb-3">🐱 Train the Cat Detector</h1>
+
+      {/* 🏷️ Label Phase */}
       {phase === "label" && current && (
         <div>
           <p className="mb-2">
@@ -190,18 +202,21 @@ export default function CatTrainerGame() {
         </div>
       )}
 
+      {/* ⚙️ Training Phase */}
       {phase === "train" && (
         <div>
           <p className="text-amber-300 animate-pulse">{status}</p>
         </div>
       )}
 
+      {/* 🧪 Test Phase 1: Auto-test on unseen images */}
       {phase === "test" && (
         <div>
           <p className="text-emerald-400 font-semibold mb-2">
-            CatBot Accuracy: {(accuracy! * 100).toFixed(1)}%
+            CatBot Accuracy on Unseen Images: {(accuracy! * 100).toFixed(1)}%
           </p>
-          <div className="grid grid-cols-2 gap-3">
+
+          <div className="grid grid-cols-3 gap-3 mb-8">
             {results.map((r) => (
               <div
                 key={r.imageUrl}
@@ -220,9 +235,42 @@ export default function CatTrainerGame() {
             ))}
           </div>
 
+          {/* 🧩 Test Phase 2: User Uploads */}
+          <div className="mt-6 bg-slate-800 p-4 rounded-xl shadow-md">
+            <h3 className="text-lg font-semibold text-sky-300 mb-2">
+              Upload your own images for CatBot to guess!
+            </h3>
+            <input
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={handleUpload}
+              className="block mx-auto mb-3"
+            />
+
+            {uploadedResults.length > 0 && (
+              <div className="grid grid-cols-2 gap-3 mt-4">
+                {uploadedResults.map((r, idx) => (
+                  <div
+                    key={r.imageUrl + idx}
+                    className="border border-slate-700 rounded-lg overflow-hidden bg-slate-900"
+                  >
+                    <img src={r.imageUrl} className="w-64 h-64 object-cover" alt="uploaded" />
+                    <p className="text-sm p-2">
+                      CatBot says:{" "}
+                      <span className={r.label === 1 ? "text-sky-400" : "text-pink-400"}>
+                        {r.label === 1 ? "Cat 🐱" : "Fish 🐟"}
+                      </span>
+                    </p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
           <button
             onClick={handleReset}
-            className="mt-4 bg-sky-500 px-4 py-2 rounded-full text-black font-semibold"
+            className="mt-6 bg-sky-500 px-4 py-2 rounded-full text-black font-semibold"
           >
             Train Again
           </button>
