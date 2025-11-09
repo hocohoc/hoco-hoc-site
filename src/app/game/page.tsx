@@ -1,11 +1,61 @@
 "use client";
 
-import CatTrainerGame from "@/app/components/games/CatTrainerGame";
+import Link from "next/link";
 
-export default function Page() {
+interface Game {
+  name: string;
+  path: string;
+  description: string;
+  image: string; 
+}
+
+const games: Game[] = [
+  {
+    name: "CatBot",
+    path: "/game/CatBot",
+    description: "Train CatBot to tell cats from fish!",
+    image: "/game/cat/preview.png",
+  },
+];
+
+export default function GameHub() {
   return (
-    <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-start py-10">
-      <CatTrainerGame />
-    </div>
+    <main className="min-h-screen bg-gradient-to-b from-blue-950 to-black text-white flex flex-col items-center py-16">
+      <h1 className="text-4xl font-bold mb-10">Games</h1>
+
+      <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 px-6">
+        {games.map((game) => (
+          <Link
+            key={game.name}
+            href={game.path}
+            className="group bg-gray-800 hover:bg-indigo-700 transition-all duration-300 rounded-2xl shadow-lg overflow-hidden flex flex-col justify-between w-72 transform hover:scale-105"
+          >
+            {/* Game preview image */}
+            <div className="relative">
+              <img
+                src={game.image}
+                alt={game.name}
+                className="w-full h-40 object-cover group-hover:opacity-90"
+              />
+              <div className="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-10 transition" />
+            </div>
+
+            {/* Game info */}
+            <div className="flex flex-col flex-grow justify-between p-5">
+              <div>
+                <h2 className="text-2xl font-semibold mb-2 group-hover:text-yellow-300">
+                  {game.name}
+                </h2>
+                <p className="text-gray-300 text-sm">{game.description}</p>
+              </div>
+
+              <span className="mt-4 text-indigo-300 font-medium group-hover:text-yellow-300">
+                ▶ Play
+              </span>
+            </div>
+          </Link>
+        ))}
+      </div>
+    </main>
   );
 }

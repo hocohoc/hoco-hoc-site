@@ -158,7 +158,7 @@ export default function CatTrainerGame() {
           <img
             src={current.url}
             alt="training"
-            className="mx-auto w-64 h-64 object-cover rounded-xl mb-3 border border-slate-600"
+            className="mx-auto w-64 h-64 object-cover rounded-xl mb-3 border bg-white border-slate-600"
           />
           <div className="flex justify-center gap-3">
             <button
@@ -207,7 +207,7 @@ export default function CatTrainerGame() {
                 key={r.imageUrl}
                 className="border border-slate-700 rounded-lg overflow-hidden bg-slate-900"
               >
-                <img src={r.imageUrl} className="w-full h-40 object-cover" alt="test" />
+                <img src={r.imageUrl} className="w-64 h-64 object-cover" alt="test" />
                 <p className="text-sm p-2">
                   CatBot says:{" "}
                   <span className={r.label === 1 ? "text-sky-400" : "text-pink-400"}>
