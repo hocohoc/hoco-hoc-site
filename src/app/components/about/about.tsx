@@ -87,7 +87,7 @@ export default function AboutSection() {
 
                     <div className="md:flex-1 w-full font-mono">
                         <h3 className="font-mono leading-tight text-4xl md:text-5xl bg-gradient-to-r from-sky-300 to-sky-500 text-transparent bg-clip-text font-bold pb-4 md:pb-10"> Learn New Topics! </h3>
-                        <p className="font-sans mb-10 text-lg md:text-xl text-slate-300">HocoHOC offers a wide variety of interesting and informative articles on computer science topics. By completing them, you&apos;ll not only acquire new skills but also earn your school points!</p>
+                        <p className="font-sans mb-10 text-lg md:text-xl text-slate-300">HocoHOC offers a wide variety of interesting and informative articles and games on computer science topics. By completing them, you&apos;ll not only acquire new skills but also earn your school points!</p>
                         <Link href={"/articles"} className="btn-secondary font-mono text-lg">View Articles</Link>
                     </div>
                 </div>
