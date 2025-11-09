@@ -11,7 +11,7 @@ export default function Faq() {
                 <div className="w-full md:w-1/2 flex flex-col">
                     <FaqQuestion
                         question={"When is the Hour of Code?"}
-                        answer={`Howard County Hour of Code is a 7-day event taking place from May 29 to June 4, 2024.`}
+                        answer={`Howard County Hour of Code is a 7-day event taking place from December 8 to December 14, 2025.`}
                     />
                     <FaqQuestion
                         question={"How do I participate in the Hour of Code?"}
