@@ -11,10 +11,16 @@ interface Game {
 
 const games: Game[] = [
   {
-    name: "CatBot",
-    path: "/game/CatBot",
-    description: "Train CatBot to tell cats from fish!",
+    name: "Purr-ceptron",
+    path: "/game/Purrceptron",
+    description: "Train Purr-ceptron to tell cats from fish!",
     image: "/game/cat/preview.png",
+  },
+  {
+    name: "FlexiBot",
+    path: "/game/Flexibot",
+    description: "Train FlexiBot to recognize anything you want!",
+    image: "/game/flexibot/preview.png",
   },
 ];
 

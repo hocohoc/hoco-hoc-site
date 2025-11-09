@@ -2,7 +2,7 @@ import * as tf from "@tensorflow/tfjs";
 
 export type LabeledSample = {
   imageUrl: string;
-  label: 0 | 1; // 1 = cat, 0 = not-cat
+  label: 0 | 1; // 1 = category B (e.g. "cats"), 0 = category A
 };
 
 // 🧠 Cache MobileNet globally so it loads only once
@@ -14,12 +14,13 @@ let cachedMobilenet: tf.LayersModel | null = null;
 async function loadImageTensor(url: string): Promise<tf.Tensor4D> {
   return new Promise<tf.Tensor4D>((resolve, reject) => {
     const img = new Image();
-    img.crossOrigin = "anonymous";
+    img.crossOrigin = "anonymous"; // works for blob URLs and remote
     img.src = url;
     img.onload = () => {
       try {
         const tensor = tf.tidy(() => {
-          const t = tf.browser.fromPixels(img)
+          const t = tf.browser
+            .fromPixels(img)
             .resizeBilinear([224, 224])
             .toFloat()
             .div(255)
@@ -51,7 +52,10 @@ export async function trainModel(
 
   const mobilenet = cachedMobilenet;
   const featureLayer = mobilenet.getLayer("conv_pw_13_relu");
-  const extractor = tf.model({ inputs: mobilenet.inputs, outputs: featureLayer.output });
+  const extractor = tf.model({
+    inputs: mobilenet.inputs,
+    outputs: featureLayer.output,
+  });
 
   // 2️⃣ Extract features for each labeled image
   const featureTensors: tf.Tensor[] = [];
@@ -71,7 +75,13 @@ export async function trainModel(
 
   // 3️⃣ Build small classifier
   const model = tf.sequential();
-  model.add(tf.layers.dense({ units: 64, activation: "relu", inputShape: [xs.shape[1]] }));
+  model.add(
+    tf.layers.dense({
+      units: 64,
+      activation: "relu",
+      inputShape: [xs.shape[1]],
+    })
+  );
   model.add(tf.layers.dropout({ rate: 0.3 }));
   model.add(tf.layers.dense({ units: 1, activation: "sigmoid" }));
 
@@ -94,7 +104,7 @@ export async function trainModel(
     },
   });
 
-  // ✅ Cleanup (safe, no double-dispose)
+  // ✅ Cleanup
   featureTensors.forEach((t) => t.dispose());
   xs.dispose();
   ys.dispose();
@@ -105,6 +115,7 @@ export async function trainModel(
 
 /**
  * Evaluate model on test images using the same MobileNet feature extractor.
+ * (Used by CatBot – keeps ground truth + accuracy.)
  */
 export async function evaluateModel(
   model: tf.LayersModel,
@@ -119,7 +130,10 @@ export async function evaluateModel(
 
   const mobilenet = cachedMobilenet;
   const featureLayer = mobilenet.getLayer("conv_pw_13_relu");
-  const extractor = tf.model({ inputs: mobilenet.inputs, outputs: featureLayer.output });
+  const extractor = tf.model({
+    inputs: mobilenet.inputs,
+    outputs: featureLayer.output,
+  });
 
   const results: any[] = [];
   let correct = 0;
@@ -127,10 +141,10 @@ export async function evaluateModel(
   for (const sample of testSet) {
     const imgTensor = await loadImageTensor(sample.imageUrl);
     const feat = extractor.predict(imgTensor) as tf.Tensor;
-    const features = feat.flatten().expandDims(0); // shape [1, 12544]
+    const features = feat.flatten().expandDims(0); // shape [1, N]
 
     const prob = (model.predict(features) as tf.Tensor).dataSync()[0];
-    const label = prob > 0.5 ? 1 : 0;
+    const label: 0 | 1 = prob > 0.5 ? 1 : 0;
 
     if (label === sample.groundTruth) correct++;
     results.push({ ...sample, prob, label });
@@ -142,4 +156,46 @@ export async function evaluateModel(
 
   const accuracy = results.length ? correct / results.length : 0;
   return { results, accuracy };
+}
+
+/**
+ * 🔍 Predict on *unlabeled* images (for the custom game).
+ * Returns probability + predicted label for each image URL.
+ */
+export async function predictImages(
+  model: tf.LayersModel,
+  imageUrls: string[]
+): Promise<{ imageUrl: string; prob: number; label: 0 | 1 }[]> {
+  // Ensure MobileNet is available
+  if (!cachedMobilenet) {
+    cachedMobilenet = await tf.loadLayersModel(
+      "https://storage.googleapis.com/tfjs-models/tfjs/mobilenet_v1_0.25_224/model.json"
+    );
+  }
+
+  const mobilenet = cachedMobilenet;
+  const featureLayer = mobilenet.getLayer("conv_pw_13_relu");
+  const extractor = tf.model({
+    inputs: mobilenet.inputs,
+    outputs: featureLayer.output,
+  });
+
+  const results: { imageUrl: string; prob: number; label: 0 | 1 }[] = [];
+
+  for (const url of imageUrls) {
+    const imgTensor = await loadImageTensor(url);
+    const feat = extractor.predict(imgTensor) as tf.Tensor;
+    const features = feat.flatten().expandDims(0);
+
+    const prob = (model.predict(features) as tf.Tensor).dataSync()[0];
+    const label: 0 | 1 = prob > 0.5 ? 1 : 0;
+
+    results.push({ imageUrl: url, prob, label });
+
+    imgTensor.dispose();
+    feat.dispose();
+    features.dispose();
+  }
+
+  return results;
 }
