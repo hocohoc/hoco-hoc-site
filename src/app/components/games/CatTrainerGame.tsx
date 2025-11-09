@@ -16,7 +16,6 @@ function shuffleArray<T>(array: T[]): T[] {
 
 // 🐱 Training data (10 cats + 10 fish)
 const allImages = [
-  // Cats
   { url: "/game/cat/cat/cat1.png", isCat: true },
   { url: "/game/cat/cat/cat2.png", isCat: true },
   { url: "/game/cat/cat/cat3.png", isCat: true },
@@ -27,8 +26,6 @@ const allImages = [
   { url: "/game/cat/cat/cat8.png", isCat: true },
   { url: "/game/cat/cat/cat9.png", isCat: true },
   { url: "/game/cat/cat/cat10.png", isCat: true },
-
-  // Fish
   { url: "/game/cat/fish/fish1.png", isCat: false },
   { url: "/game/cat/fish/fish2.png", isCat: false },
   { url: "/game/cat/fish/fish3.png", isCat: false },
@@ -41,7 +38,7 @@ const allImages = [
   { url: "/game/cat/fish/fish10.png", isCat: false },
 ];
 
-// 🧪 Extra test-only images (never shown during training)
+// 🧪 Extra test-only images
 const extraTestImages = [
   { url: "/game/cat/cat/cat11.png", isCat: true },
   { url: "/game/cat/cat/cat12.png", isCat: true },
@@ -70,10 +67,10 @@ export default function CatTrainerGame() {
 
   const current = shuffledImages[index];
 
-  // 🧠 Train and test automatically on extra images
+  // 🧠 Train and test automatically
   async function handleTrain() {
     setPhase("train");
-    setStatus("Training CatBot...");
+    setStatus("Training Purr-ceptron...");
 
     const samples: LabeledSample[] = shuffledImages.map((i) => ({
       imageUrl: i.url,
@@ -87,7 +84,6 @@ export default function CatTrainerGame() {
     setModel(m);
     setStatus("Training done! Testing on unseen images...");
 
-    // ✅ Test on cat11–13 and fish11–13
     const { results, accuracy } = await evaluateModel(
       m,
       extraTestImages.map((i) => ({
@@ -118,7 +114,7 @@ export default function CatTrainerGame() {
     setShuffledImages(shuffleArray(allImages));
   }
 
-  // 🧩 After model is trained, let user upload custom images to classify
+  // 🧩 Upload user test images
   async function handleUpload(e: React.ChangeEvent<HTMLInputElement>) {
     if (!model) return;
     const files = Array.from(e.target.files || []);
@@ -132,40 +128,46 @@ export default function CatTrainerGame() {
     setUploadedResults((prev) => [...prev, ...results]);
   }
 
+  // 🗑️ Remove uploaded photo
+  function removeUploadedImage(url: string) {
+    URL.revokeObjectURL(url); // free memory
+    setUploadedResults((prev) => prev.filter((r) => r.imageUrl !== url));
+  }
+
   return (
     <div className="p-6 text-center text-slate-100">
-      <div className="max-w-2xl mx-auto text-left bg-slate-800 p-6 rounded-2xl shadow-lg mb-8">
-        <h2 className="text-xl font-bold text-yellow-300 mb-2">Welcome to CatBot!</h2> 
-        <p className="text-slate-200 mb-3"> Computers can learn by looking at examples, just like us! In this game, you will teach
-           <span className="text-sky-300 font-semibold"> CatBot</span> how to tell the difference between pictures of 
-           <span className="text-sky-400 font-semibold">cats 🐱</span> and <span className="text-pink-400 font-semibold"> fish 🐟</span>. 
-        </p> 
-        <h3 className="text-lg font-semibold text-emerald-300 mb-1">How it works:</h3> 
-          <ul className="list-disc list-inside text-slate-200 mb-3"> 
-            <li>Machine learning means giving the computer lots of examples so it can “learn” patterns.</li>
-            <li>Each picture you label helps CatBot understand what cats and fish look like.</li>
-            <li>After training, CatBot will test itself on new pictures it has <em>never seen before!</em></li> 
+      {/* 🧾 Intro Section */}
+      <div className="max-w-4xl mx-auto text-left bg-slate-800 p-6 rounded-2xl shadow-lg mb-8">
+        <h2 className="text-xl font-bold text-yellow-300 mb-2">Welcome to Purr-ceptron!</h2> 
+        <p className="text-slate-200 mb-3"> Computers can learn by looking at examples, just like us! In this game, you will teach 
+          <span className="text-sky-300 font-semibold"> Purr-ceptron</span> how to tell the difference between pictures of 
+          <span className="text-sky-400 font-semibold"> 🐱 cats </span> and <span className="text-pink-400 font-semibold"> 🐟 fish</span>. 
+        </p>
+        <h3 className="text-lg font-semibold text-emerald-300 mb-1">How it works:</h3>
+         <ul className="list-disc list-inside text-slate-200 mb-3">
+           <li>Machine learning means giving the computer lots of examples so it can “learn” patterns.</li>
+            <li>Each picture you label helps Purr-ceptron understand what cats and fish look like.</li> 
+            <li>After training, Purr-ceptron will test itself on new pictures it has <em>never seen before!</em></li> 
           </ul> 
-        <h3 className="text-lg font-semibold text-sky-300 mb-1">How to play:</h3> 
-        <ol className="list-decimal list-inside text-slate-200"> 
-          <li>Look at each picture carefully.</li> 
+          <h3 className="text-lg font-semibold text-sky-300 mb-1">How to play:</h3>
+         <ol className="list-decimal list-inside text-slate-200"> 
+          <li>Look at each picture carefully.</li>
           <li>Click <span className="text-sky-400 font-semibold">“🐱 Cat”</span> if it’s a cat, or 
-            <span className="text-pink-400 font-semibold">“🐟 Fish</span> if it’s a fish.</li>
-          <li>After you label all the pictures, click <span className="text-emerald-300 font-semibold">“Train CatBot”</span>.
-          </li> 
-          <li>Watch CatBot learn! When it’s done, see how well it can tell cats and fish apart!</li> 
-        </ol>
-        <p className="text-slate-300 mt-4 italic"> Tip: If CatBot makes mistakes, try training again! </p>
-      </div>
-  
-
-      <h1 className="text-2xl font-bold text-sky-300 mb-3">🐱 Train the Cat Detector</h1>
+          <span className="text-pink-400 font-semibold">“🐟 Fish</span> if it’s a fish.</li>
+           <li>After you label all the pictures, click <span className="text-emerald-300 font-semibold">“Train Purr-ceptron”</span>. </li> 
+           <li>Watch Purr-ceptron learn! When it’s done, see how well it can tell cats and fish apart!</li> 
+          </ol> 
+          <p className="text-slate-300 mt-4 italic"> Tip: If Purr-ceptron makes mistakes, try training again! </p>
+           </div>
+      <h1 className="text-2xl font-bold text-sky-300 mb-3">
+        Train Purr-ceptron!
+      </h1>
 
       {/* 🏷️ Label Phase */}
       {phase === "label" && current && (
         <div>
           <p className="mb-2">
-            Image {index + 1} of {shuffledImages.length} — Is this a cat?
+            Image {index + 1} of {shuffledImages.length} ─ Is this a cat?
           </p>
           <img
             src={current.url}
@@ -196,7 +198,7 @@ export default function CatTrainerGame() {
               onClick={handleTrain}
               className="mt-4 bg-emerald-500 px-4 py-2 rounded-full text-black font-semibold"
             >
-              Train CatBot
+              Train Purr-ceptron
             </button>
           )}
         </div>
@@ -209,23 +211,32 @@ export default function CatTrainerGame() {
         </div>
       )}
 
-      {/* 🧪 Test Phase 1: Auto-test on unseen images */}
+      {/* 🧪 Test Phase */}
       {phase === "test" && (
         <div>
           <p className="text-emerald-400 font-semibold mb-2">
-            CatBot Accuracy on Unseen Images: {(accuracy! * 100).toFixed(1)}%
+            Purr-ceptron Accuracy on Unseen Images: {(accuracy! * 100).toFixed(1)}%
           </p>
 
+          {/* Test Results */}
           <div className="grid grid-cols-3 gap-3 mb-8">
             {results.map((r) => (
               <div
                 key={r.imageUrl}
                 className="border border-slate-700 rounded-lg overflow-hidden bg-slate-900"
               >
-                <img src={r.imageUrl} className="w-64 h-64 object-cover" alt="test" />
+                <img
+                  src={r.imageUrl}
+                  className="w-64 h-64 object-cover"
+                  alt="test"
+                />
                 <p className="text-sm p-2">
-                  CatBot says:{" "}
-                  <span className={r.label === 1 ? "text-sky-400" : "text-pink-400"}>
+                  Purr-ceptron says:{" "}
+                  <span
+                    className={
+                      r.label === 1 ? "text-sky-400" : "text-pink-400"
+                    }
+                  >
                     {r.label === 1 ? "Cat 🐱" : "Fish 🐟"}
                   </span>
                   <br />
@@ -235,10 +246,10 @@ export default function CatTrainerGame() {
             ))}
           </div>
 
-          {/* 🧩 Test Phase 2: User Uploads */}
+          {/* 🧩 Upload & Predict Section */}
           <div className="mt-6 bg-slate-800 p-4 rounded-xl shadow-md">
             <h3 className="text-lg font-semibold text-sky-300 mb-2">
-              Upload your own images for CatBot to guess!
+              Upload your own images for Purr-ceptron to guess!
             </h3>
             <input
               type="file"
@@ -253,12 +264,29 @@ export default function CatTrainerGame() {
                 {uploadedResults.map((r, idx) => (
                   <div
                     key={r.imageUrl + idx}
-                    className="border border-slate-700 rounded-lg overflow-hidden bg-slate-900"
+                    className="relative border border-slate-700 rounded-lg overflow-hidden bg-slate-900"
                   >
-                    <img src={r.imageUrl} className="w-64 h-64 object-cover" alt="uploaded" />
+                    <img
+                      src={r.imageUrl}
+                      className="w-64 h-64 object-cover bg-white"
+                      alt="uploaded"
+                    />
+                    {/* 🗑️ Remove button */}
+                    <button
+                      onClick={() => removeUploadedImage(r.imageUrl)}
+                      className="absolute top-0 right-0 bg-red-600 hover:bg-red-700 text-xs text-white rounded-full w-5 h-5 flex items-center justify-center"
+                      title="Remove image"
+                    >
+                      ×
+                    </button>
+
                     <p className="text-sm p-2">
-                      CatBot says:{" "}
-                      <span className={r.label === 1 ? "text-sky-400" : "text-pink-400"}>
+                      Purr-ceptron says:{" "}
+                      <span
+                        className={
+                          r.label === 1 ? "text-sky-400" : "text-pink-400"
+                        }
+                      >
                         {r.label === 1 ? "Cat 🐱" : "Fish 🐟"}
                       </span>
                     </p>
