@@ -134,7 +134,7 @@ export default function CatTrainerGame() {
         <li>After training, CatBot will test itself on new pictures it has <em>never seen before!</em></li>
       </ul>
     
-      <h3 className="text-lg font-semibold text-sky-300 mb-1">🎮 How to play:</h3>
+      <h3 className="text-lg font-semibold text-sky-300 mb-1">How to play:</h3>
       <ol className="list-decimal list-inside text-slate-200">
         <li>Look at each picture carefully.</li>
         <li>Click <span className="text-sky-400 font-semibold">“🐱 Cat”</span> if it’s a cat, or <span className="text-pink-400 font-semibold">“🐟 Fish</span> if it’s a fish.</li>
