@@ -171,53 +171,6 @@ export default function Read() {
         // setQuizError("contest-not-live")
     }
 
-    const [aiQuestion, setAiQuestion] = useState("")
-    const [aiAnswer, setAiAnswer] = useState<string | null>(null)
-    const [aiError, setAiError] = useState<string | null>(null)
-    const [aiLoading, setAiLoading] = useState(false)
-    const [aiAvailable, setAiAvailable] = useState(true)
-
-    useEffect(() => {
-        // Check if browser AI is available (Chrome built-in AI)
-        if (typeof window !== 'undefined') {
-            const hasAI = 'ai' in window && 'languageModel' in (window as any).ai
-            setAiAvailable(hasAI)
-        }
-    }, [])
-
-    async function askAI(e: React.FormEvent) {
-        e.preventDefault()
-        setAiError(null)
-        setAiAnswer(null)
-        if (!aiQuestion.trim()) return
-
-        try {
-            setAiLoading(true)
-
-            // Use browser's built-in AI (Chrome Prompt API)
-            if (!('ai' in window) || !('languageModel' in (window as any).ai)) {
-                throw new Error("Your browser doesn't support built-in AI yet. Try Chrome Canary with AI features enabled.")
-            }
-
-            const session = await (window as any).ai.languageModel.create({
-                systemPrompt: "You are a friendly CS tutor helping students understand computer science concepts. Keep answers concise (2-3 sentences), clear, and encouraging. Base your answer on the context provided. If you're not sure, say so and suggest what to look for in the article.",
-            })
-
-            const context = article?.content ? article.content.slice(0, 4000) : ""
-            const prompt = context 
-                ? `Context from article:\n${context}\n\nStudent question: ${aiQuestion}`
-                : `Student question: ${aiQuestion}`
-
-            const answer = await session.prompt(prompt)
-            setAiAnswer(answer)
-            session.destroy()
-        } catch (err: any) {
-            setAiError(err?.message || "AI is not available in your browser")
-        } finally {
-            setAiLoading(false)
-        }
-    }
-
     return <main className="flex flex-col items-center h-auto">
         {articleLoadError ?
             <ErrorPopup error={articleLoadError}>
@@ -286,47 +239,6 @@ export default function Read() {
 
             </SkeletonTheme>
                         <hr className="mt-6 border-b border-slate-600" />
-
-            {/* AI Q&A Panel - only show if available or loading */}
-            <section aria-labelledby="ai-qa-heading" className="mt-6">
-                    <h2 id="ai-qa-heading" className="text-xl font-bold">🤖 Ask AI about this article</h2>
-                    <p className="text-slate-300 text-sm mt-1">
-                        Use your browser&apos;s built-in AI to get quick explanations. This runs locally on your device—no data is sent to external servers.
-                    </p>
-                    {!aiAvailable && (
-                        <p className="text-xs text-amber-400 mt-2">⚠️ Browser AI not available. Try Chrome 127+ with experimental AI features enabled.</p>
-                    )}
-                    <form onSubmit={askAI} className="mt-3 flex flex-col gap-2">
-                        <label htmlFor="ai-question" className="font-mono text-sm">Your question</label>
-                        <textarea
-                            id="ai-question"
-                            className="min-h-24"
-                            value={aiQuestion}
-                            onChange={(e) => setAiQuestion(e.target.value)}
-                            aria-describedby="ai-question-help"
-                            placeholder="What does this concept mean?"
-                        />
-                        <span id="ai-question-help" className="text-xs text-slate-400">Example: &ldquo;Can you explain how backtracking works in this context?&rdquo;</span>
-                        <div>
-                            <button type="submit" className="btn-primary font-mono" disabled={aiLoading || !aiQuestion.trim()}>
-                                {aiLoading ? "Thinking…" : "Ask AI"}
-                            </button>
-                        </div>
-                    </form>
-
-                    <div className="mt-3" aria-live="polite" role="status">
-                        {aiError && (
-                            <div className="border-2 border-red-500 rounded p-3 bg-red-500/20">
-                                <p className="font-mono text-red-200">{aiError}</p>
-                            </div>
-                        )}
-                        {aiAnswer && (
-                            <div className="border-2 border-sky-300 rounded p-3 bg-sky-300/10">
-                                <p className="whitespace-pre-wrap">{aiAnswer}</p>
-                            </div>
-                        )}
-                    </div>
-                </section>
         </div>
         <div className="max-w-3xl w-full h-full p-4 flex flex-col gap-2">
             {profile && (
