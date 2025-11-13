@@ -1,7 +1,7 @@
 export default function Footer() {
   return <footer className="w-full max-h-16 min-h-16 text-slate-400 gap-2 md:gap-1 text-sm p-2 bg-slate-950/30 border-t border-t-gray-800 flex flex-col justify-center">
     <div className="flex flex-col md:w-1/2 gap-1">
-      <p className="font-bold"> &copy; 2025 Howard County Hour of Code  </p>
+      <p className="font-bold"> &copy; 2025 Howard County Hour of Code / AI </p>
       <p> Contact us at <a className="font-bold underline" href="mailto:mdhocohoc@gmail.com"> mdhocohoc@gmail.com</a></p>
     </div>
 

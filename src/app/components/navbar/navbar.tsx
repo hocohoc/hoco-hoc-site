@@ -45,7 +45,7 @@ export default function NavBar() {
     return (
         <nav className="bg-slate-900  bg-opacity-50 backdrop-blur-md h-14 p-2 flex flex-row items-center justify-center border-b-2 border-b-sky-900 top-0 sticky z-30 w-full" aria-label="Primary">
             <div className="flex flex-row items-center w-full max-w-screen-xl">
-                <Link onClick={() => setMenuShown(false)} className={`font-mono text-sky-300 text-xl md:text-2xl font-bold`} href={"/"} aria-label="Howard County Hour of Code home">&lt;HocoHOC/&gt;</Link>
+                <Link onClick={() => setMenuShown(false)} className={`font-mono text-sky-300 text-xl md:text-2xl font-bold`} href={"/"} aria-label="Howard County Hour of Code / AI home">Howard County Hour of Code / AI</Link>
                 <div className="flex-1"></div>
                 <div className="flex max-md:hidden flex-row text-xs gap-5 md:text-md items-stretch">
                     <Link className={`font-mono rounded text-sm items-center justify-center md:flex font-bold hover:text-sky-300 hover:underline`} href={"/game"}>Games</Link>

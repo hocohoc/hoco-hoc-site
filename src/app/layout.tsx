@@ -10,8 +10,8 @@ const inter = Inter({ subsets: ["latin"], display: 'swap', variable: '--font-int
 const jbm = JetBrains_Mono({ subsets: ["latin"], display: 'swap', variable: '--font-jbm' })
 
 export const metadata = {
-  title: "Howard County Hour of Code",
-  description: "Howard County Hour of Code is a 7-day event to promote learning more about computer science!",
+  title: "Howard County Hour of Code / AI",
+  description: "Howard County Hour of Code / AI is a 7-day event to promote learning more about computer science!",
 };
 
 
