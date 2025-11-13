@@ -133,7 +133,7 @@ export default function FlexiBotGame() {
     <div className="p-6 text-center text-slate-100">
       <div className="max-w-4xl mx-auto text-left bg-slate-800 p-6 rounded-2xl shadow-lg mb-8">
         <h2 className="text-xl font-bold text-yellow-300 mb-2">
-          Welcome to FlexiBot! 🎓🤖
+          Welcome to FlexiBot!
         </h2>
         <p className="text-slate-200 mb-3">
           In this game,{" "}
