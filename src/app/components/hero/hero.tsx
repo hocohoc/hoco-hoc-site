@@ -93,7 +93,7 @@ export default function Hero() {
             <div className="flex flex-row items-center w-full max-w-screen-xl">
                 <div className="md:w-2/3 w-full">
                     <h1 className="text-2xl md:text-6xl">Howard County</h1>
-                    <h1 className={`bg-gradient-to-b from-sky-300 to-sky-500 text-transparent bg-clip-text text-5xl md:text-6xl font-extrabold mb-2 mt-2`}>Howard County Hour of Code / AI</h1>
+                    <h1 className={`bg-gradient-to-b from-sky-300 to-sky-500 text-transparent bg-clip-text text-5xl md:text-6xl font-extrabold mb-2 mt-2`}>Hour of Code / AI</h1>
                     <p className="text-md mt-3 md:text-base">Compete, Learn, and Win Prizes!</p>
 
                     <p className={`font-mono text-slate-400 text-sm`}> Howard County Hour of Code is a 7-day event taking place from December 8, 2025 to December 15, 2025. </p>
