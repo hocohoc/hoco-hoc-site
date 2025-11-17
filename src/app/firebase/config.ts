@@ -21,19 +21,20 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-let analytics: Analytics;
+let analytics: Analytics | null;
+
 isSupported().then(supported => {
     if (supported) {
-        analytics = getAnalytics(app)
-        console.log("Google analytics initialized!")
+        analytics = getAnalytics(app);
+        console.log("Google analytics initialized!");
     }
 })
-const db = getFirestore(app)
-const authProvider = new GoogleAuthProvider()
-const auth = getAuth(app)
+const db = getFirestore(app);
+const authProvider = new GoogleAuthProvider();
+const auth = getAuth(app);
 
 authProvider.setCustomParameters({
-    prompt: "select_account"
+    prompt: "select_account",
 })
 
 export { app, analytics, db, authProvider, auth }
