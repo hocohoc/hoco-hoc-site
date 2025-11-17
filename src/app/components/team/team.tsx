@@ -14,6 +14,7 @@ export default function TeamSection() {
         { name: "Raj Bhagat", position: "Articles", image: "/headshots/raj_headshot.jpg" },
         { name: "Nicholas Chen", position: "Articles", image: "/headshots/NicholasChen_headshot.jpg" },
         { name: "Suhas Anumolu", position: "Articles", image: "/headshots/suhas_headshot.png" },
+        { name: "Shalin Vakil", position: "Articles", image: "/headshots/shalin_headshot.png" },
         { name: "Daniel Oh", position: "Outreach", image: "/headshots/daniel_oh_headshot.png" },
     ];
 
