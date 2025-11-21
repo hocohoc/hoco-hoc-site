@@ -16,20 +16,16 @@ export default function Prizes() {
             <div className="flex-1 pt-8">
               <h2 className="text-white text-3xl font-mono bg-slate-900 rounded-t border border-slate-700 p-4">Individual Prizes</h2>
               <ul className="rounded-b bg-slate-800 p-4 pl-8 list-disc border text-lg border-slate-700">
-                <li>4x $25 Art of Problem Solving Gift Cards</li>
-                <li>2x JBL Go Essential Waterproof IPX7 Portable Bluetooth Speaker</li>
-                <li>2x Belkin SoundForm Mini Wireless Bluetooth Headphones for Kids</li>
-                <li>1x Razer - Huntsman V2 TKL Wired Gaming Keyboard</li>
-                <li>1x Sony - WH-CH520 Wireless Headphone</li>
+                <li>1x Apple iPad (A16) </li>
+                <li>1x JBL Tune 720BT</li>
+                <li>10x $10 Amazon Giftcards</li>
               </ul>
             </div>
             <div className="flex-1 pt-8">
               <h2 className="text-white text-3xl font-mono bg-slate-900 rounded-t border border-slate-700 p-4">School Prizes</h2>
               <ul className="rounded-b bg-slate-800 p-4 pl-8 list-disc text-lg border border-slate-700">
                 <li>Website banner</li>
-                <li>$300 donation to computer science department</li>
-                <br />
-                <br />
+                <li>$300 to the winning school&apos;s computer science department</li>
                 <br />
               </ul>
             </div>
