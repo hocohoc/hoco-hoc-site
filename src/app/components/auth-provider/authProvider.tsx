@@ -112,7 +112,7 @@ export default function AuthProvider(props: Props) {
 
                     <div>
                         <div className="mb-2">
-                            <p className="font-bold text-md">Select your highschool</p>
+                            <p className="font-bold text-md">Select Your School</p>
                             <p className="text-sm text-slate-300">Note: You will not be able to change this later!</p>
                         </div>
                         <select className="font-mono bg-gray-700 p-2 rounded border-2 border-gray-600 hover:bg-gray-600 w-full cursor-pointer" value={school.id} onChange={(e) => setSchool(schools.find(sc => sc.id == e.target.value))}>

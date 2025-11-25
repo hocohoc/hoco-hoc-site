@@ -10,7 +10,9 @@ export function upperCaseFirstLetter(str: string): string {
 export const ALL_LANGUAGES = [
     "python",
     "java",
-    "cpp"
+    "cpp",
+    "blockly",
+    "scratch"
 ]
 
 export function truncate(text: string, chars: number): string {

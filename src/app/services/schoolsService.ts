@@ -184,6 +184,7 @@ const schools: School[] = [
     { id: "wes", name: "Waverly Elementary School" },
     { id: "wfes", name: "West Friendship Elementary School" },
     { id: "woes", name: "Worthington Elementary School" },
+    { id: "homewood", name: "Homewood School" },
 ]
 
 export function getAllSchools(): School[] {
