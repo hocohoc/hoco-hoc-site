@@ -59,14 +59,15 @@ export async function signInWithGoogle(): Promise<User> {
     const email = user.email ?? "";
     const domain = email.split("@")[1] ?? "";
 
-    const isSchoolEmail = domain === "inst.hcpss.org";
+    const isSchoolEmail =
+        domain === "inst.hcpss.org" || domain === "hcpss.org";
     const isException = ALLOWED_EXCEPTIONS.has(email);
 
     if (!isSchoolEmail && !isException) {
         // Block access
         await signOut(auth);
         throw new Error(
-            "You must sign in with your @inst.hcpss.org school email (unless you are on the exception list)."
+            "You must sign in with your school email (unless you are on the exception list)."
         );
     }
 
