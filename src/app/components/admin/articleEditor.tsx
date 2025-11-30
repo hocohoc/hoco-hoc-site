@@ -1,6 +1,7 @@
 "use client"
 
 import { Article, setArticleQuiz } from "@/app/services/articleService"
+import { LOCAL_VIDEOS } from '@/app/data/localVideosScratch'
 import MDEditor from "@uiw/react-md-editor"
 import { useEffect, useId, useState } from "react"
 import ArticleRenderer from "../article-renderer/articleRenderer"
@@ -46,6 +47,8 @@ export default function ArticleEditor(props: Props) {
     const sponsorImageId = useId();
     const sponsorSiteId = useId();
     const sponsorMessageId = useId();
+    const videoUrlId = useId();
+    const videoTypeId = useId();
 
     useEffect(() => {
         console.log("effect!")
@@ -85,6 +88,35 @@ export default function ArticleEditor(props: Props) {
         } else {
             setArticle({ ...article, sponsor: null })
         }
+    }
+
+    function renderVideo(video?: { url: string, type?: string }) {
+        if (!video || !video.url) return null;
+
+        const url = video.url.trim();
+
+        const youtubeMatch = url.match(/(?:v=|youtu\.be\/|youtube\.com\/embed\/)([A-Za-z0-9_-]{6,})/);
+        if ((video.type === "youtube" || (!video.type && youtubeMatch)) && youtubeMatch) {
+            const id = youtubeMatch[1];
+            const embed = `https://www.youtube.com/embed/${id}`;
+            return <div className="my-4">
+                <iframe src={embed} title="article-video" className="w-full aspect-video rounded" allowFullScreen />
+            </div>
+        }
+
+        if (video.type === "mp4" || url.toLowerCase().endsWith(".mp4")) {
+            return <div className="my-4">
+                <video controls className="w-full rounded">
+                    <source src={url} type="video/mp4" />
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        }
+
+        // default: embed via iframe
+        return <div className="my-4">
+            <iframe src={url} title="article-video" className="w-full aspect-video rounded" allowFullScreen />
+        </div>
     }
 
     function handleSave(quiz: Quiz, answers: number[]) {
@@ -143,6 +175,30 @@ export default function ArticleEditor(props: Props) {
             <label className="block" htmlFor={tagsFieldId}>Tags (Comma separated)</label>
             <input id={tagsFieldId} type="text" value={article.tags.join(",")} onChange={(e) => setArticle({ ...article, tags: (e.target.value.split(",")) })}></input>
 
+            <label className="block mt-2" htmlFor={videoUrlId}>Video URL (optional)</label>
+            <input id={videoUrlId} type="text" placeholder="https://..." value={article.video?.url || ""} onChange={(e) => setArticle({ ...article, video: e.target.value ? { ...(article.video || {}), url: e.target.value } : undefined })} />
+
+            <label className="block mt-2">Or choose a local video</label>
+            <select className="mb-2" value={article.video?.url || ""} onChange={(e) => {
+                const val = e.target.value;
+                if (!val) {
+                    setArticle({ ...article, video: undefined })
+                } else {
+                    setArticle({ ...article, video: { ...(article.video || {}), url: val, type: 'mp4' } })
+                }
+            }}>
+                <option value="">(none)</option>
+                {LOCAL_VIDEOS.map(v => <option key={v} value={v}>{v.replace('/videos/','')}</option>)}
+            </select>
+
+            <label className="block mt-2" htmlFor={videoTypeId}>Video Type (optional)</label>
+            <select id={videoTypeId} value={article.video?.type || ""} onChange={(e) => setArticle({ ...article, video: { ...(article.video || { url: "" }), type: e.target.value } })}>
+                <option value="">Auto</option>
+                <option value="youtube">YouTube</option>
+                <option value="mp4">MP4</option>
+                <option value="iframe">Embed</option>
+            </select>
+
             <div>
                 <input id={sponsorToggleId} type="checkbox" className="mr-2" checked={sponsored} onChange={e => handleSponsor(e.target.checked)} />
                 <label htmlFor={sponsorToggleId}>Sponsored?</label>
@@ -188,6 +244,7 @@ export default function ArticleEditor(props: Props) {
                                     </div>
                                 ))}
                             </div>
+                            {renderVideo(article.video)}
                             <ArticleRenderer markdown={source} />
                         </div>
                     }

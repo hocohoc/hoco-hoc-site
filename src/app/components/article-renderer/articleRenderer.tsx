@@ -7,6 +7,7 @@ import { mdCodeBlockParser } from '@/app/services/utils';
 import remarkMath from 'remark-math';
 import remarkParse from 'remark-parse'
 import rehypeKatex from 'rehype-katex'
+import rehypeRaw from "rehype-raw";
 
 type Props = {
     markdown: string
