@@ -7,6 +7,10 @@ export type Article = {
     title: string,
     description: string,
     content: string,
+    video?: {
+        url: string,
+        type?: string
+    },
     tags: string[],
     sectionID: string,
     index: number,

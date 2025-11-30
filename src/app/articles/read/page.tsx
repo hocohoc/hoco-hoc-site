@@ -228,7 +228,33 @@ export default function Read() {
 
                 {
                     !loadingArticle && article ?
-                        <ArticleRenderer markdown={article.content} profile={profile} /> :
+                        <>
+                            {article.video && article.video.url ? (
+                                (() => {
+                                    const url = article.video.url.trim();
+                                    const youtubeMatch = url.match(/(?:v=|youtu\.be\/|youtube\.com\/embed\/)([A-Za-z0-9_-]{6,})/);
+                                    if ((article.video.type === "youtube" || (!article.video.type && youtubeMatch)) && youtubeMatch) {
+                                        const id = youtubeMatch[1];
+                                        const embed = `https://www.youtube.com/embed/${id}`;
+                                        return <div className="my-4">
+                                            <iframe src={embed} title="article-video" className="w-full aspect-video rounded" allowFullScreen />
+                                        </div>
+                                    }
+                                    if (article.video.type === "mp4" || url.toLowerCase().endsWith(".mp4")) {
+                                        return <div className="my-4">
+                                            <video controls className="w-full rounded">
+                                                <source src={url} type="video/mp4" />
+                                                Your browser does not support the video tag.
+                                            </video>
+                                        </div>
+                                    }
+                                    return <div className="my-4">
+                                        <iframe src={url} title="article-video" className="w-full aspect-video rounded" allowFullScreen />
+                                    </div>
+                                })()
+                            ) : ""}
+                            <ArticleRenderer markdown={article.content} profile={profile} />
+                        </> :
                         <div>
                             <p className="mt-5"><Skeleton className="mt-2" count={5} /></p>
                             <Skeleton className="my-4" height={200} />
