@@ -1,7 +1,7 @@
 "use client"
 
 import { Article, setArticleQuiz } from "@/app/services/articleService"
-import { LOCAL_VIDEOS } from '@/app/data/localVideosScratch'
+import { LOCAL_VIDEOS } from "@/app/data/localVideos"
 import MDEditor from "@uiw/react-md-editor"
 import { useEffect, useId, useState } from "react"
 import ArticleRenderer from "../article-renderer/articleRenderer"
