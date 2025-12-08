@@ -6,7 +6,9 @@ import {
     getDoc,
     increment,
     setDoc,
-    updateDoc 
+    updateDoc,
+    collection,
+    getDocs
 } from "firebase/firestore";
 
 import { auth, authProvider, db } from "../firebase/config";
@@ -135,4 +137,14 @@ export async function getUserData(uid: string): Promise<Profile | undefined> {
     } catch (err) {
         return undefined;
     }
+}
+
+// Fetch ALL user profiles (for admin stats)
+export async function getAllUsers(): Promise<Profile[]> {
+    const snap = await getDocs(collection(db, "users"));
+    return snap.docs.map((d) => {
+        const data = d.data() as Profile;
+        // ensure uid matches the document id just in case
+        return { ...data, uid: d.id };
+    });
 }
