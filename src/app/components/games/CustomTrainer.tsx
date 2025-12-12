@@ -3,6 +3,8 @@
 import React, { useState } from "react";
 import * as tf from "@tensorflow/tfjs";
 import { trainModel, predictImages, LabeledSample } from "@/ml/model";
+import { useProfile } from "@/app/components/auth-provider/authProvider";
+import { awardGamePoints } from "@/app/services/gameService";
 
 type Phase = "setup" | "upload" | "train" | "test";
 
@@ -12,6 +14,8 @@ type TrainImage = {
 };
 
 export default function FlexiBotGame() {
+  const profile = useProfile();
+  const user = profile;
   const [phase, setPhase] = useState<Phase>("setup");
 
   const [categoryNames, setCategoryNames] = useState<{
@@ -28,6 +32,8 @@ export default function FlexiBotGame() {
   const [testResults, setTestResults] = useState<
     { imageUrl: string; prob: number; label: 0 | 1 }[]
   >([]);
+  const [pointsAwarded, setPointsAwarded] = useState(false);
+  const [pointsEarned, setPointsEarned] = useState(0);
 
   const countLabel = (label: 0 | 1) =>
     trainImages.filter((img) => img.label === label).length;
@@ -95,6 +101,22 @@ export default function FlexiBotGame() {
     setModel(m);
     setStatus("Training complete! Try testing with new images.");
     setPhase("test");
+
+    // Award points for successfully training the model
+    if (user && !pointsAwarded) {
+      const imageCount = trainImages.length;
+      let points = 0;
+      if (imageCount >= 20) points = 40; // 20+ images
+      else if (imageCount >= 10) points = 25; // 10+ images
+      else if (imageCount >= 5) points = 15; // 5+ images
+
+      if (points > 0) {
+        const gameId = `flexibot-${Date.now()}`;
+        await awardGamePoints(user.uid, gameId, "flexibot", imageCount, points);
+        setPointsAwarded(true);
+        setPointsEarned(points);
+      }
+    }
   }
 
   async function handleTestUpload(
@@ -124,6 +146,8 @@ export default function FlexiBotGame() {
     setStatus("");
     setModel(null);
     setTestResults([]);
+    setPointsAwarded(false);
+    setPointsEarned(0);
   }
 
   const labelToName = (label: 0 | 1) =>
@@ -346,6 +370,18 @@ export default function FlexiBotGame() {
             Your model is trained! Upload new images and see what FlexiBot
             predicts.
           </p>
+
+          {/* Points Earned Display */}
+          {pointsEarned > 0 && (
+            <div className="bg-yellow-900 bg-opacity-50 border border-yellow-500 rounded-lg p-4 mb-4">
+              <p className="text-yellow-300 font-bold text-xl">
+                🎉 You earned {pointsEarned} points!
+              </p>
+              <p className="text-sm text-gray-300 mt-1">
+                {trainImages.length >= 20 ? "Excellent dataset!" : trainImages.length >= 10 ? "Great work!" : "Good start!"}
+              </p>
+            </div>
+          )}
 
           <div className="bg-slate-800 p-4 rounded-xl shadow-md mb-6">
             <h3 className="text-lg font-semibold text-sky-300 mb-2">

@@ -22,6 +22,18 @@ const games: Game[] = [
     description: "Train FlexiBot to recognize anything you want!",
     image: "/game/flexibot/preview.png",
   },
+  {
+    name: "Binary Decoder",
+    path: "/game/BinaryDecoder",
+    description: "Decode binary messages and earn points!",
+    image: "/game/binary-decoder-preview.svg",
+  },
+  {
+    name: "Mindstorm",
+    path: "/game/Mindstorm",
+    description: "Predict what the code will output!",
+    image: "/game/mindstorm-preview.svg",
+  },
 ];
 
 export default function GameHub() {

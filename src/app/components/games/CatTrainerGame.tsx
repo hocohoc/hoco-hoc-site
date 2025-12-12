@@ -3,6 +3,8 @@
 import React, { useEffect, useState } from "react";
 import * as tf from "@tensorflow/tfjs";
 import { trainModel, evaluateModel, LabeledSample } from "@/ml/model";
+import { useProfile } from "@/app/components/auth-provider/authProvider";
+import { awardGamePoints } from "@/app/services/gameService";
 
 // 🎲 Shuffle helper
 function shuffleArray<T>(array: T[]): T[] {
@@ -51,6 +53,8 @@ const extraTestImages = [
 type Phase = "label" | "train" | "test" | "upload";
 
 export default function CatTrainerGame() {
+  const profile = useProfile();
+  const user = profile;
   const [phase, setPhase] = useState<Phase>("label");
   const [labels, setLabels] = useState<Record<string, 0 | 1>>({});
   const [index, setIndex] = useState(0);
@@ -60,6 +64,8 @@ export default function CatTrainerGame() {
   const [model, setModel] = useState<tf.LayersModel | null>(null);
   const [uploadedResults, setUploadedResults] = useState<any[]>([]);
   const [shuffledImages, setShuffledImages] = useState(allImages);
+  const [pointsAwarded, setPointsAwarded] = useState(false);
+  const [pointsEarned, setPointsEarned] = useState(0);
 
   useEffect(() => {
     setShuffledImages(shuffleArray(allImages));
@@ -95,6 +101,21 @@ export default function CatTrainerGame() {
     setResults(results);
     setAccuracy(accuracy);
     setPhase("test");
+
+    // Award points based on accuracy
+    if (user && !pointsAwarded) {
+      let points = 0;
+      if (accuracy >= 0.9) points = 50; // 90%+ accuracy
+      else if (accuracy >= 0.8) points = 30; // 80%+ accuracy
+      else if (accuracy >= 0.7) points = 15; // 70%+ accuracy
+
+      if (points > 0) {
+        const gameId = `purrceptron-${Date.now()}`;
+        await awardGamePoints(user.uid, gameId, "purrceptron", accuracy * 100, points);
+        setPointsAwarded(true);
+        setPointsEarned(points);
+      }
+    }
   }
 
   function handleLabel(label: 0 | 1) {
@@ -112,6 +133,8 @@ export default function CatTrainerGame() {
     setIndex(0);
     setStatus("");
     setShuffledImages(shuffleArray(allImages));
+    setPointsAwarded(false);
+    setPointsEarned(0);
   }
 
   // 🧩 Upload user test images
@@ -217,6 +240,18 @@ export default function CatTrainerGame() {
           <p className="text-emerald-400 font-semibold mb-2">
             Purr-ceptron Accuracy on Unseen Images: {(accuracy! * 100).toFixed(1)}%
           </p>
+
+          {/* Points Earned Display */}
+          {pointsEarned > 0 && (
+            <div className="bg-yellow-900 bg-opacity-50 border border-yellow-500 rounded-lg p-4 mb-4">
+              <p className="text-yellow-300 font-bold text-xl">
+                🎉 You earned {pointsEarned} points!
+              </p>
+              <p className="text-sm text-gray-300 mt-1">
+                {accuracy! >= 0.9 ? "Amazing accuracy!" : accuracy! >= 0.8 ? "Great job!" : "Good start!"}
+              </p>
+            </div>
+          )}
 
           {/* Test Results */}
           <div className="grid grid-cols-3 gap-3 mb-8">
