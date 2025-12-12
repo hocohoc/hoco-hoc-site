@@ -3,24 +3,40 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useProfile } from "@/app/components/auth-provider/authProvider";
-import { checkCodingAnswer, generateAICodingChallenge, getGameStats, type CodingChallenge } from "@/app/services/gameService";
+import {
+    checkCodingAnswer,
+    generateAICodingChallenge,
+    getGameStats,
+    type CodingChallenge,
+} from "@/app/services/gameService";
 import { getUserData } from "@/app/services/userService";
+
+type Difficulty = "easy" | "medium" | "hard" | "all";
+type SupportedLanguage = "python" | "cpp" | "java" | "blockly" | "scratch";
 
 export default function MindstormPage() {
     const profile = useProfile();
     const user = profile;
     const [challenge, setChallenge] = useState<CodingChallenge | null>(null);
     const [userAnswer, setUserAnswer] = useState("");
-    const [difficulty, setDifficulty] = useState<"easy" | "medium" | "hard" | "all">("all");
+    const [difficulty, setDifficulty] = useState<Difficulty>("all");
     const [feedback, setFeedback] = useState<{
         show: boolean;
         correct: boolean;
         message: string;
     }>({ show: false, correct: false, message: "" });
-    const [stats, setStats] = useState({ totalPoints: 0, challengesCompleted: 0 });
+    const [stats, setStats] = useState({
+        totalPoints: 0,
+        challengesCompleted: 0,
+    });
     const [loading, setLoading] = useState(false);
     const [userPoints, setUserPoints] = useState(0);
-    const [userLanguage, setUserLanguage] = useState<"python" | "cpp" | "java">("python");
+
+    const [userLanguage, setUserLanguage] =
+        useState<SupportedLanguage>("python");
+
+    const isBlockBased =
+        userLanguage === "blockly" || userLanguage === "scratch";
 
     useEffect(() => {
         loadUserLanguage();
@@ -32,7 +48,7 @@ export default function MindstormPage() {
             loadStats();
             loadUserPoints();
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user, difficulty, userLanguage]);
 
     async function loadUserLanguage() {
@@ -41,24 +57,43 @@ export default function MindstormPage() {
             return;
         }
         const userData = await getUserData(user.uid);
-        const lang = userData?.preferredLanguage || "python";
-        setUserLanguage(lang);
+        const lang = userData?.preferredLanguage as SupportedLanguage | undefined;
+
+        if (
+            lang === "python" ||
+            lang === "cpp" ||
+            lang === "java" ||
+            lang === "blockly" ||
+            lang === "scratch"
+        ) {
+            setUserLanguage(lang);
+        } else {
+            setUserLanguage("python");
+        }
     }
 
     async function loadNewChallenge() {
+        if (!userLanguage) return;
+
         setLoading(true);
-        const selectedDifficulty = difficulty === "all" 
-            ? (["easy", "medium", "hard"][Math.floor(Math.random() * 3)] as "easy" | "medium" | "hard")
-            : difficulty;
-        
-        const newChallenge = await generateAICodingChallenge(userLanguage, selectedDifficulty);
+        const selectedDifficulty =
+            difficulty === "all"
+                ? (["easy", "medium", "hard"][
+                      Math.floor(Math.random() * 3)
+                  ] as "easy" | "medium" | "hard")
+                : difficulty;
+
+        const newChallenge = await generateAICodingChallenge(
+            userLanguage,
+            selectedDifficulty
+        );
         setChallenge(newChallenge);
         setUserAnswer("");
         setFeedback({ show: false, correct: false, message: "" });
         setLoading(false);
     }
 
-    function handleDifficultyChange(newDifficulty: "easy" | "medium" | "hard" | "all") {
+    function handleDifficultyChange(newDifficulty: Difficulty) {
         setDifficulty(newDifficulty);
         setFeedback({ show: false, correct: false, message: "" });
     }
@@ -71,7 +106,7 @@ export default function MindstormPage() {
         const gameStats = await getGameStats(user.uid);
         setStats({
             totalPoints: gameStats.totalPoints,
-            challengesCompleted: gameStats.gamesCompleted
+            challengesCompleted: gameStats.gamesCompleted,
         });
     }
 
@@ -89,16 +124,20 @@ export default function MindstormPage() {
         if (!challenge || !userAnswer.trim()) return;
 
         setLoading(true);
-        const result = await checkCodingAnswer(user?.uid || "anonymous", challenge.id, userAnswer.trim());
+        const result = await checkCodingAnswer(
+            user?.uid || "anonymous",
+            challenge,
+            userAnswer.trim()
+        );
 
         if (result.correct) {
-            const pointsMsg = user 
+            const pointsMsg = user
                 ? `Correct! You earned ${result.pointsEarned} points!`
                 : `Correct! (Sign in to earn ${challenge.points} points)`;
             setFeedback({
                 show: true,
                 correct: true,
-                message: pointsMsg
+                message: pointsMsg,
             });
             await loadStats();
             await loadUserPoints();
@@ -109,24 +148,60 @@ export default function MindstormPage() {
             setFeedback({
                 show: true,
                 correct: false,
-                message: `Incorrect. The output is "${challenge.output}". Try again!`
+                message: `Incorrect. The output is "${challenge.output}". Try again!`,
             });
         }
         setLoading(false);
     }
 
-    const difficultyColors = {
+    const difficultyColors: Record<Difficulty, string> = {
         easy: "bg-green-500 hover:bg-green-600",
         medium: "bg-yellow-500 hover:bg-yellow-600",
         hard: "bg-red-500 hover:bg-red-600",
-        all: "bg-blue-500 hover:bg-blue-600"
+        all: "bg-blue-500 hover:bg-blue-600",
     };
+
+    function renderChallengeCode() {
+        if (!challenge) return null;
+
+        if (!isBlockBased) {
+            return (
+                <div className="bg-gray-900 rounded-lg p-6 font-mono text-sm overflow-x-auto">
+                    <pre className="text-green-400 whitespace-pre-wrap">
+                        {challenge.code}
+                    </pre>
+                </div>
+            );
+        }
+
+        const lines = challenge.code.split(/\r?\n/);
+
+        return (
+            <div className="bg-gray-900 rounded-lg p-6 text-sm overflow-x-auto">
+                <div className="flex flex-col gap-3">
+                    {lines.map((line, idx) => (
+                        <div
+                            key={idx}
+                            className="inline-flex items-center rounded-xl px-4 py-3 shadow-lg bg-blue-500/90 border border-blue-300"
+                        >
+                            <span className="font-semibold text-white">
+                                {line}
+                            </span>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        );
+    }
 
     return (
         <main className="min-h-screen bg-gradient-to-b from-gray-900 to-black text-white flex flex-col items-center py-12 px-4">
             {/* Header */}
             <div className="w-full max-w-5xl mb-8">
-                <Link href="/game" className="text-blue-400 hover:text-blue-300 mb-4 inline-block">
+                <Link
+                    href="/game"
+                    className="text-blue-400 hover:text-blue-300 mb-4 inline-block"
+                >
                     ← Back to Games
                 </Link>
                 <div className="flex justify-between items-center">
@@ -135,18 +210,30 @@ export default function MindstormPage() {
                         {user && (
                             <>
                                 <div className="text-right">
-                                    <p className="text-gray-400 text-sm">Language</p>
-                                    <p className="text-xl font-bold text-blue-400 uppercase">{userLanguage}</p>
+                                    <p className="text-gray-400 text-sm">
+                                        Language
+                                    </p>
+                                    <p className="text-xl font-bold text-blue-400 uppercase">
+                                        {userLanguage}
+                                    </p>
                                 </div>
                                 <div className="text-right">
-                                    <p className="text-gray-400 text-sm">Your Total Game Points</p>
-                                    <p className="text-3xl font-bold text-yellow-400">{userPoints}</p>
+                                    <p className="text-gray-400 text-sm">
+                                        Your Total Game Points
+                                    </p>
+                                    <p className="text-3xl font-bold text-yellow-400">
+                                        {userPoints}
+                                    </p>
                                 </div>
                             </>
                         )}
                     </div>
                 </div>
-                <p className="text-gray-300 mt-2">Predict what the code will output!</p>
+                <p className="text-gray-300 mt-2">
+                    {isBlockBased
+                        ? "Predict what this program will say or output!"
+                        : "Predict what the code will output!"}
+                </p>
             </div>
 
             {/* Main Content */}
@@ -162,14 +249,20 @@ export default function MindstormPage() {
                                 difficulty === diff
                                     ? difficultyColors[diff]
                                     : "bg-gray-700 hover:bg-gray-600"
-                            } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+                            } ${
+                                loading
+                                    ? "opacity-50 cursor-not-allowed"
+                                    : ""
+                            }`}
                         >
                             {diff.toUpperCase()}
                         </button>
                     ))}
                     {challenge && (
                         <div className="ml-auto flex items-center gap-2 px-4 py-3 bg-gray-800 rounded-lg">
-                            <span className="text-xl font-bold text-yellow-400">{challenge.points} pts</span>
+                            <span className="text-xl font-bold text-yellow-400">
+                                {challenge.points} pts
+                            </span>
                         </div>
                     )}
                 </div>
@@ -178,12 +271,13 @@ export default function MindstormPage() {
                 {challenge && (
                     <div className="bg-gray-800 rounded-2xl p-8 shadow-2xl">
                         <div className="mb-6">
-                            <h2 className="text-2xl font-bold mb-4 text-blue-300">What will this code output?</h2>
-                            
-                            {/* Code Block */}
-                            <div className="bg-gray-900 rounded-lg p-6 font-mono text-sm overflow-x-auto">
-                                <pre className="text-green-400">{challenge.code}</pre>
-                            </div>
+                            <h2 className="text-2xl font-bold mb-4 text-blue-300">
+                                {isBlockBased
+                                    ? "What will this program output?"
+                                    : "What will this code output?"}
+                            </h2>
+
+                            {renderChallengeCode()}
                         </div>
 
                         {/* Answer Input */}
@@ -200,12 +294,17 @@ export default function MindstormPage() {
                                         handleSubmit();
                                     }
                                 }}
-                                placeholder="Type the exact output..."
+                                placeholder={
+                                    isBlockBased
+                                        ? "Type exactly what the sprite will say / what appears..."
+                                        : "Type the exact output..."
+                                }
                                 disabled={loading}
                                 className="w-full px-5 py-4 bg-gray-700 border-2 border-gray-600 rounded-lg text-white text-lg focus:border-blue-500 focus:outline-none disabled:opacity-50"
                             />
                             <p className="text-sm text-gray-400 mt-2">
-                                Tip: Type exactly what you see, including spaces and punctuation
+                                Tip: Type exactly what you see, including
+                                spaces and punctuation
                             </p>
                         </div>
 
@@ -227,7 +326,9 @@ export default function MindstormPage() {
                                         : "bg-red-900 border-2 border-red-500"
                                 }`}
                             >
-                                <p className="text-xl font-bold">{feedback.message}</p>
+                                <p className="text-xl font-bold">
+                                    {feedback.message}
+                                </p>
                             </div>
                         )}
                     </div>
@@ -237,12 +338,20 @@ export default function MindstormPage() {
                 {user && (
                     <div className="mt-8 grid grid-cols-2 gap-4">
                         <div className="bg-gray-800 rounded-lg p-6 text-center">
-                            <p className="text-gray-400 text-sm mb-1">Challenges Completed</p>
-                            <p className="text-4xl font-bold text-blue-400">{stats.challengesCompleted}</p>
+                            <p className="text-gray-400 text-sm mb-1">
+                                Challenges Completed
+                            </p>
+                            <p className="text-4xl font-bold text-blue-400">
+                                {stats.challengesCompleted}
+                            </p>
                         </div>
                         <div className="bg-gray-800 rounded-lg p-6 text-center">
-                            <p className="text-gray-400 text-sm mb-1">Points Earned (This Game)</p>
-                            <p className="text-4xl font-bold text-yellow-400">{stats.totalPoints}</p>
+                            <p className="text-gray-400 text-sm mb-1">
+                                Points Earned (This Game)
+                            </p>
+                            <p className="text-4xl font-bold text-yellow-400">
+                                {stats.totalPoints}
+                            </p>
                         </div>
                     </div>
                 )}

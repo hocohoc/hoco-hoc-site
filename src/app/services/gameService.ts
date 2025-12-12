@@ -34,6 +34,8 @@ export type CodingChallenge = {
     output: string;
     points: number;
     difficulty: "easy" | "medium" | "hard";
+    language?: "python" | "cpp" | "java" | "blockly" | "scratch";
+    isAI?: boolean;
 };
 
 // Pre-defined binary challenges (converted to decimal)
@@ -50,7 +52,7 @@ const BINARY_CHALLENGES: BinaryChallenge[] = [
     { id: "bin-10", binary: "10101010", answer: "170", points: 7, difficulty: "hard" },
 ];
 
-// Pre-defined coding challenges
+// Pre-defined coding challenges (Python-style)
 const CODING_CHALLENGES: CodingChallenge[] = [
     // EASY - Basic Operations (3 points)
     { id: "code-1", code: 'print(5 + 3)', output: "8", points: 3, difficulty: "easy" },
@@ -143,7 +145,7 @@ const CODING_CHALLENGES: CodingChallenge[] = [
     { id: "code-84", code: 'nums = [1, 2, 3, 4, 5]\nprint(nums[::2])', output: "[1, 3, 5]", points: 8, difficulty: "hard" },
     { id: "code-85", code: 'matrix = [[1, 2], [3, 4]]\nprint([row[0] for row in matrix])', output: "[1, 3]", points: 8, difficulty: "hard" },
     { id: "code-86", code: 'def power(x, n=2):\n    return x ** n\nprint(power(3, 3))', output: "27", points: 8, difficulty: "hard" },
-    { id: "code-87", code: 'nums = [5, 2, 8, 1, 9]\nprint(nums[1:4])', output: "[2, 8, 1]", points: 8, difficulty: "hard" },
+    { id: "code-87", code: 'nums = [5, 3, 8, 1, 9]\nprint(nums[1:4])', output: "[2, 8, 1]", points: 8, difficulty: "hard" },
     { id: "code-88", code: 'text = "hello"\nresult = {c: text.count(c) for c in set(text)}\nprint(result["l"])', output: "2", points: 8, difficulty: "hard" },
     { id: "code-89", code: 'nums = [1, 2, 3]\nresult = sum(x ** 2 for x in nums)\nprint(result)', output: "14", points: 8, difficulty: "hard" },
     { id: "code-90", code: 'def check(x):\n    return x > 5\nprint(check(7))', output: "True", points: 8, difficulty: "hard" },
@@ -165,9 +167,10 @@ export async function getRandomChallenge(
     difficulty: "easy" | "medium" | "hard" | "all" = "all"
 ): Promise<BinaryChallenge | null> {
     // Filter by difficulty first
-    let filteredChallenges = difficulty === "all" 
-        ? BINARY_CHALLENGES 
-        : BINARY_CHALLENGES.filter(c => c.difficulty === difficulty);
+    const filteredChallenges =
+        difficulty === "all"
+            ? BINARY_CHALLENGES
+            : BINARY_CHALLENGES.filter((c) => c.difficulty === difficulty);
 
     // For anonymous users, just return random challenges from filtered set
     if (userId === "anonymous") {
@@ -179,7 +182,7 @@ export async function getRandomChallenge(
     const completedChallenges = Object.keys(userGames?.completedGames || {});
     
     const availableChallenges = filteredChallenges.filter(
-        challenge => !completedChallenges.includes(challenge.id)
+        (challenge) => !completedChallenges.includes(challenge.id)
     );
 
     if (availableChallenges.length === 0) {
@@ -190,7 +193,7 @@ export async function getRandomChallenge(
     return availableChallenges[Math.floor(Math.random() * availableChallenges.length)];
 }
 
-// Get all challenges for display
+// Get all binary challenges for display
 export function getAllChallenges(): BinaryChallenge[] {
     return BINARY_CHALLENGES;
 }
@@ -217,7 +220,7 @@ export async function checkBinaryAnswer(
     challengeId: string,
     userAnswer: string
 ): Promise<{ correct: boolean; pointsEarned: number; correctAnswer?: string }> {
-    const challenge = BINARY_CHALLENGES.find(c => c.id === challengeId);
+    const challenge = BINARY_CHALLENGES.find((c) => c.id === challengeId);
     
     if (!challenge) {
         return { correct: false, pointsEarned: 0 };
@@ -229,14 +232,18 @@ export async function checkBinaryAnswer(
         return {
             correct,
             pointsEarned: 0,
-            correctAnswer: !correct ? challenge.answer : undefined
+            correctAnswer: !correct ? challenge.answer : undefined,
         };
     }
 
     // Check if already completed
     const userGames = await getUserGameData(userId);
     if (userGames?.completedGames?.[challengeId]) {
-        return { correct: false, pointsEarned: 0, correctAnswer: challenge.answer };
+        return {
+            correct: false,
+            pointsEarned: 0,
+            correctAnswer: challenge.answer,
+        };
     }
 
     // Check answer (case-insensitive)
@@ -244,7 +251,13 @@ export async function checkBinaryAnswer(
 
     if (correct) {
         // Award points
-        await awardGamePoints(userId, challengeId, "binary-decoder", challenge.points, challenge.points);
+        await awardGamePoints(
+            userId,
+            challengeId,
+            "binary-decoder",
+            challenge.points,
+            challenge.points
+        );
         return { correct: true, pointsEarned: challenge.points };
     }
 
@@ -277,21 +290,21 @@ export async function awardGamePoints(
             // Create new document
             await setDoc(gameDocRef, {
                 completedGames: {
-                    [gameId]: completion
+                    [gameId]: completion,
                 },
-                totalGamePoints: pointsToAward
+                totalGamePoints: pointsToAward,
             });
         } else {
             // Update existing document
             await updateDoc(gameDocRef, {
                 [`completedGames.${gameId}`]: completion,
-                totalGamePoints: increment(pointsToAward)
+                totalGamePoints: increment(pointsToAward),
             });
         }
 
         // Also update user's scores under a "games" section
         await updateDoc(userDocRef, {
-            ["scores.games"]: increment(pointsToAward)
+            ["scores.games"]: increment(pointsToAward),
         });
 
         console.log(`Awarded ${pointsToAward} points to user ${userId} for ${gameType}`);
@@ -301,7 +314,7 @@ export async function awardGamePoints(
     }
 }
 
-// Get user's stats for a specific game type
+// Get user's stats for games
 export async function getGameStats(userId: string): Promise<{
     totalPoints: number;
     gamesCompleted: number;
@@ -313,28 +326,27 @@ export async function getGameStats(userId: string): Promise<{
         return {
             totalPoints: 0,
             gamesCompleted: 0,
-            challengesCompleted: []
+            challengesCompleted: [],
         };
     }
 
     return {
         totalPoints: gameData.totalGamePoints || 0,
         gamesCompleted: Object.keys(gameData.completedGames || {}).length,
-        challengesCompleted: Object.keys(gameData.completedGames || {})
+        challengesCompleted: Object.keys(gameData.completedGames || {}),
     };
 }
 
-// Get a random coding challenge that the user hasn't completed
+// Get a random coding challenge that the user hasn't completed (static set only)
 export async function getRandomCodingChallenge(
     userId: string,
     difficulty: "easy" | "medium" | "hard" | "all" = "all"
 ): Promise<CodingChallenge | null> {
-    // Filter by difficulty first
-    let filteredChallenges = difficulty === "all" 
-        ? CODING_CHALLENGES 
-        : CODING_CHALLENGES.filter(c => c.difficulty === difficulty);
+    const filteredChallenges =
+        difficulty === "all"
+            ? CODING_CHALLENGES
+            : CODING_CHALLENGES.filter((c) => c.difficulty === difficulty);
 
-    // For anonymous users, just return random challenges from filtered set
     if (userId === "anonymous") {
         if (filteredChallenges.length === 0) return null;
         return filteredChallenges[Math.floor(Math.random() * filteredChallenges.length)];
@@ -344,84 +356,106 @@ export async function getRandomCodingChallenge(
     const completedChallenges = Object.keys(userGames?.completedGames || {});
     
     const availableChallenges = filteredChallenges.filter(
-        challenge => !completedChallenges.includes(challenge.id)
+        (challenge) => !completedChallenges.includes(challenge.id)
     );
 
     if (availableChallenges.length === 0) {
-        return null; // All challenges completed for this difficulty
+        return null;
     }
 
-    // Return random challenge from available ones
     return availableChallenges[Math.floor(Math.random() * availableChallenges.length)];
 }
 
-// Generate AI-based coding challenge
+// Generate AI-based coding challenge using API route
 export async function generateAICodingChallenge(
-    language: "python" | "cpp" | "java",
+    language: "python" | "cpp" | "java" | "blockly" | "scratch",
     difficulty: "easy" | "medium" | "hard" = "easy"
 ): Promise<CodingChallenge> {
     try {
-        const response = await fetch('/api/generate-challenge', {
-            method: 'POST',
+        const response = await fetch("/api/mindstorm", {
+            method: "POST",
             headers: {
-                'Content-Type': 'application/json',
+                "Content-Type": "application/json",
             },
-            body: JSON.stringify({ language, difficulty })
+            body: JSON.stringify({ language, difficulty }),
         });
 
         if (!response.ok) {
-            throw new Error('Failed to generate challenge');
+            throw new Error("Failed to generate challenge");
         }
 
         const challenge = await response.json();
-        return challenge;
+
+        const result: CodingChallenge = {
+            id: challenge.id,
+            code: challenge.code,
+            output: challenge.output,
+            points: challenge.points,
+            difficulty: challenge.difficulty,
+            language,
+            isAI: true,
+        };
+
+        return result;
     } catch (error) {
-        console.error('Error generating AI challenge:', error);
+        console.error("Error generating AI challenge:", error);
+
         // Fallback to pre-defined challenges if AI fails
-        const filteredChallenges = difficulty === "all" 
-            ? CODING_CHALLENGES 
-            : CODING_CHALLENGES.filter(c => c.difficulty === difficulty);
-        
-        return filteredChallenges[Math.floor(Math.random() * filteredChallenges.length)];
+        const filtered =
+            CODING_CHALLENGES.filter((c) => c.difficulty === difficulty);
+        if (filtered.length > 0) {
+            return filtered[Math.floor(Math.random() * filtered.length)];
+        }
+
+        // If somehow none, fallback to any challenge
+        return CODING_CHALLENGES[Math.floor(Math.random() * CODING_CHALLENGES.length)];
     }
 }
 
 // Check coding challenge answer and award points
+// NOTE: takes the full challenge object so it works for both static + AI challenges
 export async function checkCodingAnswer(
     userId: string,
-    challengeId: string,
+    challenge: CodingChallenge,
     userAnswer: string
 ): Promise<{ correct: boolean; pointsEarned: number; correctAnswer?: string }> {
-    const challenge = CODING_CHALLENGES.find(c => c.id === challengeId);
-    
-    if (!challenge) {
-        return { correct: false, pointsEarned: 0 };
-    }
-
-    // For anonymous users, don't check completion or award points
+    // For anonymous users, don't record or award points
     if (userId === "anonymous") {
         const correct = userAnswer === challenge.output;
         return {
             correct,
             pointsEarned: 0,
-            correctAnswer: !correct ? challenge.output : undefined
+            correctAnswer: !correct ? challenge.output : undefined,
         };
     }
 
     // Check if already completed
     const userGames = await getUserGameData(userId);
-    if (userGames?.completedGames?.[challengeId]) {
-        return { correct: false, pointsEarned: 0, correctAnswer: challenge.output };
+    if (userGames?.completedGames?.[challenge.id]) {
+        return {
+            correct: false,
+            pointsEarned: 0,
+            correctAnswer: challenge.output,
+        };
     }
 
-    // Check answer (exact match)
+    // Check answer (exact string match)
     const correct = userAnswer === challenge.output;
 
     if (correct) {
-        // Award points
-        await awardGamePoints(userId, challengeId, "mindstorm", challenge.points, challenge.points);
+        await awardGamePoints(
+            userId,
+            challenge.id,
+            "mindstorm",
+            challenge.points,
+            challenge.points
+        );
         return { correct: true, pointsEarned: challenge.points };
     }
 
-    return { correct: false, pointsEarned: 0, correctAnswer: challenge.output };
+    return {
+        correct: false,
+        pointsEarned: 0,
+        correctAnswer: challenge.output,
+    };
 }
