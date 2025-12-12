@@ -1,5 +1,5 @@
 import { LiveStats } from "@/app/services/statsService"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 
 type Props = {
   className?: string
@@ -12,30 +12,39 @@ export default function StatsCounter(props: Props) {
     totalViews: 0,
     totalHours: 0,
   })
+  const displayedStatsRef = useRef(displayedStats)
+
+  useEffect(() => {
+    displayedStatsRef.current = displayedStats
+  }, [displayedStats])
 
   useEffect(() => {
     const DURATION = 2000 // total animation time in ms (2s)
     const startTime = performance.now()
+    const startStats = displayedStatsRef.current
+    const targetStats = props.liveStats
+    let frameId = 0
 
     const animate = (now: number) => {
       const elapsed = now - startTime
       const progress = Math.min(elapsed / DURATION, 1) // 0 → 1
+      const lerp = (start: number, end: number) => start + (end - start) * progress
 
       setDisplayedStats({
-        totalUsers: Math.floor(props.liveStats.totalUsers * progress),
-        totalViews: Math.floor(props.liveStats.totalViews * progress),
-        totalHours: Math.floor(props.liveStats.totalHours * progress),
+        totalUsers: Math.round(lerp(startStats.totalUsers, targetStats.totalUsers)),
+        totalViews: Math.round(lerp(startStats.totalViews, targetStats.totalViews)),
+        totalHours: lerp(startStats.totalHours, targetStats.totalHours),
       })
 
       if (progress < 1) {
-        requestAnimationFrame(animate)
+        frameId = requestAnimationFrame(animate)
       }
     }
 
-    const id = requestAnimationFrame(animate)
+    frameId = requestAnimationFrame(animate)
 
-    return () => cancelAnimationFrame(id)
-  }, [props.liveStats])
+    return () => cancelAnimationFrame(frameId)
+  }, [props.liveStats.totalUsers, props.liveStats.totalViews, props.liveStats.totalHours])
 
   return (
     <main
