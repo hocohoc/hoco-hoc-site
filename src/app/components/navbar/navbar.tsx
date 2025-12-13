@@ -2,6 +2,7 @@
 
 import { logout, signInOrRegister } from "@/app/services/userService"
 import Link from "next/link"
+import Image from "next/image"
 import { useProfile } from "../auth-provider/authProvider"
 import UserPill from "../user-pill/userPill"
 import { useEffect, useRef, useState } from "react"
@@ -44,7 +45,10 @@ export default function NavBar() {
 
     return (
         <nav className="bg-slate-900  bg-opacity-50 backdrop-blur-md h-14 p-2 flex flex-row items-center justify-center border-b-2 border-b-sky-900 top-0 sticky z-30 w-full" aria-label="Primary">
-            <div className="flex flex-row items-center w-full max-w-screen-xl">
+            <div className="flex flex-row items-center w-full max-w-screen-xl gap-3">
+                <Link onClick={() => setMenuShown(false)} href={"/"} aria-label="Howard County Hour of Code / AI home" className="flex items-center">
+                    <Image src="/sponsors/hcpss-logo-outlined.png" alt="HCPSS Logo" width={40} height={40} className="object-contain" />
+                </Link>
                 <Link onClick={() => setMenuShown(false)} className={`font-mono text-sky-300 text-xl md:text-2xl font-bold`} href={"/"} aria-label="Howard County Hour of Code / AI home">&lt;HocoHOC/&gt;</Link>
                 <div className="flex-1"></div>
                 <div className="flex max-md:hidden flex-row text-xs gap-5 md:text-md items-stretch">
