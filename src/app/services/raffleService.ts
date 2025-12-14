@@ -72,8 +72,8 @@ export async function getRaffleEntries(): Promise<RaffleEntry[]> {
     return userSnap.docs
         .map((doc) => {
             const data = doc.data();
-            const totalPoints = Object.values(data.scores || {}).reduce(
-                (sum: number, score: any) => sum + (score || 0),
+            const totalPoints = (Object.values(data.scores || {}) as number[]).reduce(
+                (sum: number, score: number) => sum + (score || 0),
                 0
             );
             const entries = Math.floor(totalPoints / pointsPerEntry);
