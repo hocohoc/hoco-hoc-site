@@ -23,7 +23,7 @@ export type RaffleEntry = {
     displayName: string;
     email: string;
     points: number;
-    entries: number; // points / 100
+    entries: number; // points / 10
 };
 
 export type RaffleResult = {
@@ -48,7 +48,7 @@ const RAFFLE_DOC = "aggregate/raffle";
 // Initialize raffle with default prizes
 export async function initializeRaffle(prizes: Prize[]): Promise<void> {
     const config: RaffleConfig = {
-        pointsPerEntry: 100,
+        pointsPerEntry: 10,
         prizes,
         results: [],
         active: true,
@@ -67,7 +67,7 @@ export async function getRaffleConfig(): Promise<RaffleConfig | null> {
 // Get all raffle entries based on user points
 export async function getRaffleEntries(): Promise<RaffleEntry[]> {
     const userSnap = await getDocs(collection(db, "users"));
-    const pointsPerEntry = 100;
+    const pointsPerEntry = 10;
 
     return userSnap.docs
         .map((doc) => {
@@ -158,7 +158,7 @@ export async function getRaffleResults(): Promise<RaffleResult[]> {
 // Reset raffle
 export async function resetRaffle(prizes: Prize[]): Promise<void> {
     const config: RaffleConfig = {
-        pointsPerEntry: 100,
+        pointsPerEntry: 10,
         prizes,
         results: [],
         active: true,
