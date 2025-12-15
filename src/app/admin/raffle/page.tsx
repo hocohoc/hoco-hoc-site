@@ -130,7 +130,7 @@ export default function AdminRafflePage() {
                         <ExclamationCircleIcon className="w-16 h-16" />
                         <p>
                             <span className="font-bold">Raffle System:</span> Roll the
-                            raffle to select winners. Users earn 1 entry per 100 points.
+                            raffle to select winners. Users earn 1 entry per 10 points.
                         </p>
                     </div>
 
