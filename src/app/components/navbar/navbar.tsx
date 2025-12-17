@@ -55,6 +55,7 @@ export default function NavBar() {
                     <Link className={`font-mono rounded text-sm items-center justify-center md:flex font-bold hover:text-sky-300 hover:underline`} href={"/game"}>Games</Link>
                     <Link className={`font-mono rounded text-sm items-center justify-center md:flex font-bold hover:text-sky-300 hover:underline`} href={"/articles"}>Articles</Link>
                     <Link className={`font-mono rounded text-sm items-center justify-center md:flex font-bold hover:text-sky-300 hover:underline`} href={"/leaderboard"}>Leaderboard</Link>
+                    <Link className={`font-mono rounded text-sm items-center justify-center md:flex font-bold hover:text-sky-300 hover:underline`} href={"/feedback"}>Feedback</Link>
                     {
                         profile ? <UserPill user={profile} />
                             :
@@ -83,6 +84,7 @@ export default function NavBar() {
                         {profile && <h1 className="text-2xl font-bold"> Hello, {profile.displayName}! </h1>}
                         <Link className={`font-mono items-center justify-center md:flex hover:text-sky-300 underline`} href={"/articles"} onClick={() => setMenuShown(false)}>Articles</Link>
                         <Link className={`font-mono items-center justify-center md:flex hover:text-sky-300 underline`} href={"/leaderboard"} onClick={() => setMenuShown(false)}>Leaderboard</Link>
+                        <Link className={`font-mono items-center justify-center md:flex hover:text-sky-300 underline`} href={"/feedback"} onClick={() => setMenuShown(false)}>Feedback</Link>
                         {profile && <Link className={`font-mono items-center justify-center md:flex hover:text-sky-300 underline`} href={"/me"} onClick={() => setMenuShown(false)}>Dashboard</Link>}
                         {
                             !profile ? <button className="font-mono btn-primary" type="button" onClick={signInOrRegister}> Log In </button> : <button className="font-mono btn-danger" type="button" onClick={logout}> Log Out </button>

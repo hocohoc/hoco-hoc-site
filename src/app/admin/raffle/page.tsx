@@ -9,31 +9,11 @@ import {
     initializeRaffle,
     resetRaffle,
     Prize,
+    DEFAULT_PRIZES,
 } from "@/app/services/raffleService";
 import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-
-const DEFAULT_PRIZES: Prize[] = [
-    {
-        id: "ipad",
-        name: "Apple iPad (A16)",
-        quantity: 1,
-        description: "1x Apple iPad with A16 chip",
-    },
-    {
-        id: "jbl",
-        name: "JBL Tune 720BT",
-        quantity: 1,
-        description: "1x JBL Tune 720BT Headphones",
-    },
-    {
-        id: "giftcard",
-        name: "$10 Amazon Giftcard",
-        quantity: 10,
-        description: "10x $10 Amazon Giftcards",
-    },
-];
 
 export default function AdminRafflePage() {
     const profile = useProfile();

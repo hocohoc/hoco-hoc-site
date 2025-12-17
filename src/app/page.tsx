@@ -26,6 +26,9 @@ export default function Home() {
 
     <span className='text-center bg-gradient-to-r from-sky-500 to-blue-700 p-2'>
       Congrats to <strong>Dunloggin Middle School</strong> for winning the 2025 Howard County Hour of Code!
+      <div>
+        <span>Click  <a href="/winners" className="underline font-bold" >here</a> to view all winners!</span>
+      </div>
     </span>
       <Hero />
       <div className="bg-slate-900" id="about" >
