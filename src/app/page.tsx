@@ -24,19 +24,23 @@ export default function Home() {
   return (
     <main className="flex flex-col bg-black">
 
-      <section className="bg-gradient-to-r from-sky-500 via-blue-700 to-indigo-800 text-white">
-      <div className="max-w-screen-xl mx-auto px-6 py-6 md:py-10 flex flex-col gap-3 text-center">
-        <p className="text-sm uppercase tracking-[0.4em] text-sky-100/80">2025 Champions</p>
-        <h2 className="text-3xl md:text-5xl font-extrabold leading-tight">
-          Congratulations to <span className="underline decoration-white/60">Dunloggin Middle School</span>
-        </h2>
-        <div className="flex flex-col md:flex-row items-center justify-center gap-3">
-          <a href="/winners" className="btn-primary bg-white text-sky-900 hover:bg-slate-100">
-            View All Winners
-          </a>
+      <section className="bg-slate-900">
+        <div className="max-w-screen-xl mx-auto px-6 py-12 md:py-20 flex flex-col gap-6 text-center">
+          <p className="text-sm uppercase tracking-[0.4em] text-sky-300/80 font-mono">2025 Champions</p>
+          <h2 className="text-4xl md:text-6xl font-mono font-extrabold leading-tight text-sky-200">
+            Congratulations to <br className="hidden md:block" />
+            <span className="block md:inline">Dunloggin Middle School</span>
+          </h2>
+          <p className="text-slate-300 text-lg max-w-2xl mx-auto leading-relaxed">
+            Outstanding performance in this year's Howard County Hour of Code / AI competition
+          </p>
+          <div className="flex flex-col md:flex-row items-center justify-center gap-4 pt-2">
+            <a href="/winners" className="btn-primary px-8 py-3 text-base font-semibold">
+              View All Winners
+            </a>
+          </div>
         </div>
-        </div>
-    </section>
+      </section>
       <Hero />
       <div className="bg-slate-900" id="about" >
         <AboutSection></AboutSection>
