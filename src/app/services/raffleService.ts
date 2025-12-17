@@ -8,7 +8,8 @@ import {
     getDoc,
     arrayUnion
 } from "firebase/firestore";
-import { db } from "../firebase/config";
+import { signInAnonymously } from "firebase/auth";
+import { db, auth } from "../firebase/config";
 import { getAllSchools } from "./schoolsService";
 
 export type Prize = {
@@ -215,6 +216,7 @@ export async function getRaffleResults(): Promise<RaffleResult[]> {
 }
 
 export async function getPublicRaffleWinners(): Promise<PublicRaffleWinner[]> {
+    await ensureAnonymousAccess();
     const [results, config] = await Promise.all([
         getRaffleResults(),
         getRaffleConfig(),
@@ -270,6 +272,20 @@ export async function saveRafflePrizes(prizes: Prize[]): Promise<void> {
     }
 
     await updateDoc(ref, { prizes: normalized });
+}
+
+async function ensureAnonymousAccess() {
+    if (typeof window === "undefined") {
+        return;
+    }
+    if (auth.currentUser) {
+        return;
+    }
+    try {
+        await signInAnonymously(auth);
+    } catch (err) {
+        console.warn("Unable to sign in anonymously for public raffle access", err);
+    }
 }
 
 // Reset raffle
