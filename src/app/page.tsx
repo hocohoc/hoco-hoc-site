@@ -24,12 +24,19 @@ export default function Home() {
   return (
     <main className="flex flex-col bg-black">
 
-    <span className='text-center bg-gradient-to-r from-sky-500 to-blue-700 p-2'>
-      Congrats to <strong>Dunloggin Middle School</strong> for winning the 2025 Howard County Hour of Code!
-      <div>
-        <span>Click  <a href="/winners" className="underline font-bold" >here</a> to view all winners!</span>
-      </div>
-    </span>
+      <section className="bg-gradient-to-r from-sky-500 via-blue-700 to-indigo-800 text-white">
+      <div className="max-w-screen-xl mx-auto px-6 py-6 md:py-10 flex flex-col gap-3 text-center">
+        <p className="text-sm uppercase tracking-[0.4em] text-sky-100/80">2025 Champions</p>
+        <h2 className="text-3xl md:text-5xl font-extrabold leading-tight">
+          Congratulations to <span className="underline decoration-white/60">Dunloggin Middle School</span>
+        </h2>
+        <div className="flex flex-col md:flex-row items-center justify-center gap-3">
+          <a href="/winners" className="btn-primary bg-white text-sky-900 hover:bg-slate-100">
+            View All Winners
+          </a>
+        </div>
+        </div>
+    </section>
       <Hero />
       <div className="bg-slate-900" id="about" >
         <AboutSection></AboutSection>
