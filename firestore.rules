@@ -1,0 +1,57 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isAdmin() {
+    	return exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
+      			 get(/databases/$(database)/documents/users/$(request.auth.uid)).data.admin == true;
+    }
+    
+    //Only allow creation without auth and make sure admin users can't be created by request
+    //Read and update are only available to admin or logged in user that matches target
+    match /users/{user_id} {
+      allow read, update: if request.auth != null && (isAdmin() || request.auth.uid == user_id);
+    	allow create: if request.resource.data != true;
+    }
+    
+    //allow reads, writes limited to admin
+    match /articles/{article_id} {
+    	allow read: if true;
+      allow write: if request.auth != null && isAdmin() == true;
+    }
+    
+    //allow reads, writes limited to admin
+    match /sections/{section_id} {
+    	allow read: if true;
+      allow write: if request.auth != null && isAdmin() == true;
+    }
+    
+    match /aggregate/stats {
+    	allow read: if true;
+      allow write: if true;
+    }
+    
+    match /aggregate/school-scores {
+    	allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    match /quizzes/{quiz_id} {
+    	allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    match /quiz-ans/{quiz_id} {
+    	allow read: if isAdmin();
+      allow write: if isAdmin();
+    }
+    
+    match /config/event {
+    	allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /aggregate/raffle {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+  }
+}
