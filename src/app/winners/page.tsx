@@ -58,29 +58,32 @@ export default function WinnersPage() {
 
   return (
     <main className="bg-black min-h-screen text-white flex flex-col items-center p-4">
-      <div className="w-full max-w-4xl space-y-6">
-        <section className="rounded-2xl border border-sky-900 bg-gradient-to-br from-sky-900 via-slate-900 to-black p-6 shadow-xl">
-          <p className="text-xs uppercase tracking-[0.3em] text-slate-300">2025 Howard County Hour of Code / AI</p>
-          <h1 className="mt-2 text-4xl font-bold text-white md:text-5xl">Raffle Prize Winners</h1>
-          <p className="mt-4 text-lg text-slate-200">
-            Each raffle prize is awarded randomly based on article completion points. We only publish first names and
-            school names for privacy. Congratulations to this year&apos;s winners!
+      <div className="w-full max-w-4xl space-y-6 pt-4">
+        <section className="rounded-2xl border border-slate-800 bg-slate-900 p-8 shadow-lg">
+          <p className="text-xs uppercase tracking-[0.4em] text-sky-400 font-mono">2025 Awards</p>
+          <h1 className="mt-4 text-4xl md:text-5xl font-mono font-bold text-sky-200">
+            Raffle Prize Winners
+          </h1>
+          <p className="mt-6 text-lg text-slate-200 leading-relaxed">
+            Each raffle prize is awarded randomly based on article completion points. We only publish first names and school names for privacy. Congratulations to this year&apos;s winners!
           </p>
-          <div className="mt-6 flex flex-wrap gap-3">
-            <Link href="/" className="btn-primary">
+          <div className="mt-8 flex flex-wrap gap-3">
+            <Link href="/" className="btn-primary px-6 py-2 font-semibold">
               Return Home
             </Link>
-            <Link href="/leaderboard" className="btn-secondary">
+            <Link href="/leaderboard" className="btn-secondary px-6 py-2 font-semibold">
               View School Leaderboard
             </Link>
           </div>
         </section>
 
-        <section className="rounded-xl border border-slate-800 bg-slate-900/60 p-5">
+        <section className="rounded-xl border border-slate-800 bg-slate-900 p-6 shadow-lg">
           <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Official Results</p>
-              <h2 className="text-2xl font-semibold text-white">Prize Winners</h2>
+              <p className="text-xs font-semibold uppercase tracking-[0.4em] text-sky-400 font-mono">Official Results</p>
+              <h2 className="text-2xl md:text-3xl font-mono font-bold text-sky-200 mt-2">
+                Prize Winners
+              </h2>
             </div>
             {orderedWinners.length > 0 && (
               <p className="text-sm text-slate-400">
@@ -90,45 +93,45 @@ export default function WinnersPage() {
           </div>
 
           {loading && (
-            <p className="mt-4 rounded border border-slate-800 bg-slate-950/60 p-4 text-sm text-slate-300">
+            <p className="mt-6 rounded-lg border border-sky-900/50 bg-slate-950 p-4 text-sm text-sky-300">
               Loading winners…
             </p>
           )}
 
           {error && !loading && (
-            <p className="mt-4 rounded border border-red-900 bg-red-950/60 p-4 text-sm text-red-200">
+            <p className="mt-6 rounded-lg border border-red-900/50 bg-red-950/30 p-4 text-sm text-red-200">
               {error}
             </p>
           )}
 
           {!loading && !error && orderedWinners.length === 0 && (
-            <p className="mt-4 rounded border border-slate-800 bg-slate-950/60 p-4 text-sm text-slate-300">
+            <p className="mt-6 rounded-lg border border-sky-900/50 bg-slate-950/60 p-4 text-sm text-sky-300">
               Raffle winners have not been published yet. Check back after the drawing to meet the prize recipients.
             </p>
           )}
 
           {!loading && !error && orderedWinners.length > 0 && (
-            <div className="mt-6 space-y-10">
+            <div className="mt-8 space-y-10">
               {majorWinners.length > 0 && (
                 <div>
-                  <h3 className="text-xl font-semibold text-white uppercase tracking-[0.3em] text-center mb-4">
+                  <h3 className="text-xl font-mono font-bold uppercase tracking-[0.3em] text-center mb-6 text-sky-300">
                     Major Prizes
                   </h3>
                   <div className="grid gap-6 md:grid-cols-2">
                     {majorWinners.map((winner) => (
                       <article
                         key={`${winner.prizeId}-${winner.winnerUid}-${winner.timestamp.toMillis()}`}
-                        className="rounded-3xl border-2 border-amber-400/30 bg-gradient-to-br from-yellow-500/10 via-slate-900 to-black p-6 shadow-2xl shadow-amber-900/30"
+                        className="rounded-2xl border-2 border-amber-400/40 bg-gradient-to-br from-amber-500/15 via-slate-950 to-black p-6 shadow-xl shadow-amber-900/20 hover:shadow-amber-900/40 transition-shadow"
                       >
-                        <p className="text-sm uppercase tracking-[0.4em] text-amber-300">Major Prize</p>
-                        <h3 className="text-3xl font-extrabold text-white mt-2">{winner.prizeName}</h3>
+                        <p className="text-sm uppercase tracking-[0.4em] text-amber-400 font-mono font-semibold">Major Prize</p>
+                        <h3 className="text-2xl md:text-3xl font-mono font-bold text-amber-50 mt-3">{winner.prizeName}</h3>
                         <div className="mt-5 space-y-2">
                           <p className="text-lg font-semibold text-white">
                             {firstNameOf(winner.winnerName)}
-                            <span className="text-amber-200"> • </span>
-                            <span className="text-slate-100">{formatSchool(winner.winnerSchool)}</span>
+                            <span className="text-amber-300/70"> • </span>
+                            <span className="text-sky-200">{formatSchool(winner.winnerSchool)}</span>
                           </p>
-                          <p className="text-xs text-slate-300 tracking-wider">
+                          <p className="text-xs text-slate-400 tracking-wider">
                             Drawn on {winner.timestamp.toDate().toLocaleString(undefined, { dateStyle: "long" })}
                           </p>
                         </div>
@@ -140,22 +143,22 @@ export default function WinnersPage() {
 
               {minorWinners.length > 0 && (
                 <div>
-                  <h3 className="text-xl font-semibold text-white uppercase tracking-[0.3em] text-center mb-4">
+                  <h3 className="text-xl font-mono font-bold uppercase tracking-[0.3em] text-center mb-6 text-sky-300">
                     Additional Winners
                   </h3>
                   <div className="grid gap-4 md:grid-cols-2">
                     {minorWinners.map((winner) => (
                       <article
                         key={`${winner.prizeId}-${winner.winnerUid}-${winner.timestamp.toMillis()}`}
-                        className="rounded-xl border border-sky-900/40 bg-slate-950/60 p-4 shadow-md shadow-black/30"
+                        className="rounded-xl border border-sky-700/50 bg-slate-950/60 backdrop-blur-sm p-5 shadow-lg shadow-sky-900/20 hover:shadow-sky-900/40 transition-shadow hover:border-sky-600/70"
                       >
-                        <p className="text-sm uppercase tracking-widest text-sky-400">Prize</p>
-                        <h3 className="text-xl font-semibold text-white">{winner.prizeName}</h3>
-                        <div className="mt-4 space-y-1">
+                        <p className="text-xs uppercase tracking-[0.3em] text-sky-400 font-mono font-semibold">Prize Winner</p>
+                        <h3 className="text-xl font-mono font-bold text-sky-200 mt-2">{winner.prizeName}</h3>
+                        <div className="mt-4 space-y-2">
                           <p className="text-base font-semibold text-slate-100">
                             {firstNameOf(winner.winnerName)}
-                            <span className="text-slate-500"> • </span>
-                            <span className="text-slate-200">{formatSchool(winner.winnerSchool)}</span>
+                            <span className="text-sky-400/60"> • </span>
+                            <span className="text-sky-200">{formatSchool(winner.winnerSchool)}</span>
                           </p>
                           <p className="text-xs text-slate-400">
                             Drawn on {winner.timestamp.toDate().toLocaleString(undefined, { dateStyle: "medium" })}
