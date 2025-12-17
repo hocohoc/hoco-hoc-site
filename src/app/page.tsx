@@ -32,7 +32,7 @@ export default function Home() {
             <span className="block md:inline">Dunloggin Middle School</span>
           </h2>
           <p className="text-slate-300 text-lg max-w-2xl mx-auto leading-relaxed">
-            Outstanding performance in this year's Howard County Hour of Code / AI competition
+            Outstanding performance in this year&apos;s Howard County Hour of Code / AI competition
           </p>
           <div className="flex flex-col md:flex-row items-center justify-center gap-4 pt-2">
             <a href="/winners" className="btn-primary px-8 py-3 text-base font-semibold">

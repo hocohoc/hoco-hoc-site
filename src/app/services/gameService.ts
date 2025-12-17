@@ -369,7 +369,7 @@ export async function getRandomCodingChallenge(
 // Generate AI-based coding challenge using API route
 export async function generateAICodingChallenge(
     language: "python" | "cpp" | "java" | "blockly" | "scratch",
-    difficulty: "easy" | "medium" | "hard" = "easy"
+    difficulty: "easy" | "medium" | "hard" | "all" = "easy"
 ): Promise<CodingChallenge> {
     try {
         const response = await fetch("/api/mindstorm", {

@@ -14,7 +14,7 @@ export default function FeedbackPage() {
             Feedback Form
           </h1>
           <p className="mt-6 text-lg text-slate-200 leading-relaxed">
-            We'd love to hear from you! Let us know what you loved, what could be improved, or ideas for future Howard County Hour of Code / AI events. Your feedback directly helps us create a better experience.
+            We&apos;d love to hear from you! Let us know what you loved, what could be improved, or ideas for future Howard County Hour of Code / AI events. Your feedback directly helps us create a better experience.
           </p>
           <p className="mt-4 text-sm text-slate-400">
             If the embedded form below does not load,{" "}
