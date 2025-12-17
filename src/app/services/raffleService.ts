@@ -5,17 +5,18 @@ import {
     setDoc,
     updateDoc,
     Timestamp,
-    increment,
     getDoc,
     arrayUnion
 } from "firebase/firestore";
 import { db } from "../firebase/config";
+import { getAllSchools } from "./schoolsService";
 
 export type Prize = {
     id: string;
     name: string;
     quantity: number;
     description: string;
+    tier: "major" | "minor";
 };
 
 export type RaffleEntry = {
@@ -35,6 +36,11 @@ export type RaffleResult = {
     timestamp: Timestamp;
 };
 
+export type PublicRaffleWinner = RaffleResult & {
+    winnerSchool?: string;
+    prizeTier?: Prize["tier"];
+};
+
 export type RaffleConfig = {
     pointsPerEntry: number;
     prizes: Prize[];
@@ -45,11 +51,57 @@ export type RaffleConfig = {
 
 const RAFFLE_DOC = "aggregate/raffle";
 
+export const DEFAULT_PRIZES: Prize[] = [
+    {
+        id: "ipad",
+        name: "Apple iPad (A16)",
+        quantity: 1,
+        description: "1x Apple iPad with A16 chip",
+        tier: "major",
+    },
+    {
+        id: "jbl",
+        name: "JBL Tune 720BT",
+        quantity: 1,
+        description: "1x JBL Tune 720BT Headphones",
+        tier: "major",
+    },
+    {
+        id: "giftcard",
+        name: "$10 Amazon Giftcard",
+        quantity: 10,
+        description: "10x $10 Amazon Giftcards",
+        tier: "minor",
+    },
+];
+
+type StoredPrize = Omit<Prize, "tier"> & {
+    tier?: Prize["tier"];
+};
+
+type FirestoreRaffleConfig = Omit<RaffleConfig, "prizes"> & {
+    prizes?: StoredPrize[];
+};
+
+function normalizePrizes(prizes?: StoredPrize[]): Prize[] {
+    const source = prizes && prizes.length > 0 ? prizes : DEFAULT_PRIZES;
+    return source.map((prize) => ({
+        ...prize,
+        tier: prize.tier ?? "minor",
+    }));
+}
+
+function resolveSchoolName(school?: string): string | undefined {
+    if (!school) return undefined;
+    const match = getAllSchools().find((s) => s.id === school);
+    return match?.name ?? school;
+}
+
 // Initialize raffle with default prizes
 export async function initializeRaffle(prizes: Prize[]): Promise<void> {
     const config: RaffleConfig = {
         pointsPerEntry: 10,
-        prizes,
+        prizes: normalizePrizes(prizes),
         results: [],
         active: true,
         createdAt: Timestamp.now(),
@@ -61,7 +113,14 @@ export async function initializeRaffle(prizes: Prize[]): Promise<void> {
 // Get raffle configuration
 export async function getRaffleConfig(): Promise<RaffleConfig | null> {
     const snap = await getDoc(doc(db, RAFFLE_DOC));
-    return snap.exists() ? (snap.data() as RaffleConfig) : null;
+    if (!snap.exists()) {
+        return null;
+    }
+    const data = snap.data() as FirestoreRaffleConfig;
+    return {
+        ...data,
+        prizes: normalizePrizes(data.prizes),
+    };
 }
 
 // Get all raffle entries based on user points
@@ -155,11 +214,69 @@ export async function getRaffleResults(): Promise<RaffleResult[]> {
     return config?.results || [];
 }
 
+export async function getPublicRaffleWinners(): Promise<PublicRaffleWinner[]> {
+    const [results, config] = await Promise.all([
+        getRaffleResults(),
+        getRaffleConfig(),
+    ]);
+
+    if (results.length === 0) {
+        return [];
+    }
+
+    const uniqueWinnerIds = Array.from(
+        new Set(results.map((result) => result.winnerUid).filter(Boolean))
+    );
+
+    const schoolEntries = await Promise.all(
+        uniqueWinnerIds.map(async (uid) => {
+            try {
+                const snap = await getDoc(doc(db, "users/" + uid));
+                const school = snap.exists() ? (snap.data()?.school as string | undefined) : undefined;
+                return [uid, school] as const;
+            } catch {
+                return [uid, undefined] as const;
+            }
+        })
+    );
+
+    const schoolMap = new Map(schoolEntries);
+    const prizeTierMap = new Map(
+        (config?.prizes ?? DEFAULT_PRIZES).map((prize) => [prize.id, prize.tier])
+    );
+
+    return results.map((result) => ({
+        ...result,
+        winnerSchool: resolveSchoolName(schoolMap.get(result.winnerUid)),
+        prizeTier: prizeTierMap.get(result.prizeId) ?? "minor",
+    }));
+}
+
+export async function saveRafflePrizes(prizes: Prize[]): Promise<void> {
+    const normalized = normalizePrizes(prizes);
+    const ref = doc(db, RAFFLE_DOC);
+    const snap = await getDoc(ref);
+
+    if (!snap.exists()) {
+        const config: RaffleConfig = {
+            pointsPerEntry: 10,
+            prizes: normalized,
+            results: [],
+            active: true,
+            createdAt: Timestamp.now(),
+        };
+        await setDoc(ref, config);
+        return;
+    }
+
+    await updateDoc(ref, { prizes: normalized });
+}
+
 // Reset raffle
 export async function resetRaffle(prizes: Prize[]): Promise<void> {
     const config: RaffleConfig = {
         pointsPerEntry: 10,
-        prizes,
+        prizes: normalizePrizes(prizes),
         results: [],
         active: true,
         createdAt: Timestamp.now(),
