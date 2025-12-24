@@ -35,7 +35,8 @@ const ALLOWED_EXCEPTIONS = new Set([
     "mdhocohoc@gmail.com",
     "aryan.sharma0714@gmail.com",
     "ankitvmohanty5@gmail.com",
-    "danielgaofei@gmail.com"
+    "danielgaofei@gmail.com",
+    "nickche433@gmail.com",
 ]);
 
 // -------------------------
