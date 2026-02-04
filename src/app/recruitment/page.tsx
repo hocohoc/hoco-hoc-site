@@ -17,7 +17,7 @@ export default function Recruitment() {
             Join Our Team
           </h1>
           <p className="text-slate-200 text-lg md:text-xl max-w-2xl">
-            Interested in helping organize Howard County's Hour of Code? We're
+            Interested in helping organize Howard County&apos;s Hour of Code? We&apos;re
             looking for passionate volunteers to help make this event amazing!
           </p>
         </div>
