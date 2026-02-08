@@ -74,10 +74,16 @@ export default function NavBar() {
         <div className="flex-1"></div>
         <div className="flex max-md:hidden flex-row text-xs gap-5 md:text-md items-stretch">
           <Link
-            className={`font-mono rounded text-sm items-center justify-center md:flex font-bold hover:text-sky-300 hover:underline`}
+            className={`font-mono rounded text-sm items-center justify-center md:flex font-bold text-blue-400 hover:text-sky-300 hover:underline`}
             href={"/recruitment"}
           >
-            Join
+            Help Wanted!
+          </Link>
+          <Link
+            className={`font-mono rounded text-sm items-center justify-center md:flex font-bold hover:text-sky-300 hover:underline`}
+            href={"/aboutus"}
+          >
+            About Us
           </Link>
           <Link
             className={`font-mono rounded text-sm items-center justify-center md:flex font-bold hover:text-sky-300 hover:underline`}
