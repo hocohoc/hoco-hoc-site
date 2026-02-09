@@ -1,7 +1,7 @@
 import { doc, getDoc, increment, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "../firebase/config";
 
-export type GameType = "binary-decoder" | "purrceptron" | "flexibot" | "mindstorm";
+export type GameType = "binary-decoder" | "purrceptron" | "flexibot" | "mindstorm" | "algo-sorter" | "hex-guesser";
 
 export type GameCompletion = {
     gameId: string;

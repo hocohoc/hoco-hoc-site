@@ -53,8 +53,8 @@ export default function AboutSection() {
                 <div className="flex flex-col gap-8 md:gap-12 md:flex-row items-center md:space-x-4">
                     <div className="md:flex-1">
                         <h3 className="font-mono text-4xl md:text-5xl bg-gradient-to-r from-sky-300 to-sky-500 text-transparent bg-clip-text font-bold pb-4 md:pb-10">Compete For Glory!</h3>
-                        <p className="font-sans mb-10  text-l text-slate-300 md:text-xl">We aim to provide aspiring computer scientists with an opportunity for skill development and friendly competition. Visit the leaderboard to check out how your high school is doing! All Howard County schools and corresponding points will be displayed here.</p>
-                        <Link href={"/leaderboard"} className="btn-secondary font-mono text-lg">View Leaderboard</Link>
+                        <p className="font-sans mb-10  text-l text-slate-300 md:text-xl">We aim to provide aspiring computer scientists with an opportunity for skill development and friendly competition. When the 2026 event kicks off, all Howard County schools and corresponding points will be displayed on the leaderboard!</p>
+                        <Link href={"/game"} className="btn-secondary font-mono text-lg">Play Games</Link>
                     </div>
 
                     <div className="md:flex-1 w-full h-full md:w-60 lg:w-0 text-slate-300 bg-gray-900 rounded-md border-gray-800 border-2 overflow-hidden">

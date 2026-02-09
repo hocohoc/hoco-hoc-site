@@ -20,6 +20,11 @@ interface PictureGroup {
 // Images are organized by year
 const PICTURE_DATA: PictureGroup[] = [
   {
+    year: 2026,
+    images: [],
+    winners: [],
+  },
+  {
     year: 2025,
     images: [
       { src: "/hoco-hoc-winners/2025-DMS.jpg", alt: "2025 HOCO HOC Winners - DMS" },
@@ -64,7 +69,7 @@ export default function PicturesPage() {
             Past Events
           </h1>
           <p className="mt-6 text-lg text-slate-200 leading-relaxed">
-            Explore photos from previous years of HoCoHOC events. Select a year to view the gallery and relive those memorable moments!
+            Explore photos from previous years of HoCoHOC events. Select a year to view the gallery and relive those memorable moments! 2026 is coming soon — get excited!
           </p>
         </section>
 
@@ -146,7 +151,7 @@ export default function PicturesPage() {
                   </div>
                   <div className="space-y-3">
                     {currentYearData.winners.map((winner) => {
-                      const medals = ["🥇", "🥈", "🥉"]
+                      const medals = ["1st", "2nd", "3rd"]
                       const medal = medals[winner.rank - 1] || `#${winner.rank}`
                       return (
                         <div
@@ -203,7 +208,13 @@ export default function PicturesPage() {
               )}
 
               {currentYearData.images.length === 0 && (!currentYearData.winners || currentYearData.winners.length === 0) && (
-                <p className="text-center text-slate-400">No content available for {currentYearData.year}</p>
+                <div className="text-center space-y-4 py-8">
+                  <p className="text-slate-300 text-lg">
+                    {currentYearData.year === 2026
+                      ? "HocoHOC 2026 is in the planning phase. Photos and results will appear here after the event!"
+                      : `No content available for ${currentYearData.year}`}
+                  </p>
+                </div>
               )}
             </div>
           </div>

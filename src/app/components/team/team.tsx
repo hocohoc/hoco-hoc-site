@@ -4,14 +4,13 @@ import React from 'react';
 export default function TeamSection() {
     const teamMembers = [
         //directors
-        { name: "Daniel Gao", position: "Director", image: "/headshots/daniel_headshot.png" },
         { name: "Ankit Mohanty", position: "Director", image: "/headshots/ankit_headshot.png" },
+        { name: "Nicholas Chen", position: "Director", image: "/headshots/NicholasChen_headshot.jpg" },
         { name: "Oluwadarasimi Adedeji", position: "Web Dev", image: "/headshots/dara_headshot.jpg" },
         { name: "Jay Patel", position: "Article Lead", image: "/headshots/jay_headshot.jpg" },
         { name: "Sai Chandra", position: "Articles", image: "/headshots/sai_headshot.png" },
         { name: "Austen Shaheen", position: "Articles", image: "/headshots/austen_img.jpg" },
         { name: "Raj Bhagat", position: "Articles", image: "/headshots/raj_headshot.jpg" },
-        { name: "Nicholas Chen", position: "Articles", image: "/headshots/NicholasChen_headshot.jpg" },
         { name: "Suhas Anumolu", position: "Articles", image: "/headshots/suhas_headshot.png" },
         { name: "Shalin Vakil", position: "Articles", image: "/headshots/shalin_headshot.png" },
         { name: "Daniel Oh", position: "Outreach", image: "/headshots/daniel_oh_headshot.png" },

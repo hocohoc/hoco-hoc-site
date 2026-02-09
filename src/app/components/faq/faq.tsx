@@ -11,7 +11,7 @@ export default function Faq() {
                 <div className="w-full md:w-1/2 flex flex-col">
                     <FaqQuestion
                         question={"When is the Hour of Code?"}
-                        answer={`Howard County Hour of Code is a 7-day event taking place from December 8 to December 14, 2025.`}
+                        answer={`Howard County Hour of Code is a 7-day event taking place from December 8 to December 15, 2026.`}
                     />
                     <FaqQuestion
                         question={"How do I participate in the Hour of Code?"}
@@ -24,7 +24,7 @@ export default function Faq() {
                     <FaqQuestion
                         question={"How do the points/prizes work?"}
                         answer={`
-                        Points are earned by completing articles, which are transformed into raffle tickets at the end of the event. Scroll up to our prizes section to see what you can win this year.
+                        Points are earned by completing articles and playing games, which are transformed into raffle tickets at the end of the event. Prizes for 2026 haven't been announced yet — check back closer to the event!
                     `}
 
                     />
