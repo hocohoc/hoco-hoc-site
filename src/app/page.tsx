@@ -26,17 +26,17 @@ export default function Home() {
 
       <section className="bg-slate-900">
         <div className="max-w-screen-xl mx-auto px-6 py-12 md:py-20 flex flex-col gap-6 text-center">
-          <p className="text-sm uppercase tracking-[0.4em] text-sky-300/80 font-mono">2025 Champions</p>
+          <p className="text-sm uppercase tracking-[0.4em] text-sky-300/80 font-mono">Coming Soon</p>
           <h2 className="text-4xl md:text-6xl font-mono font-extrabold leading-tight text-sky-200">
-            Congratulations to <br className="hidden md:block" />
-            <span className="block md:inline">Dunloggin Middle School</span>
+            HocoHOC 2026 is <br className="hidden md:block" />
+            <span className="block md:inline bg-gradient-to-r from-sky-300 to-cyan-400 text-transparent bg-clip-text">in the works!</span>
           </h2>
           <p className="text-slate-300 text-lg max-w-2xl mx-auto leading-relaxed">
-            Outstanding performance in this year&apos;s Howard County Hour of Code / AI competition
+            We&apos;re planning something bigger and better for 2026. Stay tuned for announcements about dates, prizes, and more!
           </p>
           <div className="flex flex-col md:flex-row items-center justify-center gap-4 pt-2">
-            <a href="/winners" className="btn-primary px-8 py-3 text-base font-semibold">
-              View All Winners
+            <a href="/articles" className="btn-primary px-8 py-3 text-base font-semibold">
+              Browse Articles
             </a>
           </div>
         </div>

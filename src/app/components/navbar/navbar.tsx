@@ -45,7 +45,7 @@ export default function NavBar() {
 
   return (
     <nav
-      className="bg-slate-900  bg-opacity-50 backdrop-blur-md h-14 p-2 flex flex-row items-center justify-center border-b-2 border-b-sky-900 top-0 sticky z-30 w-full"
+      className="bg-slate-900 bg-opacity-50 backdrop-blur-md h-14 p-2 flex flex-row items-center justify-center border-b-2 border-b-sky-900 top-0 sticky z-30 w-full"
       aria-label="Primary"
     >
       <div className="flex flex-row items-center w-full max-w-screen-xl gap-3">
@@ -77,7 +77,7 @@ export default function NavBar() {
             className={`font-mono rounded text-sm items-center justify-center md:flex font-bold text-blue-400 hover:text-sky-300 hover:underline`}
             href={"/recruitment"}
           >
-            Help Wanted!
+            Get Involved!
           </Link>
           <Link
             className={`font-mono rounded text-sm items-center justify-center md:flex font-bold hover:text-sky-300 hover:underline`}
@@ -167,8 +167,7 @@ export default function NavBar() {
           >
             {profile && (
               <h1 className="text-2xl font-bold">
-                {" "}
-                Hello, {profile.displayName}!{" "}
+                Hello, {profile.displayName}!
               </h1>
             )}
             <Link
@@ -214,8 +213,7 @@ export default function NavBar() {
                 type="button"
                 onClick={signInOrRegister}
               >
-                {" "}
-                Log In{" "}
+                Log In
               </button>
             ) : (
               <button
@@ -223,8 +221,7 @@ export default function NavBar() {
                 type="button"
                 onClick={logout}
               >
-                {" "}
-                Log Out{" "}
+                Log Out
               </button>
             )}
           </motion.nav>
