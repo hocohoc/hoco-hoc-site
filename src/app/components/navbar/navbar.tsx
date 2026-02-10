@@ -45,7 +45,7 @@ export default function NavBar() {
 
   return (
     <nav
-      className="bg-slate-900 bg-opacity-50 backdrop-blur-md h-14 p-2 flex flex-row items-center justify-center border-b-2 border-b-sky-900 top-0 sticky z-30 w-full"
+      className="bg-slate-900  bg-opacity-50 backdrop-blur-md h-14 p-2 flex flex-row items-center justify-center border-b-2 border-b-sky-900 top-0 sticky z-30 w-full"
       aria-label="Primary"
     >
       <div className="flex flex-row items-center w-full max-w-screen-xl gap-3">
@@ -156,72 +156,73 @@ export default function NavBar() {
       <AnimatePresence>
         {menuShown && (
           <motion.nav
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "100vh" }}
-            exit={{ opacity: 0, height: 0 }}
-            className="bg-slate-900 z-50 top-[3.5rem] flex h-[calc(100vh-3.5rem)] flex-col gap-4 p-4 fixed left-0 right-0"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.2 }}
+            className="bg-slate-900 border-b border-sky-900 flex flex-col gap-3 p-4 absolute top-14 left-0 right-0 w-full max-h-[calc(100vh-3.5rem)] overflow-y-auto z-50"
             id={mobileMenuId}
             aria-label="Mobile"
             ref={menuRef}
             tabIndex={-1}
           >
             {profile && (
-              <h1 className="text-2xl font-bold">
+              <h1 className="text-lg font-bold text-sky-300 pb-2 border-b border-slate-700">
                 Hello, {profile.displayName}!
               </h1>
             )}
             <Link
-              className={`font-mono items-center justify-center md:flex hover:text-sky-300 underline`}
+              className={`font-mono py-2 hover:text-sky-300 underline text-sm`}
+              href={"/recruitment"}
+              onClick={() => setMenuShown(false)}
+            >
+              Get Involved!
+            </Link>
+            <Link
+              className={`font-mono py-2 hover:text-sky-300 underline text-sm`}
+              href={"/aboutus"}
+              onClick={() => setMenuShown(false)}
+            >
+              About Us
+            </Link>
+            <Link
+              className={`font-mono py-2 hover:text-sky-300 underline text-sm`}
+              href={"/game"}
+              onClick={() => setMenuShown(false)}
+            >
+              Games
+            </Link>
+            <Link
+              className={`font-mono py-2 hover:text-sky-300 underline text-sm`}
               href={"/articles"}
               onClick={() => setMenuShown(false)}
             >
               Articles
             </Link>
             <Link
-              className={`font-mono items-center justify-center md:flex hover:text-sky-300 underline`}
+              className={`font-mono py-2 hover:text-sky-300 underline text-sm`}
               href={"/pictures"}
               onClick={() => setMenuShown(false)}
             >
               Pictures
             </Link>
             <Link
-              className={`font-mono items-center justify-center md:flex hover:text-sky-300 underline`}
+              className={`font-mono py-2 hover:text-sky-300 underline text-sm`}
               href={"/leaderboard"}
               onClick={() => setMenuShown(false)}
             >
               Leaderboard
             </Link>
             <Link
-              className={`font-mono items-center justify-center md:flex hover:text-sky-300 underline`}
+              className={`font-mono py-2 hover:text-sky-300 underline text-sm`}
               href={"/feedback"}
               onClick={() => setMenuShown(false)}
             >
               Feedback
             </Link>
-            <Link
-              className={`font-mono items-center justify-center md:flex hover:text-sky-300 underline`}
-              href={"/feedback"}
-              onClick={() => setMenuShown(false)}
-            >
-              Get Involved!
-            </Link>
-            <Link
-              className={`font-mono items-center justify-center md:flex hover:text-sky-300 underline`}
-              href={"/feedback"}
-              onClick={() => setMenuShown(false)}
-            >
-              About Us
-            </Link>
-            <Link
-              className={`font-mono items-center justify-center md:flex hover:text-sky-300 underline`}
-              href={"/feedback"}
-              onClick={() => setMenuShown(false)}
-            >
-              Games
-            </Link>
             {profile && (
               <Link
-                className={`font-mono items-center justify-center md:flex hover:text-sky-300 underline`}
+                className={`font-mono py-2 hover:text-sky-300 underline text-sm border-t border-slate-700 pt-3`}
                 href={"/me"}
                 onClick={() => setMenuShown(false)}
               >
@@ -230,17 +231,23 @@ export default function NavBar() {
             )}
             {!profile ? (
               <button
-                className="font-mono btn-primary"
+                className="font-mono btn-primary w-full mt-2"
                 type="button"
-                onClick={signInOrRegister}
+                onClick={() => {
+                  signInOrRegister();
+                  setMenuShown(false);
+                }}
               >
                 Log In
               </button>
             ) : (
               <button
-                className="font-mono btn-danger"
+                className="font-mono btn-danger w-full mt-2"
                 type="button"
-                onClick={logout}
+                onClick={() => {
+                  logout();
+                  setMenuShown(false);
+                }}
               >
                 Log Out
               </button>

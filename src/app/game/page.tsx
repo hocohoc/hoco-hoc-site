@@ -48,17 +48,9 @@ const games: Game[] = [
     name: "Algo Sorter",
     path: "/game/AlgoSorter",
     description: "Sort the array in the fewest swaps possible!",
-    image: "",
+    image: "/game/algo-sorter-preview.svg",
     earnsPoints: true,
     tag: "Algorithms",
-  },
-  {
-    name: "Hex Guesser",
-    path: "/game/HexGuesser",
-    description: "Test your hex color code knowledge!",
-    image: "",
-    earnsPoints: true,
-    tag: "Web Dev",
   },
 ];
 
@@ -87,7 +79,7 @@ export default function GameHub() {
                 />
               ) : (
                 <div className="w-full h-40 bg-gradient-to-br from-indigo-900 to-gray-800 flex items-center justify-center">
-                  <span className="text-5xl">{game.name === "Algo Sorter" ? "🔢" : "🎨"}</span>
+                  <span className="text-5xl"></span>
                 </div>
               )}
               <div className="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-10 transition" />

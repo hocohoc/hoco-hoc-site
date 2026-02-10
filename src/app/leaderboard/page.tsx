@@ -1,32 +1,43 @@
 "use client"
 
-import Link from "next/link";
+import { useEffect, useState } from "react";
+import Leaderboard from "../components/leaderboard/leaderboard";
+import { School, getSchoolByID, onScoresChange } from "../services/schoolsService";
 
 export default function LeaderboardPage() {
-    return <main className="p-4 flex flex-col items-center min-h-screen">
+    let [schools, setSchools] = useState<School[]>([])
+
+    useEffect(() => {
+        let unsub = onScoresChange((scores) => {
+            console.log(scores)
+            let arr: School[] = []
+            for (let id in scores) {
+                let school = getSchoolByID(id)
+                school.score = scores[id]
+                arr.push(school)
+            }
+            setSchools(arr)
+        })
+
+        return unsub
+    }, [])
+
+    function sort(schools: School[]): School[] {
+        return schools.filter(a => a.score > 0).sort((a, b) => {
+            return a.score == b.score ? (a.name > b.name ? 1 : -1) : (b.score - a.score)
+        })
+    }
+
+    return <main className="p-4 flex flex-col items-center">
         <div className="max-w-2xl w-full">
-            <div className="bg-sky-800 p-4 rounded mb-4 border-2 border-sky-900 text-center">
+            <div className="bg-sky-800 p-4 rounded mb-2 border-2 border-sky-900">
                 <h1 className="font-mono text-2xl font-bold mb-2">School Leaderboard</h1>
+                <p className="text-sm text-slate-300"> Don&apos;t see your school? Schools that have zero points are not included on the leaderboard. </p>
             </div>
-            <div className="rounded-2xl border-2 border-dashed border-sky-700/50 bg-slate-900/50 p-12 text-center">
-                <div className="mx-auto max-w-md space-y-4">
-                    <div className="text-6xl">📊</div>
-                    <h2 className="text-2xl md:text-3xl font-mono font-bold text-sky-200">
-                        2026 Leaderboard
-                    </h2>
-                    <p className="text-slate-300 text-base leading-relaxed">
-                        The school leaderboard will go live once HocoHOC 2026 kicks off. We&apos;re gearing up for an exciting year &mdash; stay tuned!
-                    </p>
-                    <p className="text-slate-400 text-sm font-mono">
-                        Compete with your school to climb the ranks.
-                    </p>
-                    <div className="pt-4">
-                        <Link href="/" className="btn-primary px-6 py-2 font-semibold">
-                            Return Home
-                        </Link>
-                    </div>
-                </div>
-            </div>
+            {sort(schools).length > 0 ?
+                <Leaderboard schools={sort(schools)} className="w-full" />
+                : <p className="p-2 bg-slate-800 rounded"> No schools have gained any points... </p>
+            }
         </div>
     </main>
 }

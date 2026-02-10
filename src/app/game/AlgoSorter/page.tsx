@@ -16,8 +16,8 @@ interface Level {
 
 const DIFFICULTY_CONFIG: Record<Difficulty, Level> = {
   easy: { size: 4, optimalSwaps: 6, points: 3 },
-  medium: { size: 6, optimalSwaps: 10, points: 5 },
-  hard: { size: 8, optimalSwaps: 16, points: 8 },
+  medium: { size: 6, optimalSwaps: 8, points: 5 },
+  hard: { size: 8, optimalSwaps: 12, points: 8 },
 };
 
 function shuffle(arr: number[]): number[] {

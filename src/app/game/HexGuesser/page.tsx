@@ -170,7 +170,7 @@ export default function HexGuesserPage() {
               )}
               <div className="bg-gray-800 border border-gray-600 px-5 py-3 rounded">
                 <span className="text-gray-400">Streak: </span>
-                <span className="text-orange-400 font-bold">{streak} 🔥</span>
+                <span className="text-orange-400 font-bold">{streak}</span>
               </div>
               {profile && (
                 <div className="bg-gray-800 border border-gray-600 px-5 py-3 rounded">
