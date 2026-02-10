@@ -198,6 +198,27 @@ export default function NavBar() {
             >
               Feedback
             </Link>
+            <Link
+              className={`font-mono items-center justify-center md:flex hover:text-sky-300 underline`}
+              href={"/feedback"}
+              onClick={() => setMenuShown(false)}
+            >
+              Get Involved!
+            </Link>
+            <Link
+              className={`font-mono items-center justify-center md:flex hover:text-sky-300 underline`}
+              href={"/feedback"}
+              onClick={() => setMenuShown(false)}
+            >
+              About Us
+            </Link>
+            <Link
+              className={`font-mono items-center justify-center md:flex hover:text-sky-300 underline`}
+              href={"/feedback"}
+              onClick={() => setMenuShown(false)}
+            >
+              Games
+            </Link>
             {profile && (
               <Link
                 className={`font-mono items-center justify-center md:flex hover:text-sky-300 underline`}
