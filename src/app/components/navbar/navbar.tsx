@@ -69,9 +69,9 @@ export default function NavBar() {
           </Link>
 
           <div className="flex-1"></div>
-          <div className="flex max-md:hidden flex-row text-xs gap-5 md:text-md items-stretch">
+          <div className="flex flex-row text-xs gap-2 md:gap-5 md:text-md items-center">
             <Link
-              className={`font-mono rounded text-lg items-center justify-center md:flex font-bold text-blue-400 hover:text-sky-300 hover:underline`}
+              className={`font-mono rounded text-lg items-center justify-center hidden md:flex font-bold text-blue-400 hover:text-sky-300 hover:underline`}
               href={"/recruitment"}
             >
               Get Involved!
@@ -146,6 +146,14 @@ export default function NavBar() {
                   onClick={() => setSidebarOpen(false)}
                 >
                   About Us
+                </Link>
+
+                <Link
+                  className="font-mono py-2 px-3 hover:text-sky-300 hover:bg-slate-800 rounded transition-colors text-sm md:hidden"
+                  href={"/recruitment"}
+                  onClick={() => setSidebarOpen(false)}
+                >
+                  Get Involved!
                 </Link>
 
                 <Link
