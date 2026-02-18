@@ -10,251 +10,214 @@ import { AnimatePresence, motion } from "framer-motion";
 
 export default function NavBar() {
   let profile = useProfile();
-  let [menuShown, setMenuShown] = useState<boolean>(false);
-  const menuRef = useRef<HTMLElement | null>(null);
-  const mobileMenuId = "primary-navigation";
+  let [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
+  const sidebarRef = useRef<HTMLElement | null>(null);
+  const sidebarId = "sidebar-navigation";
 
-  function toggleMobileNav(): void {
-    setMenuShown((prev) => !prev);
+  function toggleSidebar(): void {
+    setSidebarOpen((prev) => !prev);
   }
 
   useEffect(() => {
-    if (!menuShown) {
-      document.body.style.removeProperty("overflow");
-      return;
-    }
-
-    document.body.style.setProperty("overflow", "hidden");
-
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
-        setMenuShown(false);
+        setSidebarOpen(false);
       }
     };
 
-    document.addEventListener("keydown", handleKeyDown);
-
-    const focusable = menuRef.current?.querySelector<HTMLElement>("a, button");
-    focusable?.focus();
+    if (sidebarOpen) {
+      document.addEventListener("keydown", handleKeyDown);
+      const focusable =
+        sidebarRef.current?.querySelector<HTMLElement>("a, button");
+      focusable?.focus();
+    }
 
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
-      document.body.style.removeProperty("overflow");
     };
-  }, [menuShown]);
+  }, [sidebarOpen]);
 
   return (
-    <nav
-      className="bg-slate-900  bg-opacity-50 backdrop-blur-md h-14 p-2 flex flex-row items-center justify-center border-b-2 border-b-sky-900 top-0 sticky z-30 w-full"
-      aria-label="Primary"
-    >
-      <div className="flex flex-row items-center w-full max-w-screen-xl gap-3">
-        <Link
-          onClick={() => setMenuShown(false)}
-          href={"/"}
-          aria-label="Howard County Hour of Code / AI home"
-          className="flex items-center"
-        >
-          <Image
-            src="/sponsors/hcpss-logo-outlined.png"
-            alt="HCPSS Logo"
-            width={40}
-            height={40}
-            className="object-contain"
-          />
-        </Link>
-        <Link
-          onClick={() => setMenuShown(false)}
-          className={`font-mono text-sky-300 text-xl md:text-2xl font-bold`}
-          href={"/"}
-          aria-label="Howard County Hour of Code / AI home"
-        >
-          &lt;HocoHOC/&gt;
-        </Link>
-        <div className="flex-1"></div>
-        <div className="flex max-md:hidden flex-row text-xs gap-5 md:text-md items-stretch">
+    <>
+      {/* Top Navigation Bar */}
+      <nav
+        className="bg-slate-900 bg-opacity-50 backdrop-blur-md h-14 p-2 flex flex-row items-center justify-center border-b-2 border-b-sky-900 top-0 sticky z-40 w-full"
+        aria-label="Primary"
+      >
+        <div className="flex flex-row items-center w-full max-w-screen-xl gap-3">
           <Link
-            className={`font-mono rounded text-sm items-center justify-center md:flex font-bold text-blue-400 hover:text-sky-300 hover:underline`}
-            href={"/recruitment"}
+            onClick={() => setSidebarOpen(false)}
+            href={"/"}
+            aria-label="Howard County Hour of Code / AI home"
+            className="flex items-center"
           >
-            Get Involved!
-          </Link>
-          <Link
-            className={`font-mono rounded text-sm items-center justify-center md:flex font-bold hover:text-sky-300 hover:underline`}
-            href={"/aboutus"}
-          >
-            About Us
-          </Link>
-          <Link
-            className={`font-mono rounded text-sm items-center justify-center md:flex font-bold hover:text-sky-300 hover:underline`}
-            href={"/game"}
-          >
-            Games
-          </Link>
-          <Link
-            className={`font-mono rounded text-sm items-center justify-center md:flex font-bold hover:text-sky-300 hover:underline`}
-            href={"/articles"}
-          >
-            Articles
-          </Link>
-          <Link
-            className={`font-mono rounded text-sm items-center justify-center md:flex font-bold hover:text-sky-300 hover:underline`}
-            href={"/pictures"}
-          >
-            Pictures
-          </Link>
-          <Link
-            className={`font-mono rounded text-sm items-center justify-center md:flex font-bold hover:text-sky-300 hover:underline`}
-            href={"/leaderboard"}
-          >
-            Leaderboard
-          </Link>
-          <Link
-            className={`font-mono rounded text-sm items-center justify-center md:flex font-bold hover:text-sky-300 hover:underline`}
-            href={"/feedback"}
-          >
-            Feedback
-          </Link>
-          {profile ? (
-            <UserPill user={profile} />
-          ) : (
-            <button
-              className={`font-mono btn-primary`}
-              type="button"
-              onClick={() => signInOrRegister()}
-            >
-              Login
-            </button>
-          )}
-        </div>
-        <button
-          className="block md:hidden pr-2 text-slate-300"
-          type="button"
-          onClick={toggleMobileNav}
-          aria-expanded={menuShown}
-          aria-controls={mobileMenuId}
-          aria-label={menuShown ? "Close main menu" : "Open main menu"}
-        >
-          <span className="sr-only">Open main menu</span>
-          <svg
-            className="w-5 h-5"
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 17 14"
-          >
-            <path
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M1 1h15M1 7h15M1 13h15"
+            <Image
+              src="/sponsors/hcpss-logo-outlined.png"
+              alt="HCPSS Logo"
+              width={40}
+              height={40}
+              className="object-contain"
             />
-          </svg>
-        </button>
-      </div>
-      <AnimatePresence>
-        {menuShown && (
-          <motion.nav
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.2 }}
-            className="bg-slate-900 border-b border-sky-900 flex flex-col gap-3 p-4 absolute top-14 left-0 right-0 w-full max-h-[calc(100vh-3.5rem)] overflow-y-auto z-50"
-            id={mobileMenuId}
-            aria-label="Mobile"
-            ref={menuRef}
-            tabIndex={-1}
+          </Link>
+          <Link
+            onClick={() => setSidebarOpen(false)}
+            className={`font-mono text-sky-300 text-xl md:text-2xl font-bold`}
+            href={"/"}
+            aria-label="Howard County Hour of Code / AI home"
           >
-            {profile && (
-              <h1 className="text-lg font-bold text-sky-300 pb-2 border-b border-slate-700">
-                Hello, {profile.displayName}!
-              </h1>
-            )}
+            &lt;HocoHOC/&gt;
+          </Link>
+
+          <div className="flex-1"></div>
+          <div className="flex max-md:hidden flex-row text-xs gap-5 md:text-md items-stretch">
             <Link
-              className={`font-mono py-2 hover:text-sky-300 underline text-sm`}
+              className={`font-mono rounded text-lg items-center justify-center md:flex font-bold text-blue-400 hover:text-sky-300 hover:underline`}
               href={"/recruitment"}
-              onClick={() => setMenuShown(false)}
             >
               Get Involved!
             </Link>
-            <Link
-              className={`font-mono py-2 hover:text-sky-300 underline text-sm`}
-              href={"/aboutus"}
-              onClick={() => setMenuShown(false)}
+
+            {/* Hamburger Menu Button */}
+            <button
+              className="text-slate-300 hover:text-sky-300 transition-colors font-mono font-bold text-lg"
+              type="button"
+              onClick={toggleSidebar}
+              aria-expanded={sidebarOpen}
+              aria-controls={sidebarId}
+              aria-label={sidebarOpen ? "Close sidebar" : "Open sidebar"}
             >
-              About Us
-            </Link>
-            <Link
-              className={`font-mono py-2 hover:text-sky-300 underline text-sm`}
-              href={"/game"}
-              onClick={() => setMenuShown(false)}
-            >
-              Games
-            </Link>
-            <Link
-              className={`font-mono py-2 hover:text-sky-300 underline text-sm`}
-              href={"/articles"}
-              onClick={() => setMenuShown(false)}
-            >
-              Articles
-            </Link>
-            <Link
-              className={`font-mono py-2 hover:text-sky-300 underline text-sm`}
-              href={"/pictures"}
-              onClick={() => setMenuShown(false)}
-            >
-              Pictures
-            </Link>
-            <Link
-              className={`font-mono py-2 hover:text-sky-300 underline text-sm`}
-              href={"/leaderboard"}
-              onClick={() => setMenuShown(false)}
-            >
-              Leaderboard
-            </Link>
-            <Link
-              className={`font-mono py-2 hover:text-sky-300 underline text-sm`}
-              href={"/feedback"}
-              onClick={() => setMenuShown(false)}
-            >
-              Feedback
-            </Link>
-            {profile && (
-              <Link
-                className={`font-mono py-2 hover:text-sky-300 underline text-sm border-t border-slate-700 pt-3`}
-                href={"/me"}
-                onClick={() => setMenuShown(false)}
-              >
-                Dashboard
-              </Link>
-            )}
-            {!profile ? (
-              <button
-                className="font-mono btn-primary w-full mt-2"
-                type="button"
-                onClick={() => {
-                  signInOrRegister();
-                  setMenuShown(false);
-                }}
-              >
-                Log In
-              </button>
+              Menu
+            </button>
+
+            {profile ? (
+              <UserPill user={profile} />
             ) : (
               <button
-                className="font-mono btn-danger w-full mt-2"
+                className={`font-mono btn-primary`}
                 type="button"
-                onClick={() => {
-                  logout();
-                  setMenuShown(false);
-                }}
+                onClick={() => signInOrRegister()}
               >
-                Log Out
+                Login
               </button>
             )}
-          </motion.nav>
+          </div>
+        </div>
+      </nav>
+
+      {/* Sidebar */}
+      <AnimatePresence>
+        {sidebarOpen && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 bg-black bg-opacity-50 z-30 top-14"
+              onClick={() => setSidebarOpen(false)}
+            />
+
+            {/* Sidebar */}
+            <motion.nav
+              initial={{ x: 300, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: 300, opacity: 0 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+              className="fixed right-0 top-14 h-[calc(100vh-3.5rem)] w-64 bg-slate-900 border-l border-sky-900 flex flex-col gap-3 p-4 overflow-y-auto z-40"
+              id={sidebarId}
+              aria-label="Sidebar"
+              ref={sidebarRef}
+              tabIndex={-1}
+            >
+              {profile && (
+                <h1 className="text-lg font-bold text-sky-300 pb-2 border-b border-slate-700">
+                  Hello, {profile.displayName}!
+                </h1>
+              )}
+
+              <Link
+                className={`font-mono py-2 px-3 hover:text-sky-300 hover:bg-slate-800 rounded transition-colors text-sm`}
+                href={"/"}
+                onClick={() => setSidebarOpen(false)}
+              >
+                Home
+              </Link>
+
+              <Link
+                className={`font-mono py-2 px-3 hover:text-sky-300 hover:bg-slate-800 rounded transition-colors text-sm`}
+                href={"/aboutus"}
+                onClick={() => setSidebarOpen(false)}
+              >
+                About Us
+              </Link>
+              <Link
+                className={`font-mono py-2 px-3 hover:text-sky-300 hover:bg-slate-800 rounded transition-colors text-sm`}
+                href={"/sandbox"}
+                onClick={() => setSidebarOpen(false)}
+              >
+                Test Your Code!
+              </Link>
+
+              <Link
+                className={`font-mono py-2 px-3 hover:text-sky-300 hover:bg-slate-800 rounded transition-colors text-sm`}
+                href={"/game"}
+                onClick={() => setSidebarOpen(false)}
+              >
+                Games
+              </Link>
+
+              <Link
+                className={`font-mono py-2 px-3 hover:text-sky-300 hover:bg-slate-800 rounded transition-colors text-sm`}
+                href={"/articles"}
+                onClick={() => setSidebarOpen(false)}
+              >
+                Articles
+              </Link>
+
+              <Link
+                className={`font-mono py-2 px-3 hover:text-sky-300 hover:bg-slate-800 rounded transition-colors text-sm`}
+                href={"/pictures"}
+                onClick={() => setSidebarOpen(false)}
+              >
+                Pictures
+              </Link>
+
+              <Link
+                className={`font-mono py-2 px-3 hover:text-sky-300 hover:bg-slate-800 rounded transition-colors text-sm`}
+                href={"/leaderboard"}
+                onClick={() => setSidebarOpen(false)}
+              >
+                Leaderboard
+              </Link>
+
+              <Link
+                className={`font-mono py-2 px-3 hover:text-sky-300 hover:bg-slate-800 rounded transition-colors text-sm`}
+                href={"/feedback"}
+                onClick={() => setSidebarOpen(false)}
+              >
+                Feedback
+              </Link>
+
+              {profile && (
+                <Link
+                  className={`font-mono py-2 px-3 hover:text-sky-300 hover:bg-slate-800 rounded transition-colors text-sm border-t border-slate-700 pt-3`}
+                  href={"/me"}
+                  onClick={() => setSidebarOpen(false)}
+                >
+                  Dashboard
+                </Link>
+              )}
+
+              {profile && (
+                <div className="border-t border-slate-700 mt-auto pt-3">
+                  <UserPill user={profile} />
+                </div>
+              )}
+            </motion.nav>
+          </>
         )}
       </AnimatePresence>
-    </nav>
+    </>
   );
 }
