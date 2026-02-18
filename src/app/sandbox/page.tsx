@@ -229,7 +229,7 @@ p {
                 </li>
               </ul>
               <p className="text-slate-300 text-sm italic">
-                💡 <strong>Tip:</strong> Click "New cell" to add code cells and
+                💡 <strong>Tip:</strong> Click &quot;New cell&quot; to add code cells and
                 run your Python scripts. You can write multiple cells and run
                 them independently.
               </p>
@@ -287,7 +287,7 @@ p {
                 </li>
               </ul>
               <p className="text-slate-300 text-sm italic">
-                💡 <strong>Tip:</strong> Click "Run" to compile and execute your
+                💡 <strong>Tip:</strong> Click &quot;Run&quot; to compile and execute your
                 Java code. You can create multiple files and use imports like
                 you would in a full IDE.
               </p>
@@ -305,7 +305,7 @@ p {
                 loading="lazy"
               />
               <p className="text-xs text-slate-400 mt-4">
-                Start coding immediately. Click "Run" to compile and execute
+                Start coding immediately. Click &quot;Run&quot; to compile and execute
                 your Java code.
               </p>
             </div>
@@ -345,7 +345,7 @@ p {
               </ul>
               <p className="text-slate-300 text-sm italic">
                 💡 <strong>Tip:</strong> C++ requires compilation before
-                running. Click "Run" to compile your code and see any
+                running. Click &quot;Run&quot; to compile your code and see any
                 compilation errors instantly.
               </p>
             </div>
@@ -362,7 +362,7 @@ p {
                 loading="lazy"
               />
               <p className="text-xs text-slate-400 mt-4">
-                Start writing efficient code immediately. Click "Run" to compile
+                Start writing efficient code immediately. Click &quot;Run&quot; to compile
                 and execute your C++ programs.
               </p>
             </div>
@@ -425,8 +425,8 @@ p {
               />
               <p className="text-xs text-slate-400 mt-4">
                 Create your database schema on the left panel and test SQL
-                queries on the right. Click "Build" to create your tables and
-                "Run SQL" to execute queries.
+                queries on the right. Click &quot;Build&quot; to create your tables and
+                &quot;Run SQL&quot; to execute queries.
               </p>
             </div>
           </div>
