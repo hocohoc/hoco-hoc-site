@@ -124,94 +124,101 @@ export default function NavBar() {
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: 300, opacity: 0 }}
               transition={{ duration: 0.3, ease: "easeInOut" }}
-              className="fixed right-0 top-14 h-[calc(100vh-3.5rem)] w-64 bg-slate-900 border-l border-sky-900 flex flex-col gap-3 p-4 overflow-y-auto z-40"
+              className="fixed right-0 top-14 h-[calc(100vh-3.5rem)] w-64 bg-slate-900 border-l border-sky-900 flex flex-col p-4 z-40"
               id={sidebarId}
               aria-label="Sidebar"
               ref={sidebarRef}
               tabIndex={-1}
             >
-              {profile && (
-                <h1 className="text-lg font-bold text-sky-300 pb-2 border-b border-slate-700">
-                  Hello, {profile.displayName}!
-                </h1>
-              )}
-
-              <Link
-                className={`font-mono py-2 px-3 hover:text-sky-300 hover:bg-slate-800 rounded transition-colors text-sm`}
-                href={"/"}
-                onClick={() => setSidebarOpen(false)}
-              >
-                Home
-              </Link>
-
-              <Link
-                className={`font-mono py-2 px-3 hover:text-sky-300 hover:bg-slate-800 rounded transition-colors text-sm`}
-                href={"/aboutus"}
-                onClick={() => setSidebarOpen(false)}
-              >
-                About Us
-              </Link>
-              <Link
-                className={`font-mono py-2 px-3 hover:text-sky-300 hover:bg-slate-800 rounded transition-colors text-sm`}
-                href={"/sandbox"}
-                onClick={() => setSidebarOpen(false)}
-              >
-                Test Your Code!
-              </Link>
-
-              <Link
-                className={`font-mono py-2 px-3 hover:text-sky-300 hover:bg-slate-800 rounded transition-colors text-sm`}
-                href={"/game"}
-                onClick={() => setSidebarOpen(false)}
-              >
-                Games
-              </Link>
-
-              <Link
-                className={`font-mono py-2 px-3 hover:text-sky-300 hover:bg-slate-800 rounded transition-colors text-sm`}
-                href={"/articles"}
-                onClick={() => setSidebarOpen(false)}
-              >
-                Articles
-              </Link>
-
-              <Link
-                className={`font-mono py-2 px-3 hover:text-sky-300 hover:bg-slate-800 rounded transition-colors text-sm`}
-                href={"/pictures"}
-                onClick={() => setSidebarOpen(false)}
-              >
-                Pictures
-              </Link>
-
-              <Link
-                className={`font-mono py-2 px-3 hover:text-sky-300 hover:bg-slate-800 rounded transition-colors text-sm`}
-                href={"/leaderboard"}
-                onClick={() => setSidebarOpen(false)}
-              >
-                Leaderboard
-              </Link>
-
-              <Link
-                className={`font-mono py-2 px-3 hover:text-sky-300 hover:bg-slate-800 rounded transition-colors text-sm`}
-                href={"/feedback"}
-                onClick={() => setSidebarOpen(false)}
-              >
-                Feedback
-              </Link>
-
-              {profile && (
+              {/* Scrollable Link Section */}
+              <div className="flex-1 overflow-y-auto flex flex-col gap-3 pr-2 custom-scrollbar">
                 <Link
-                  className={`font-mono py-2 px-3 hover:text-sky-300 hover:bg-slate-800 rounded transition-colors text-sm border-t border-slate-700 pt-3`}
-                  href={"/me"}
+                  className="font-mono py-2 px-3 hover:text-sky-300 hover:bg-slate-800 rounded transition-colors text-sm"
+                  href={"/"}
                   onClick={() => setSidebarOpen(false)}
                 >
-                  Dashboard
+                  Home
                 </Link>
-              )}
 
+                <Link
+                  className="font-mono py-2 px-3 hover:text-sky-300 hover:bg-slate-800 rounded transition-colors text-sm"
+                  href={"/aboutus"}
+                  onClick={() => setSidebarOpen(false)}
+                >
+                  About Us
+                </Link>
+
+                <Link
+                  className="font-mono py-2 px-3 hover:text-sky-300 hover:bg-slate-800 rounded transition-colors text-sm"
+                  href={"/sandbox"}
+                  onClick={() => setSidebarOpen(false)}
+                >
+                  Test Your Code!
+                </Link>
+
+                <Link
+                  className="font-mono py-2 px-3 hover:text-sky-300 hover:bg-slate-800 rounded transition-colors text-sm"
+                  href={"/game"}
+                  onClick={() => setSidebarOpen(false)}
+                >
+                  Games
+                </Link>
+
+                <Link
+                  className="font-mono py-2 px-3 hover:text-sky-300 hover:bg-slate-800 rounded transition-colors text-sm"
+                  href={"/articles"}
+                  onClick={() => setSidebarOpen(false)}
+                >
+                  Articles
+                </Link>
+
+                <Link
+                  className="font-mono py-2 px-3 hover:text-sky-300 hover:bg-slate-800 rounded transition-colors text-sm"
+                  href={"/pictures"}
+                  onClick={() => setSidebarOpen(false)}
+                >
+                  Pictures
+                </Link>
+
+                <Link
+                  className="font-mono py-2 px-3 hover:text-sky-300 hover:bg-slate-800 rounded transition-colors text-sm"
+                  href={"/leaderboard"}
+                  onClick={() => setSidebarOpen(false)}
+                >
+                  Leaderboard
+                </Link>
+
+                <Link
+                  className="font-mono py-2 px-3 hover:text-sky-300 hover:bg-slate-800 rounded transition-colors text-sm"
+                  href={"/feedback"}
+                  onClick={() => setSidebarOpen(false)}
+                >
+                  Feedback
+                </Link>
+
+                {profile && (
+                  <Link
+                    className="font-mono py-2 px-3 hover:text-sky-300 hover:bg-slate-800 rounded transition-colors text-sm border-t border-slate-700 pt-3"
+                    href={"/me"}
+                    onClick={() => setSidebarOpen(false)}
+                  >
+                    Dashboard
+                  </Link>
+                )}
+              </div>
+
+              {/* Fixed Bottom Section */}
               {profile && (
-                <div className="border-t border-slate-700 mt-auto pt-3">
-                  <UserPill user={profile} />
+                <div className="border-t border-slate-700 mt-4 pt-3 shrink-0">
+                  <button
+                    onClick={() => {
+                      logout();
+                      setSidebarOpen(false);
+                    }}
+                    className="w-full font-mono py-2 px-3 bg-red-600 hover:bg-red-500 text-white font-bold rounded transition-colors text-sm"
+                  >
+                    Logout
+                  </button>
                 </div>
               )}
             </motion.nav>
