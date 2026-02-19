@@ -8,6 +8,25 @@ import UserPill from "../user-pill/userPill";
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
+const NAV_LINKS = [
+  { href: "/", label: "Home", mobileOnly: false },
+  { href: "/aboutus", label: "About Us", mobileOnly: false },
+  { href: "/recruitment", label: "Get Involved!", mobileOnly: true },
+  { href: "/sandbox", label: "Code Challenges", mobileOnly: false },
+  { href: "/game", label: "Games", mobileOnly: false },
+  { href: "/articles", label: "Articles", mobileOnly: false },
+  { href: "/pictures", label: "Pictures", mobileOnly: false },
+  { href: "/leaderboard", label: "Leaderboard", mobileOnly: false },
+  { href: "/feedback", label: "Feedback", mobileOnly: false },
+];
+
+const QUICK_LINKS = [
+  { href: "/articles", label: "Articles" },
+  { href: "/game", label: "Games" },
+  { href: "/sandbox", label: "Challenges" },
+  { href: "/leaderboard", label: "Leaderboard" },
+];
+
 export default function NavBar() {
   let profile = useProfile();
   let [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
@@ -41,15 +60,16 @@ export default function NavBar() {
     <>
       {/* Top Navigation Bar */}
       <nav
-        className="bg-slate-900 bg-opacity-50 backdrop-blur-md h-14 p-2 flex flex-row items-center justify-center border-b-2 border-b-sky-900 top-0 sticky z-40 w-full"
+        className="bg-slate-900 bg-opacity-50 backdrop-blur-md h-16 px-4 flex flex-row items-center justify-center border-b-2 border-b-sky-900 top-0 sticky z-40 w-full"
         aria-label="Primary"
       >
-        <div className="flex flex-row items-center w-full max-w-screen-xl gap-3">
+        <div className="flex flex-row items-center w-full max-w-screen-xl gap-4">
+          {/* Logo + Title */}
           <Link
             onClick={() => setSidebarOpen(false)}
             href={"/"}
             aria-label="Howard County Hour of Code / AI home"
-            className="flex items-center"
+            className="flex items-center gap-3"
           >
             <Image
               src="/sponsors/hcpss-logo-outlined.png"
@@ -58,42 +78,65 @@ export default function NavBar() {
               height={40}
               className="object-contain"
             />
-          </Link>
-          <Link
-            onClick={() => setSidebarOpen(false)}
-            className={`font-mono text-sky-300 text-xl md:text-2xl font-bold`}
-            href={"/"}
-            aria-label="Howard County Hour of Code / AI home"
-          >
-            &lt;HocoHOC/&gt;
+            <span className="font-mono text-sky-300 text-xl md:text-2xl font-bold">
+              &lt;HocoHOC/&gt;
+            </span>
           </Link>
 
-          <div className="flex-1"></div>
-          <div className="flex flex-row text-xs gap-2 md:gap-5 md:text-md items-center">
+          {/* Desktop Quick Links */}
+          <div className="hidden lg:flex items-center gap-1 ml-6">
+            {QUICK_LINKS.map((link) => (
+              <Link
+                key={link.href}
+                className="font-mono text-sm text-slate-300 hover:text-sky-300 px-3 py-1.5 rounded hover:bg-slate-800 transition-colors"
+                href={link.href}
+              >
+                {link.label}
+              </Link>
+            ))}
+          </div>
+
+          <div className="flex-1" />
+
+          <div className="flex flex-row gap-2 md:gap-3 items-center">
             <Link
-              className={`font-mono rounded text-lg items-center justify-center hidden md:flex font-bold text-blue-400 hover:text-sky-300 hover:underline`}
+              className="hidden md:flex items-center font-mono text-sm font-bold text-blue-400 hover:text-sky-300 hover:underline"
               href={"/recruitment"}
             >
-              Get Involved!
+              Get Involved
             </Link>
 
             {/* Hamburger Menu Button */}
             <button
-              className="text-slate-300 hover:text-sky-300 transition-colors font-mono font-bold text-lg"
+              className="flex items-center gap-2 text-slate-300 hover:text-sky-300 transition-colors font-mono font-bold text-sm px-2 py-1.5 rounded hover:bg-slate-800"
               type="button"
               onClick={toggleSidebar}
               aria-expanded={sidebarOpen}
               aria-controls={sidebarId}
               aria-label={sidebarOpen ? "Close sidebar" : "Open sidebar"}
             >
-              Menu
+              <div className="flex flex-col gap-1 w-4">
+                <motion.span
+                  animate={sidebarOpen ? { rotate: 45, y: 5 } : { rotate: 0, y: 0 }}
+                  className="h-0.5 w-full bg-current rounded-full"
+                />
+                <motion.span
+                  animate={sidebarOpen ? { opacity: 0 } : { opacity: 1 }}
+                  className="h-0.5 w-full bg-current rounded-full"
+                />
+                <motion.span
+                  animate={sidebarOpen ? { rotate: -45, y: -5 } : { rotate: 0, y: 0 }}
+                  className="h-0.5 w-full bg-current rounded-full"
+                />
+              </div>
+              <span className="hidden sm:inline">Menu</span>
             </button>
 
             {profile ? (
               <UserPill user={profile} />
             ) : (
               <button
-                className={`font-mono btn-primary`}
+                className="font-mono btn-primary"
                 type="button"
                 onClick={() => signInOrRegister()}
               >
@@ -114,7 +157,7 @@ export default function NavBar() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="fixed inset-0 bg-black bg-opacity-50 z-30 top-14"
+              className="fixed inset-0 bg-black bg-opacity-50 z-30 top-16"
               onClick={() => setSidebarOpen(false)}
             />
 
@@ -123,8 +166,8 @@ export default function NavBar() {
               initial={{ x: 300, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: 300, opacity: 0 }}
-              transition={{ duration: 0.3, ease: "easeInOut" }}
-              className="fixed right-0 top-14 h-[calc(100vh-3.5rem)] w-64 bg-slate-900 border-l border-sky-900 flex flex-col p-4 z-40"
+              transition={{ duration: 0.25, ease: "easeOut" }}
+              className="fixed right-0 top-16 h-[calc(100vh-4rem)] w-64 bg-slate-900 border-l border-sky-900 flex flex-col p-4 z-40"
               id={sidebarId}
               aria-label="Sidebar"
               ref={sidebarRef}
@@ -132,77 +175,16 @@ export default function NavBar() {
             >
               {/* Scrollable Link Section */}
               <div className="flex-1 overflow-y-auto flex flex-col gap-3 pr-2 custom-scrollbar">
-                <Link
-                  className="font-mono py-2 px-3 hover:text-sky-300 hover:bg-slate-800 rounded transition-colors text-sm"
-                  href={"/"}
-                  onClick={() => setSidebarOpen(false)}
-                >
-                  Home
-                </Link>
-
-                <Link
-                  className="font-mono py-2 px-3 hover:text-sky-300 hover:bg-slate-800 rounded transition-colors text-sm"
-                  href={"/aboutus"}
-                  onClick={() => setSidebarOpen(false)}
-                >
-                  About Us
-                </Link>
-
-                <Link
-                  className="font-mono py-2 px-3 hover:text-sky-300 hover:bg-slate-800 rounded transition-colors text-sm md:hidden"
-                  href={"/recruitment"}
-                  onClick={() => setSidebarOpen(false)}
-                >
-                  Get Involved!
-                </Link>
-
-                <Link
-                  className="font-mono py-2 px-3 hover:text-sky-300 hover:bg-slate-800 rounded transition-colors text-sm"
-                  href={"/sandbox"}
-                  onClick={() => setSidebarOpen(false)}
-                >
-                  Test Your Code!
-                </Link>
-
-                <Link
-                  className="font-mono py-2 px-3 hover:text-sky-300 hover:bg-slate-800 rounded transition-colors text-sm"
-                  href={"/game"}
-                  onClick={() => setSidebarOpen(false)}
-                >
-                  Games
-                </Link>
-
-                <Link
-                  className="font-mono py-2 px-3 hover:text-sky-300 hover:bg-slate-800 rounded transition-colors text-sm"
-                  href={"/articles"}
-                  onClick={() => setSidebarOpen(false)}
-                >
-                  Articles
-                </Link>
-
-                <Link
-                  className="font-mono py-2 px-3 hover:text-sky-300 hover:bg-slate-800 rounded transition-colors text-sm"
-                  href={"/pictures"}
-                  onClick={() => setSidebarOpen(false)}
-                >
-                  Pictures
-                </Link>
-
-                <Link
-                  className="font-mono py-2 px-3 hover:text-sky-300 hover:bg-slate-800 rounded transition-colors text-sm"
-                  href={"/leaderboard"}
-                  onClick={() => setSidebarOpen(false)}
-                >
-                  Leaderboard
-                </Link>
-
-                <Link
-                  className="font-mono py-2 px-3 hover:text-sky-300 hover:bg-slate-800 rounded transition-colors text-sm"
-                  href={"/feedback"}
-                  onClick={() => setSidebarOpen(false)}
-                >
-                  Feedback
-                </Link>
+                {NAV_LINKS.map((link) => (
+                  <Link
+                    key={link.href}
+                    className={`font-mono py-2 px-3 hover:text-sky-300 hover:bg-slate-800 rounded transition-colors text-sm ${link.mobileOnly ? "md:hidden" : ""}`}
+                    href={link.href}
+                    onClick={() => setSidebarOpen(false)}
+                  >
+                    {link.label}
+                  </Link>
+                ))}
 
                 {profile && (
                   <Link

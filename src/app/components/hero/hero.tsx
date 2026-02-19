@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import Link from "next/link"
 import { useProfile } from "../auth-provider/authProvider"
 import { logout, signInOrRegister } from "@/app/services/userService"
+import { motion } from "framer-motion"
 
 export default function Hero() {
     const profile = useProfile()
@@ -79,7 +80,6 @@ export default function Hero() {
     }, [handleResize]);
 
     function handleAuth() {
-        console.log(profile)
         if (profile) {
             logout()
         } else {
@@ -87,23 +87,48 @@ export default function Hero() {
         }
     }
 
-    return <main className={`h-[60vh] md:h-[75vh] min-h-[30rem] bg-sky-950 relative border-b-2 border-b-sky-900 overflow-hidden`}>
-    <canvas onResize={handleResize} ref={canvasRef} className="relative top-0 left-0" aria-hidden="true" role="presentation" tabIndex={-1}></canvas>
+    return <main className="h-[60vh] md:h-[75vh] min-h-[30rem] bg-sky-950 relative border-b-2 border-b-sky-900 overflow-hidden">
+        <canvas onResize={handleResize} ref={canvasRef} className="relative top-0 left-0" aria-hidden="true" role="presentation" tabIndex={-1}></canvas>
+
         <div className="flex flex-row items-center justify-center z-20 absolute top-0 left-0 w-full h-full p-8 bg-opacity-80 bg-slate-900 md:bg-opacity-100 md:bg-transparent md:bg-gradient-to-bl md:via-90% md:via-slate-900 md:from-transparent md:to-slate-900">
             <div className="flex flex-row items-center w-full max-w-screen-xl">
-                <div className="md:w-2/3 w-full">
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, ease: "easeOut" }}
+                    className="md:w-2/3 w-full"
+                >
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-900/50 border border-sky-800 mb-4">
+                        <span className="w-2 h-2 bg-sky-400 rounded-full animate-pulse" />
+                        <span className="font-mono text-xs text-sky-300 tracking-wide">December 8 – 15, 2026</span>
+                    </div>
+
                     <h1 className="text-2xl md:text-6xl">Howard County</h1>
-                    <h1 className={`bg-gradient-to-b from-sky-300 to-sky-500 text-transparent bg-clip-text text-5xl md:text-6xl font-extrabold mb-2 mt-2`}>Hour of Code / AI</h1>
+                    <h1 className="bg-gradient-to-b from-sky-300 to-sky-500 text-transparent bg-clip-text text-5xl md:text-6xl font-extrabold mb-2 mt-2">
+                        Hour of Code / AI
+                    </h1>
                     <p className="text-md mt-3 md:text-base">Compete, Learn, and Win Prizes!</p>
 
-                    <p className={`font-mono text-slate-400 text-sm`}> Howard County Hour of Code is a 7-day event taking place from December 8, 2026 to December 15, 2026. </p>
+                    <p className="font-mono text-slate-400 text-sm">
+                        A 7-day event where students across Howard County explore computer science through articles, games, and coding challenges.
+                    </p>
 
-                    <div className={`font-mono flex flex-row mt-4 gap-2`}>
-                        <button className={`btn-primary ${profile && ("bg-red-400 hover:bg-red-300")}`} type="button" onClick={handleAuth}> {profile ? "Logout" : "Login"} </button>
-                        <Link className="btn-secondary" href={"/articles"}> View Articles </Link>
-                        <Link className="btn-secondary" href={"/game"}> Play Games </Link>
+                    <div className="font-mono flex flex-row mt-4 gap-2">
+                        <button
+                            className={`btn-primary ${profile && "bg-red-400 hover:bg-red-300"}`}
+                            type="button"
+                            onClick={handleAuth}
+                        >
+                            {profile ? "Logout" : "Login"}
+                        </button>
+                        <Link className="btn-secondary" href="/articles">
+                            View Articles
+                        </Link>
+                        <Link className="btn-secondary" href="/game">
+                            Play Games
+                        </Link>
                     </div>
-                </div>
+                </motion.div>
             </div>
         </div>
     </main>
