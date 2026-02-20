@@ -1,29 +1,24 @@
 @keyframes slideout {
   0% {
     transform: translateY(-100%);
-    z-index:0;
     opacity: 0;
   }
   100% {
     transform: translateY(0%);
-    z-index:0;
     opacity: 1;
   }
 }
   
-.animate-slideout {
-  z-index:0;
+.articles-animate-slideout {
   animation: slideout 0.5s ease forwards;
 }
 
-.hidden {
+.articles-hidden {
   opacity: 0;
-  z-index:0;
-  display:none;
+  display: none;
 }
 
-.show {
-  z-index:0;
+.articles-show {
   opacity: 1; 
   transform: translateY(0%);
 }
