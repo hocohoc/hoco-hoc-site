@@ -7,6 +7,7 @@ import { useProfile } from "../auth-provider/authProvider";
 import UserPill from "../user-pill/userPill";
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { usePathname } from "next/navigation";
 
 const NAV_LINKS = [
   { href: "/", label: "Home", mobileOnly: false },
@@ -32,10 +33,16 @@ export default function NavBar() {
   let [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
   const sidebarRef = useRef<HTMLElement | null>(null);
   const sidebarId = "sidebar-navigation";
+  const pathname = usePathname();
 
   function toggleSidebar(): void {
     setSidebarOpen((prev) => !prev);
   }
+
+  // Close sidebar when pathname changes
+  useEffect(() => {
+    setSidebarOpen(false);
+  }, [pathname]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
