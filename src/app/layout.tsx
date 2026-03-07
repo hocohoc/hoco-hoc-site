@@ -10,8 +10,40 @@ const inter = Inter({ subsets: ["latin"], display: 'swap', variable: '--font-int
 const jbm = JetBrains_Mono({ subsets: ["latin"], display: 'swap', variable: '--font-jbm' })
 
 export const metadata = {
-  title: "Howard County Hour of Code / AI",
-  description: "Howard County Hour of Code / AI is a 7-day event to promote learning more about computer science!",
+  title: "Howard County Hour of Code / AI - Learn Computer Science",
+  description: "Join Howard County's 7-day computer science event with interactive tutorials, games, AI challenges, and hands-on projects for all skill levels.",
+  keywords: ["computer science", "coding", "AI", "hour of code", "Howard County", "education", "programming"],
+  authors: [{ name: "Howard County Hour of Code / AI" }],
+  creator: "Howard County Hour of Code / AI",
+  publisher: "Howard County Hour of Code / AI",
+  formatDetection: {
+    email: false,
+    telephone: false,
+    address: false,
+  },
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "https://hocohoc.org",
+    title: "Howard County Hour of Code / AI - Learn Computer Science",
+    description: "A 7-day event promoting computer science education with interactive challenges, games, and AI projects.",
+    images: [
+      {
+        url: "https://hocohoc.org/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Howard County Hour of Code / AI",
+      },
+    ],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    nocache: false,
+    "max-snippet": -1,
+    "max-image-preview": "large",
+    "max-video-preview": -1,
+  },
 };
 
 
