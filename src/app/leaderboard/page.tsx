@@ -28,13 +28,21 @@ export default function LeaderboardPage() {
         })
     }
 
+    const loading = schools.length === 0
+
     return <main className="p-4 flex flex-col items-center">
         <div className="max-w-2xl w-full">
             <div className="bg-sky-800 p-4 rounded mb-2 border-2 border-sky-900">
                 <h1 className="font-mono text-2xl font-bold mb-2">School Leaderboard</h1>
                 <p className="text-sm text-slate-300"> Don&apos;t see your school? Schools that have zero points are not included on the leaderboard. </p>
             </div>
-            {sort(schools).length > 0 ?
+            {loading ? (
+                <div className="flex flex-col gap-1">
+                    {Array.from({ length: 8 }, (_, i) => (
+                        <div key={i} className="h-14 rounded bg-slate-800 animate-pulse" style={{ opacity: 1 - i * 0.1 }} />
+                    ))}
+                </div>
+            ) : sort(schools).length > 0 ?
                 <Leaderboard schools={sort(schools)} className="w-full" />
                 : <p className="p-2 bg-slate-800 rounded"> No schools have gained any points... </p>
             }

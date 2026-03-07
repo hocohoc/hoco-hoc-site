@@ -26,6 +26,19 @@ export default function Sponsors() {
           </a>
         </div>
       </div>
+
+      <div className="border-t border-slate-700 pt-10 flex flex-col md:flex-row md:items-center gap-4">
+        <div className="flex-1">
+          <h2 className="text-2xl font-bold text-slate-100">Interested in sponsoring?</h2>
+          <p className="text-slate-400 mt-1">Help us inspire the next generation of computer scientists in Howard County.</p>
+        </div>
+        <a
+          href="mailto:mdhocohoc@gmail.com?subject=Sponsorship%20Inquiry%20-%20HoCo%20Hour%20of%20Code"
+          className="btn-primary px-6 py-3 text-base font-semibold text-center whitespace-nowrap"
+        >
+          Become a Sponsor
+        </a>
+      </div>
     </div>
   </div>
 }

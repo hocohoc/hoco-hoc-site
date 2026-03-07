@@ -55,7 +55,12 @@ export default function RootLayout({ children }) {
     "url": "https://hocohoc.org",
     "logo": "https://hocohoc.org/og-image.jpg",
     "description": "A 7-day event promoting computer science education with interactive challenges, games, and AI projects.",
-    "founders": [
+    "directors": [
+      {
+        "@type": "Person",
+        "name": "Daniel Gao",
+        "jobTitle": "Director"
+      },
       {
         "@type": "Person",
         "name": "Ankit Mohanty",
