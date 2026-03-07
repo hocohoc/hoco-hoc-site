@@ -61,24 +61,22 @@ export default function StatsCounter(props: Props) {
             </p>
           </div>
           <div className="rounded flex flex-col md:flex-row gap-2 justify-center items-center">
-            <div className="p-4 bg-gray-800/50 rounded flex flex-col items-center w-full gap-2">
-              <h1 className="bg-gradient-to-b from-indigo-300 to-indigo-400 text-transparent bg-clip-text font-mono text-5xl sm:text-6xl font-bold">
-                {displayedStats.totalUsers}
-              </h1>
-              <p className="font-mono text-left text-lg">Registered Users</p>
-            </div>
-            <div className="p-4 bg-gray-800/50 rounded flex flex-col items-center w-full gap-2">
-              <h1 className="bg-gradient-to-b from-indigo-300 to-indigo-400 text-transparent bg-clip-text font-mono text-5xl sm:text-6xl font-bold">
-                {displayedStats.totalViews}
-              </h1>
-              <p className="font-mono text-left text-lg">Article Views</p>
-            </div>
-            <div className="p-4 bg-gray-800/50 rounded flex flex-col items-center w-full gap-2">
-              <h1 className="bg-gradient-to-b from-indigo-300 to-indigo-400 text-transparent bg-clip-text font-mono text-5xl sm:text-6xl font-bold">
-                {Math.round(displayedStats.totalHours)}
-              </h1>
-              <p className="font-mono text-left text-lg">Hours Served</p>
-            </div>
+            {[
+              { value: displayedStats.totalUsers, label: "Registered Users" },
+              { value: displayedStats.totalViews, label: "Article Views" },
+              { value: Math.round(displayedStats.totalHours), label: "Hours Served" },
+            ].map(({ value, label }) => (
+              <div key={label} className="p-4 bg-gray-800/50 rounded flex flex-col items-center w-full gap-2">
+                {props.liveStats.totalUsers === 0 && props.liveStats.totalViews === 0 ? (
+                  <div className="h-14 w-24 rounded bg-indigo-900/50 animate-pulse" />
+                ) : (
+                  <h1 className="bg-gradient-to-b from-indigo-300 to-indigo-400 text-transparent bg-clip-text font-mono text-5xl sm:text-6xl font-bold">
+                    {value}
+                  </h1>
+                )}
+                <p className="font-mono text-left text-lg">{label}</p>
+              </div>
+            ))}
           </div>
         </div>
       </div>

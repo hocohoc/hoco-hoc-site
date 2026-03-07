@@ -20,6 +20,7 @@ export default function MeNav() {
         <p className="text-xs font-mono uppercase text-slate-400 px-3">Admin Panel</p>
         <Link href="/admin/stats" className={`p-3 rounded hover:bg-slate-700 ${path == "/admin/stats" && "bg-slate-800"}`}> Statistics </Link>
         <Link href="/admin/content" className={`p-3 rounded hover:bg-slate-700 ${path == "/admin/content" && "bg-slate-800"}`}> Content </Link>
+        <Link href="/admin/daily-challenges" className={`p-3 rounded hover:bg-slate-700 ${path == "/admin/daily-challenges" && "bg-slate-800"}`}> Daily Challenges </Link>
         <Link href="/admin/raffle" className={`p-3 rounded hover:bg-slate-700 ${path == "/admin/raffle" && "bg-slate-800"}`}> Raffle </Link>
         <Link href="/admin/prizes" className={`p-3 rounded hover:bg-slate-700 ${path == "/admin/prizes" && "bg-slate-800"}`}> Prizes </Link>
       </>

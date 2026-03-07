@@ -19,6 +19,8 @@ import Confetti from "react-confetti"
 import { incrementHoursServed } from "@/app/services/statsService"
 import { useQuery } from "@tanstack/react-query"
 import ErrorPopup from "@/app/components/error-popup/errorPopup"
+import ShareButtons from "@/app/components/share-buttons/shareButtons"
+import AchievementBadge from "@/app/components/achievement-badge/achievementBadge"
 
 export default function Read() {
     const params = useSearchParams()
@@ -36,6 +38,7 @@ export default function Read() {
     let [quizCheckWorking, setQuizCheckWorking] = useState<boolean>(false)
     let [wrongAns, setWrongAns] = useState<number[]>([])
     let [confetti, setConfetti] = useState<boolean>(false)
+    let [showAchievement, setShowAchievement] = useState<boolean>(false)
 
     let profile = useProfile()
     let setProfile = useProfileUpdate()
@@ -141,6 +144,7 @@ export default function Read() {
         setProgress("complete")
         setWrongAns([])
         setConfetti(true)
+        setShowAchievement(true)
         setTimeout(() => setConfetti(false), 7000)
     }
 
@@ -196,6 +200,12 @@ export default function Read() {
         {
             confetti && <Confetti className="fixed top-0 left-0" numberOfPieces={500} recycle={false} style={{ position: "fixed" }} width={windowSize.width} height={windowSize.height} />
         }
+        <AchievementBadge
+            show={showAchievement}
+            title="Article Completed!"
+            description={article ? `You finished "${article.title}"${article.quiz ? ` and earned ${article.quiz.points} points!` : "!"}` : "Great work!"}
+            onClose={() => setShowAchievement(false)}
+        />
         <div className="max-w-3xl w-full h-full p-4">
             <SkeletonTheme baseColor="#1e293b" highlightColor="#64748b">
 
@@ -272,9 +282,12 @@ export default function Read() {
                     (!loadingQuiz && progress != "complete") ? <button className="btn-primary font-mono w-full" type="button" onClick={() => markArticleComplete(true)}>Mark Article Completed</button> : ""
             )}
             {
-                !loadingQuiz && !quiz && progress == "complete" ? <div className="flex items-center justify-center p-3 border-2 border-emerald-400 rounded bg-emerald-400/30 font-mono gap-2 font-bold text-lg" role="status" aria-live="polite">
-                    <CheckCircleIcon height={10} width={15} className="h-7 w-7 text-emerald-300" />
-                    <p className="text-2xl">Complete</p>
+                !loadingQuiz && !quiz && progress == "complete" ? <div className="flex flex-col gap-2">
+                    <div className="flex items-center justify-center p-3 border-2 border-emerald-400 rounded bg-emerald-400/30 font-mono gap-2 font-bold text-lg" role="status" aria-live="polite">
+                        <CheckCircleIcon height={10} width={15} className="h-7 w-7 text-emerald-300" />
+                        <p className="text-2xl">Complete</p>
+                    </div>
+                    <ShareButtons text={`I just completed "${article?.title}" on HoCo Hour of Code / AI!`} className="justify-center" />
                 </div> : ""
             }
             {!profile && (

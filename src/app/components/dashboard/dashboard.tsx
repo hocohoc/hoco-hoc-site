@@ -5,6 +5,7 @@ import { Article, getAllArticles, getSections } from "@/app/services/articleServ
 import ArticleCard from "../article-card/articleCard";
 import { useQuery } from "@tanstack/react-query";
 import ErrorPopup from "../error-popup/errorPopup";
+import BadgesDisplay from "../badges-display/badgesDisplay";
 
 type Props = {
   profile: Profile
@@ -37,6 +38,7 @@ export default function ProfileDashboard(props: Props) {
         <p className="mb-4">An error occured while loading your dashboard. </p>
       </ErrorPopup>
     )}
+    <BadgesDisplay profile={props.profile} />
     <div className="flex flex-row flex-wrap w-full items-stretch gap-4">
       {!loadingSections ? (
         sections.sort((a, b) => a.index - b.index).map(section =>

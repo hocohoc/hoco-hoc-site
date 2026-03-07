@@ -42,6 +42,11 @@ export default function Prizes() {
               Individual Prizes
             </h2>
             <div className="rounded-b bg-slate-900 p-6 border border-slate-700 grid gap-4 md:grid-cols-2">
+              {!data && prizes === DEFAULT_PRIZES && prizes.length === 0 && (
+                Array.from({ length: 4 }, (_, i) => (
+                  <div key={i} className="rounded-xl border border-slate-700 p-4 h-28 animate-pulse bg-slate-800" />
+                ))
+              )}
               {prizes.map((prize) => {
                 const isMajor = prize.tier === "major"
                 return (

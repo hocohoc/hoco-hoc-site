@@ -13,6 +13,7 @@ const NAV_LINKS = [
   { href: "/", label: "Home", mobileOnly: false },
   { href: "/aboutus", label: "About Us", mobileOnly: false },
   { href: "/recruitment", label: "Get Involved!", mobileOnly: true },
+  { href: "/daily-challenge", label: "Daily Challenge", mobileOnly: false },
   { href: "/sandbox", label: "Code Challenges", mobileOnly: false },
   { href: "/game", label: "Games", mobileOnly: false },
   { href: "/articles", label: "Articles", mobileOnly: false },
@@ -24,6 +25,7 @@ const NAV_LINKS = [
 const QUICK_LINKS = [
   { href: "/articles", label: "Articles" },
   { href: "/game", label: "Games" },
+  { href: "/daily-challenge", label: "Daily" },
   { href: "/sandbox", label: "Challenges" },
   { href: "/leaderboard", label: "Leaderboard" },
 ];
