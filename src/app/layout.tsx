@@ -48,10 +48,27 @@ export const metadata = {
 
 
 export default function RootLayout({ children }) {
+  const organizationSchema = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Howard County Hour of Code / AI",
+    "url": "https://hocohoc.org",
+    "logo": "https://hocohoc.org/og-image.jpg",
+    "description": "A 7-day event promoting computer science education with interactive challenges, games, and AI projects.",
+    "founders": [
+      {
+        "@type": "Person",
+        "name": "Ankit Mohanty",
+        "jobTitle": "Director"
+      }
+    ]
+  };
+
   return (
     <html lang="en" className="flex flex-col w-full h-full">
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }} />
       </head>
       <body className={`${inter.className} ${inter.variable} ${jbm.variable} w-full h-full antialiased`}>
         <Suspense>
