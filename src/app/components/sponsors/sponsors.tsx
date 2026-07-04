@@ -10,6 +10,9 @@ export default function Sponsors() {
           <a href="https://x-camp.academy/" target='_blank' rel="noopener noreferrer">
             <Image src="/sponsors/xcamp.png" alt="X-Camp - Computer science education partner" width={150} height={128} className='h-24 md:h-32 w-auto bg-slate-200 rounded-lg p-2' />
           </a>
+          <a href="https://www.wegmans.com/" target='_blank' rel="noopener noreferrer">
+            <Image src="/sponsors/media-Wegmans-Logo-p.png" alt="Wegmans - Supporting local community and education" width={150} height={128} className='h-24 md:h-32 w-auto bg-slate-200 rounded-lg p-2' />
+          </a>
           <a href="https://ctp-web.com/" target='_blank' rel="noopener noreferrer">
             <Image src="/sponsors/ctp.png" alt="Columbia Technology Partners - Supporting tech education" width={150} height={128} className='h-24 md:h-32 w-auto bg-slate-200 rounded-lg p-2' />
           </a>
