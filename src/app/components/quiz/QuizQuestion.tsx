@@ -4,7 +4,6 @@ import Markdown from "react-markdown"
 import { useProfile } from "../auth-provider/authProvider"
 import { mdCodeBlockParser } from "@/app/services/utils"
 import remarkMath from 'remark-math';
-import remarkParse from 'remark-parse'
 import rehypeKatex from 'rehype-katex'
 
 type Props = {
@@ -33,7 +32,7 @@ export default function QuizQuestion(props: Props) {
             </div>
             <div className="w-5/6">
                 <Markdown className="text-lg w-full"
-                    remarkPlugins={[remarkParse, remarkMath]}
+                    remarkPlugins={[remarkMath]}
                     rehypePlugins={[rehypeKatex]}
                     components={{
                         code(code_props) {
@@ -65,7 +64,7 @@ export default function QuizQuestion(props: Props) {
                         />
                         <span aria-hidden="true" className={`min-w-4 min-h-4 rounded-full ${isSelected ? "bg-sky-300" : "bg-slate-600"}`}></span>
                         <Markdown className=""
-                            remarkPlugins={[remarkParse, remarkMath]}
+                            remarkPlugins={[remarkMath]}
                             rehypePlugins={[rehypeKatex]}
                             components={{
                                 code(code_props) {

@@ -63,7 +63,7 @@ export default function FlexiBotGame() {
     e: React.ChangeEvent<HTMLInputElement>,
     label: 0 | 1
   ) {
-    const files = Array.from(e.target.files || []);
+    const files = (e.target.files ? Array.from(e.target.files) : []) as File[];
     if (!files.length) return;
 
     const newImages: TrainImage[] = files.map((file) => ({
@@ -124,7 +124,7 @@ export default function FlexiBotGame() {
   ) {
     if (!model) return;
 
-    const files = Array.from(e.target.files || []);
+    const files = (e.target.files ? Array.from(e.target.files) : []) as File[];
     if (!files.length) return;
 
     const urls = files.map((file) => URL.createObjectURL(file));

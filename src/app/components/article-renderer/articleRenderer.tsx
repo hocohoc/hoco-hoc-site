@@ -5,9 +5,7 @@ import { Profile } from '@/app/services/userService';
 import { ExclamationTriangleIcon, InformationCircleIcon } from "@heroicons/react/24/solid"
 import { mdCodeBlockParser } from '@/app/services/utils';
 import remarkMath from 'remark-math';
-import remarkParse from 'remark-parse'
 import rehypeKatex from 'rehype-katex'
-import rehypeRaw from "rehype-raw";
 
 type Props = {
     markdown: string
@@ -30,7 +28,7 @@ export default function ArticleRenderer(props: Props) {
         className={`prose prose-slate leading-snug my-4 prose-invert 
             prose-headings:mt-5 prose-headings:mb-2 prose-ul:mt-0 
             prose-pre:bg-transparent prose-pre:p-0 prose-li:my-1 ${props.className}`}
-        remarkPlugins={[remarkParse, remarkMath]}
+        remarkPlugins={[remarkMath]}
         rehypePlugins={[rehypeKatex]}
         components={{
             blockquote(quote_props) {
