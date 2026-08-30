@@ -1,6 +1,13 @@
-"use client"
 import { ReactNode } from "react"
 import MeNav from "./me-nav"
+import { createPageMetadata } from "../seo"
+
+export const metadata = createPageMetadata({
+  title: "Student Dashboard",
+  description: "Your private HoCoHOC student dashboard.",
+  path: "/me",
+  noIndex: true,
+})
 
 export default function ProfileDashboardPage({ children }: { children: ReactNode }) {
   return <main className="w-full h-full flex flex-col p-2 md:p-8 items-center">

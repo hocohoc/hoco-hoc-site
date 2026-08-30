@@ -140,7 +140,7 @@ export default function CatTrainerGame() {
   // 🧩 Upload user test images
   async function handleUpload(e: React.ChangeEvent<HTMLInputElement>) {
     if (!model) return;
-    const files = Array.from(e.target.files || []);
+    const files = (e.target.files ? Array.from(e.target.files) : []) as File[];
     const urls = files.map((file) => URL.createObjectURL(file));
 
     const { results } = await evaluateModel(

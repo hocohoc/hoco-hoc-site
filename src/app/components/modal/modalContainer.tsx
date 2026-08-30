@@ -34,7 +34,8 @@ export default function ModalContainer({ children, className, labelledBy, descri
                 return;
             }
 
-            const focusableElements = Array.from(container.querySelectorAll<HTMLElement>(focusableSelector)).filter(element => !element.hasAttribute("disabled"));
+            const focusableElements = (Array.from(container.querySelectorAll<HTMLElement>(focusableSelector)) as HTMLElement[])
+                .filter(element => !element.hasAttribute("disabled"));
             if (focusableElements.length === 0) {
                 event.preventDefault();
                 container.focus();
