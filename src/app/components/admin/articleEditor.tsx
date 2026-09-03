@@ -10,6 +10,7 @@ import QuizEditor from "./quizEditor"
 import Modal from "../modal/modal"
 import { Quiz, createQuiz, getQuiz, getQuizAnswers } from "@/app/services/quizService"
 import { useQuery } from "@tanstack/react-query"
+import DeleteContentButton from "./deleteContentButton"
 
 type Props = {
     article: Article
@@ -17,6 +18,7 @@ type Props = {
     editing: boolean
     onSave: (section: Article, sectionID: string) => void
     onCancel: () => void
+    onDelete?: () => Promise<void>
 }
 
 export default function ArticleEditor(props: Props) {
@@ -225,8 +227,13 @@ export default function ArticleEditor(props: Props) {
                 <button className="btn-primary font-mono flex-1" type="button" onClick={() => props.onSave(article, sectionID)}> {props.editing ? "Save" : "Create"} </button>
                 <button className="btn-secondary font-mono" type="button" onClick={props.onCancel}> Cancel </button>
             </div>
+            {props.editing && props.onDelete && <DeleteContentButton
+                itemType="article"
+                itemName={article.title}
+                onDelete={props.onDelete}
+            />}
         </div>
-        <div className="flex-1 flex-col h-[calc(100vh-7.5rem)]">
+        <div className="flex-1 flex-col h-[calc(100vh-7.5rem)]" data-color-mode="dark">
             <MDEditor className="flex-1"
                 value={article.content}
                 height={"100%"}

@@ -2,12 +2,14 @@
 
 import { Section } from "@/app/services/articleService"
 import { useEffect, useId, useState } from "react"
+import DeleteContentButton from "./deleteContentButton"
 
 type Props = {
     section: Section
     editing: boolean
     onSave: (section: Section) => void
     onCancel: () => void
+    onDelete?: () => Promise<void>
 }
 
 export default function SectionEditor(props: Props) {
@@ -37,5 +39,11 @@ export default function SectionEditor(props: Props) {
             <button className="btn-primary font-mono flex-1" type="button" onClick={() => props.onSave(section)}> {props.editing ? "Save" : "Create"} </button>
             <button className="btn-secondary font-mono" type="button" onClick={props.onCancel}> Cancel </button>
         </div>
+        {props.editing && props.onDelete && <DeleteContentButton
+            itemType="section"
+            itemName={section.title}
+            onDelete={props.onDelete}
+            warning="Every article owned by this section and its quiz data will also be deleted. This cannot be undone."
+        />}
     </div>
 }
