@@ -1,5 +1,5 @@
 import { db } from "../firebase/config"
-import { DocumentReference, arrayUnion, collection, doc, getDoc, getDocs, increment, setDoc, updateDoc } from "firebase/firestore"
+import { DocumentReference, arrayRemove, arrayUnion, collection, deleteField, doc, getDoc, getDocs, increment, setDoc, updateDoc, writeBatch } from "firebase/firestore"
 
 
 export type Article = {
@@ -56,6 +56,72 @@ export async function createArticle(article: Article, section_id: string) {
     await updateDoc(doc(db, "sections/" + section_id), {
         articles: arrayUnion(ref)
     })
+}
+
+export async function deleteArticle(articleId: string, sectionId?: string) {
+    const articleRef = doc(db, "articles/" + articleId)
+    const sections = await getDocs(collection(db, "sections"))
+    const batch = writeBatch(db)
+
+    batch.delete(articleRef)
+    batch.delete(doc(db, "quizzes/" + articleId + "-quiz"))
+    batch.delete(doc(db, "quiz-ans/" + articleId + "-quiz"))
+
+    sections.forEach(section => {
+        const articleRefs = (section.data().articles || []) as DocumentReference[]
+        const referencesArticle = articleRefs.some(ref => ref.id === articleId)
+
+        if (referencesArticle || section.id === sectionId) {
+            batch.update(section.ref, {
+                articles: arrayRemove(articleRef),
+                ["points." + articleId]: deleteField()
+            })
+        }
+    })
+
+    await batch.commit()
+}
+
+export async function deleteSection(sectionId: string) {
+    const [articles, sections] = await Promise.all([
+        getDocs(collection(db, "articles")),
+        getDocs(collection(db, "sections"))
+    ])
+    const ownedArticleIds = articles.docs
+        .filter(article => article.data().sectionID === sectionId)
+        .map(article => article.id)
+    const ownedArticleRefs = ownedArticleIds.map(articleId => doc(db, "articles/" + articleId))
+    const batch = writeBatch(db)
+
+    ownedArticleIds.forEach(articleId => {
+        batch.delete(doc(db, "articles/" + articleId))
+        batch.delete(doc(db, "quizzes/" + articleId + "-quiz"))
+        batch.delete(doc(db, "quiz-ans/" + articleId + "-quiz"))
+    })
+
+    if (ownedArticleRefs.length > 0) {
+        sections.forEach(section => {
+            if (section.id === sectionId) return
+
+            const articleRefs = (section.data().articles || []) as DocumentReference[]
+            const staleArticleIds = ownedArticleIds.filter(articleId =>
+                articleRefs.some(ref => ref.id === articleId)
+            )
+
+            if (staleArticleIds.length > 0) {
+                const updates: Record<string, unknown> = {
+                    articles: arrayRemove(...ownedArticleRefs)
+                }
+                staleArticleIds.forEach(articleId => {
+                    updates["points." + articleId] = deleteField()
+                })
+                batch.update(section.ref, updates)
+            }
+        })
+    }
+
+    batch.delete(doc(db, "sections/" + sectionId))
+    await batch.commit()
 }
 
 export async function getSections(): Promise<Section[]> {

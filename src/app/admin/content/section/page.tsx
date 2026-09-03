@@ -1,8 +1,8 @@
 "use client"
 import SectionEditor from "@/app/components/admin/sectionEditor"
 import { useProfile } from "@/app/components/auth-provider/authProvider"
-import { Section, createSection, getSection } from "@/app/services/articleService"
-import { useQuery } from "@tanstack/react-query"
+import { Section, createSection, deleteSection, getSection } from "@/app/services/articleService"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useState, useEffect } from "react"
 
@@ -19,6 +19,7 @@ export default function AdminSectionEditPage() {
 
     let profile = useProfile()
     const router = useRouter()
+    const queryClient = useQueryClient()
     const params = useSearchParams()
     let [editing, setEditing] = useState(false);
 
@@ -51,13 +52,22 @@ export default function AdminSectionEditPage() {
         router.back()
     }
 
+    async function handleDelete() {
+        await deleteSection(section.id)
+        await Promise.all([
+            queryClient.invalidateQueries({ queryKey: ["articles"] }),
+            queryClient.invalidateQueries({ queryKey: ["sections"] })
+        ])
+        router.push("/admin/content")
+    }
+
     return <main>
         {sectionLoadError && <span className="text-red-400"> An error occured while loading the requested section! </span>}
         {loadingSection && <span className="text-slate-400"> Loading... </span>}
         {(profile && profile.admin) ?
             <div className="w-full h-auto flex justify-center">
                 <div className="max-w-3xl w-full h-full p-4 flex flex-col gap-2">
-                    <SectionEditor section={!loadingSection && !sectionLoadError && editing ? section : defaultSection} editing={editing} onSave={handleSave} onCancel={handleCancel}></SectionEditor>
+                    <SectionEditor section={!loadingSection && !sectionLoadError && editing ? section : defaultSection} editing={editing} onSave={handleSave} onCancel={handleCancel} onDelete={editing && section ? handleDelete : undefined}></SectionEditor>
                 </div>
             </div> : <p className="p-2">You don&apos;t have admin permissions. If you think this is a mistake, contact us.</p>}
     </main>
