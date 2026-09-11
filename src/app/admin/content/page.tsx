@@ -47,7 +47,7 @@ export default function AdminContentPage() {
         ])
     }
 
-    return <main>
+    return <div>
 
         {
             (profile && profile.admin) ?
@@ -112,5 +112,5 @@ export default function AdminContentPage() {
                 </div> :
                 <p className="p-2">You don&apos;t have admin permissions. If you think this is a mistake, contact us.</p>
         }
-    </main>
+    </div>
 }

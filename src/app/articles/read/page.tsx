@@ -1,5 +1,6 @@
 "use client"
 
+import ArticleVideo from "@/app/components/article-renderer/articleVideo"
 import { getArticleFromID, Article, incrementViewCount } from "@/app/services/articleService"
 import { useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
@@ -145,7 +146,7 @@ export default function Read() {
         setWrongAns([])
         setConfetti(true)
         setShowAchievement(true)
-        setTimeout(() => setConfetti(false), 7000)
+        setTimeout(() => setConfetti(false), 4000)
     }
 
 
@@ -175,7 +176,7 @@ export default function Read() {
         // setQuizError("contest-not-live")
     }
 
-    return <main className="flex flex-col items-center h-auto">
+    return <div className="flex flex-col items-center h-auto">
         {articleLoadError ?
             <ErrorPopup error={articleLoadError}>
                 <p className="mb-4">A error occurred while fetching this article. This is most likely because the article you requested does not exist. Try going back to the articles and sections page to find an existing article. If the problem persists, contact us.</p>
@@ -198,7 +199,7 @@ export default function Read() {
             </ErrorPopup>
         }
         {
-            confetti && <Confetti className="fixed top-0 left-0" numberOfPieces={500} recycle={false} style={{ position: "fixed" }} width={windowSize.width} height={windowSize.height} />
+            confetti && <Confetti aria-hidden="true" className="fixed top-0 left-0 pointer-events-none motion-reduce:hidden" numberOfPieces={500} recycle={false} style={{ position: "fixed" }} width={windowSize.width} height={windowSize.height} />
         }
         <AchievementBadge
             show={showAchievement}
@@ -239,30 +240,7 @@ export default function Read() {
                 {
                     !loadingArticle && article ?
                         <>
-                            {article.video && article.video.url ? (
-                                (() => {
-                                    const url = article.video.url.trim();
-                                    const youtubeMatch = url.match(/(?:v=|youtu\.be\/|youtube\.com\/embed\/)([A-Za-z0-9_-]{6,})/);
-                                    if ((article.video.type === "youtube" || (!article.video.type && youtubeMatch)) && youtubeMatch) {
-                                        const id = youtubeMatch[1];
-                                        const embed = `https://www.youtube.com/embed/${id}`;
-                                        return <div className="my-4">
-                                            <iframe src={embed} title="article-video" className="w-full aspect-video rounded" allowFullScreen />
-                                        </div>
-                                    }
-                                    if (article.video.type === "mp4" || url.toLowerCase().endsWith(".mp4")) {
-                                        return <div className="my-4">
-                                            <video controls className="w-full rounded">
-                                                <source src={url} type="video/mp4" />
-                                                Your browser does not support the video tag.
-                                            </video>
-                                        </div>
-                                    }
-                                    return <div className="my-4">
-                                        <iframe src={url} title="article-video" className="w-full aspect-video rounded" allowFullScreen />
-                                    </div>
-                                })()
-                            ) : ""}
+                            <ArticleVideo video={article.video} title={article.title} />
                             <ArticleRenderer markdown={article.content} profile={profile} />
                         </> :
                         <div>
@@ -301,5 +279,5 @@ export default function Read() {
                 </div>
             )}
         </div>
-    </main >
+    </div>
 }

@@ -107,7 +107,7 @@ export default function QuizEditor(props: Props) {
             alert("Data seems to be invalid, double check your inputs!")
         }
     }
-    return props.quiz && <main className="flex flex-col gap-2 p-2">
+    return props.quiz && <div className="flex flex-col gap-2 p-2">
         <h1 className="text-xl font-bold">{props.editing ? "Edit Quiz" : "Create Quiz"}</h1>
         <label className="block" htmlFor={pointsFieldId}>Point Value</label>
         <input id={pointsFieldId} type="number" value={quiz.points ?? 0} onChange={e => setQuiz({ ...quiz, points: Number(e.target.value) })} />
@@ -123,5 +123,5 @@ export default function QuizEditor(props: Props) {
             <button className="btn-primary flex-1 font-mono" type="button" onClick={handleSave}>Save</button>
             <button className="btn-secondary font-mono" type="button" onClick={props.onCancel}>Cancel</button>
         </div>
-    </main>
+    </div>
 }

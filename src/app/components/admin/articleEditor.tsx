@@ -1,5 +1,6 @@
 "use client"
 
+import ArticleVideo from "../article-renderer/articleVideo"
 import { Article, setArticleQuiz } from "@/app/services/articleService"
 import { LOCAL_VIDEOS } from "@/app/data/localVideos"
 import MDEditor from "@uiw/react-md-editor"
@@ -50,6 +51,10 @@ export default function ArticleEditor(props: Props) {
     const sponsorSiteId = useId();
     const sponsorMessageId = useId();
     const videoUrlId = useId();
+    const localVideoId = useId();
+    const captionsId = useId();
+    const transcriptId = useId();
+    const descriptionVideoId = useId();
     const videoTypeId = useId();
 
     useEffect(() => {
@@ -90,35 +95,6 @@ export default function ArticleEditor(props: Props) {
         } else {
             setArticle({ ...article, sponsor: null })
         }
-    }
-
-    function renderVideo(video?: { url: string, type?: string }) {
-        if (!video || !video.url) return null;
-
-        const url = video.url.trim();
-
-        const youtubeMatch = url.match(/(?:v=|youtu\.be\/|youtube\.com\/embed\/)([A-Za-z0-9_-]{6,})/);
-        if ((video.type === "youtube" || (!video.type && youtubeMatch)) && youtubeMatch) {
-            const id = youtubeMatch[1];
-            const embed = `https://www.youtube.com/embed/${id}`;
-            return <div className="my-4">
-                <iframe src={embed} title="article-video" className="w-full aspect-video rounded" allowFullScreen />
-            </div>
-        }
-
-        if (video.type === "mp4" || url.toLowerCase().endsWith(".mp4")) {
-            return <div className="my-4">
-                <video controls className="w-full rounded">
-                    <source src={url} type="video/mp4" />
-                    Your browser does not support the video tag.
-                </video>
-            </div>
-        }
-
-        // default: embed via iframe
-        return <div className="my-4">
-            <iframe src={url} title="article-video" className="w-full aspect-video rounded" allowFullScreen />
-        </div>
     }
 
     function handleSave(quiz: Quiz, answers: number[]) {
@@ -180,8 +156,8 @@ export default function ArticleEditor(props: Props) {
             <label className="block mt-2" htmlFor={videoUrlId}>Video URL (optional)</label>
             <input id={videoUrlId} type="text" placeholder="https://..." value={article.video?.url || ""} onChange={(e) => setArticle({ ...article, video: e.target.value ? { ...(article.video || {}), url: e.target.value } : undefined })} />
 
-            <label className="block mt-2">Or choose a local video</label>
-            <select className="mb-2" value={article.video?.url || ""} onChange={(e) => {
+            <label className="block mt-2" htmlFor={localVideoId}>Or choose a local video</label>
+            <select id={localVideoId} className="mb-2" value={article.video?.url || ""} onChange={(e) => {
                 const val = e.target.value;
                 if (!val) {
                     setArticle({ ...article, video: undefined })
@@ -200,6 +176,17 @@ export default function ArticleEditor(props: Props) {
                 <option value="mp4">MP4</option>
                 <option value="iframe">Embed</option>
             </select>
+
+            {article.video?.url && <fieldset className="flex flex-col gap-2 border border-slate-500 rounded p-3 my-3">
+                <legend>Video accessibility</legend>
+                <label htmlFor={captionsId}>English captions URL (WebVTT file for MP4 videos)</label>
+                <input id={captionsId} type="text" value={article.video.captionsUrl || ""} onChange={e => setArticle({ ...article, video: { ...article.video, captionsUrl: e.target.value } })} />
+                <label htmlFor={transcriptId}>Video transcript</label>
+                <textarea id={transcriptId} value={article.video.transcript || ""} onChange={e => setArticle({ ...article, video: { ...article.video, transcript: e.target.value } })} />
+                <label htmlFor={descriptionVideoId}>Audio-described video URL</label>
+                <input id={descriptionVideoId} type="text" value={article.video.audioDescriptionUrl || ""} onChange={e => setArticle({ ...article, video: { ...article.video, audioDescriptionUrl: e.target.value } })} />
+                <p className="text-sm text-slate-300">Review captions for accuracy and include meaningful visual information in the transcript. YouTube captions are managed on YouTube. A transcript does not replace required audio description.</p>
+            </fieldset>}
 
             <div>
                 <input id={sponsorToggleId} type="checkbox" className="mr-2" checked={sponsored} onChange={e => handleSponsor(e.target.checked)} />
@@ -251,7 +238,7 @@ export default function ArticleEditor(props: Props) {
                                     </div>
                                 ))}
                             </div>
-                            {renderVideo(article.video)}
+                            {<ArticleVideo video={article.video} title={article.title} />}
                             <ArticleRenderer markdown={source} />
                         </div>
                     }

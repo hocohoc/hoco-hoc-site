@@ -28,9 +28,9 @@ export default function QuizQuestion(props: Props) {
     return <section className={`flex flex-col ${props.className} gap-2`}>
         <div className={`flex flex-row items-start gap-2 ${props.wrong && "border rounded border-red-400 bg-red-400/30"}`}>
             <div>
-                <h1 className="ml-1 font-bold font-mono text-lg">{props.number}.</h1>
+                <p className="ml-1 font-bold font-mono text-lg">{props.number}.</p>
             </div>
-            <div className="w-5/6">
+            <div className="w-5/6 min-w-0" id={`${groupId}-question`}>
                 <Markdown className="text-lg w-full"
                     remarkPlugins={[remarkMath]}
                     rehypePlugins={[rehypeKatex]}
@@ -42,7 +42,8 @@ export default function QuizQuestion(props: Props) {
                 >{props.question.question}</Markdown>
             </div>
         </div>
-        <fieldset className="flex flex-col gap-1" aria-invalid={props.wrong}>
+        {props.wrong && <p id={`${groupId}-error`} className="text-red-300">Your answer to question {props.number} is incorrect. Choose another answer and try again.</p>}
+        <fieldset className="flex flex-col gap-1" aria-labelledby={`${groupId}-question`} aria-invalid={props.wrong} aria-describedby={props.wrong ? `${groupId}-error` : undefined}>
             <legend className="sr-only">Question {props.number} answer choices</legend>
             {props.question.options.map((opt, i) => {
                 const optionId = `${groupId}-opt-${i}`;
@@ -51,7 +52,7 @@ export default function QuizQuestion(props: Props) {
                     <label
                         key={optionId}
                         htmlFor={optionId}
-                        className={`flex flex-row gap-2 items-center rounded border p-2 py-4 cursor-pointer hover:bg-sky-700/30 ${isSelected ? "bg-sky-700/30 border-sky-300" : "bg-slate-9000/30 border-slate-700"}`}
+                        className={`flex flex-row gap-2 items-center rounded border p-2 py-4 cursor-pointer hover:bg-sky-700/30 focus-within:ring-2 focus-within:ring-sky-300 ${isSelected ? "bg-sky-700/30 border-sky-300" : "bg-slate-900/30 border-slate-500"}`}
                     >
                         <input
                             id={optionId}
@@ -60,9 +61,8 @@ export default function QuizQuestion(props: Props) {
                             value={i}
                             checked={isSelected}
                             onChange={() => handleSelectionChange(i)}
-                            className="sr-only"
+                            className="w-5 h-5 shrink-0 appearance-none rounded-full border-2 border-slate-300 bg-slate-900 checked:border-[6px] checked:border-sky-300"
                         />
-                        <span aria-hidden="true" className={`min-w-4 min-h-4 rounded-full ${isSelected ? "bg-sky-300" : "bg-slate-600"}`}></span>
                         <Markdown className=""
                             remarkPlugins={[remarkMath]}
                             rehypePlugins={[rehypeKatex]}

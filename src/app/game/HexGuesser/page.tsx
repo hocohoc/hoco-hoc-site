@@ -66,6 +66,11 @@ function generateDecoys(correct: string, count: number): string[] {
 
 const POINTS: Record<string, number> = { easy: 2, medium: 4, hard: 7 };
 
+function describeRGB(hex: string) {
+  if (!/^#[0-9a-f]{6}$/i.test(hex)) return "Loading color";
+  return `Red ${parseInt(hex.slice(1, 3), 16)}, green ${parseInt(hex.slice(3, 5), 16)}, blue ${parseInt(hex.slice(5, 7), 16)}`;
+}
+
 export default function HexGuesserPage() {
   const profile = useProfile();
   const [difficulty, setDifficulty] = useState<"easy" | "medium" | "hard">("easy");
@@ -137,17 +142,17 @@ export default function HexGuesserPage() {
       setStreak(0);
     }
 
-    setTimeout(() => newRound(), correct ? 1200 : 2000);
+
   }
 
   const diffColors: Record<string, string> = {
-    easy: "bg-green-600",
-    medium: "bg-yellow-600",
-    hard: "bg-red-600",
+    easy: "bg-green-700",
+    medium: "bg-yellow-700",
+    hard: "bg-red-700",
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-purple-950 via-gray-900 to-black text-white relative">
+    <div className="min-h-screen bg-gradient-to-b from-purple-950 via-gray-900 to-black text-white relative">
       <div className="absolute top-6 left-6">
         <Link href="/game" className="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg text-sm font-medium shadow-md transition">
           ← Back to Games
@@ -156,12 +161,12 @@ export default function HexGuesserPage() {
       <div className="pt-20 pb-10 px-6 flex flex-col items-center">
         <div className="w-full max-w-2xl">
           {/* Header */}
-          <div className="bg-gray-900 border border-gray-700 rounded-lg p-8 mb-6">
-            <h1 className="text-5xl font-bold mb-3">Hex Guesser</h1>
+          <div className="bg-gray-900 border border-gray-700 rounded-lg p-4 sm:p-8 mb-6">
+            <h1 className="text-3xl sm:text-5xl font-bold mb-3">Hex Guesser</h1>
             <p className="text-gray-400 text-lg">
               Test your knowledge of hex color codes{profile ? " and earn points" : " (sign in to earn points)"}!
             </p>
-            <div className="flex gap-4 text-base mt-4 flex-wrap">
+            <div className="flex flex-wrap gap-4 text-base mt-4 flex-wrap">
               {profile && (
                 <div className="bg-gray-800 border border-gray-600 px-5 py-3 rounded">
                   <span className="text-gray-400">Points: </span>
@@ -186,6 +191,7 @@ export default function HexGuesserPage() {
             {(["easy", "medium", "hard"] as const).map((d) => (
               <button
                 key={d}
+                aria-pressed={difficulty === d}
                 onClick={() => setDifficulty(d)}
                 className={`px-5 py-2 rounded-lg font-semibold transition-colors ${
                   difficulty === d ? diffColors[d] + " text-white" : "bg-gray-700 text-gray-300 hover:bg-gray-600"
@@ -205,12 +211,12 @@ export default function HexGuesserPage() {
           </div>
 
           {/* Game Area */}
-          <div className="bg-gray-900 border border-gray-700 rounded-lg p-8">
+          <div className="bg-gray-900 border border-gray-700 rounded-lg p-4 sm:p-8">
             {mode === "hex-to-color" ? (
               <>
                 {/* Show hex, pick the color */}
                 <h2 className="text-center text-3xl font-mono font-bold mb-6">{correctHex}</h2>
-                <p className="text-center text-gray-400 mb-6">Which color does this hex code represent?</p>
+                <p className="text-center text-gray-400 mb-6">Which color does this hex code represent? You can use the red, green and blue values to answer without identifying the colors visually.</p>
                 <div className="grid grid-cols-2 gap-4">
                   {options.map((hex) => {
                     const isCorrect = hex === correctHex;
@@ -224,11 +230,14 @@ export default function HexGuesserPage() {
                       <button
                         key={hex}
                         onClick={() => handleAnswer(hex)}
-                        disabled={answered}
-                        className={`h-24 md:h-32 rounded-xl border-2 transition-all ${borderClass} ${answered ? "cursor-default" : "cursor-pointer hover:scale-105"}`}
+                        aria-disabled={answered}
+                        aria-pressed={isChosen}
+                        className={`min-h-24 md:min-h-32 rounded-xl border-2 transition-all ${borderClass} ${answered ? "cursor-default" : "cursor-pointer hover:scale-105"}`}
                         style={{ backgroundColor: hex }}
-                        aria-label={`Color option ${hex}`}
-                      />
+                        aria-label={`Color option: ${describeRGB(hex)}`}
+                      >
+                        <span className="inline-block m-2 p-1 bg-gray-950 text-white rounded text-xs">{describeRGB(hex)}</span>
+                      </button>
                     );
                   })}
                 </div>
@@ -239,7 +248,9 @@ export default function HexGuesserPage() {
                 <div
                   className="w-full h-32 md:h-40 rounded-xl mb-6 border-2 border-gray-600"
                   style={{ backgroundColor: correctHex }}
+                  role="img" aria-label={describeRGB(correctHex)}
                 />
+                <p className="text-center mb-4">{describeRGB(correctHex)}</p>
                 <p className="text-center text-gray-400 mb-6">What hex code produces this color?</p>
                 <div className="grid grid-cols-2 gap-4">
                   {options.map((hex) => {
@@ -254,7 +265,8 @@ export default function HexGuesserPage() {
                       <button
                         key={hex}
                         onClick={() => handleAnswer(hex)}
-                        disabled={answered}
+                        aria-disabled={answered}
+                        aria-pressed={isChosen}
                         className={`p-4 rounded-xl border border-gray-600 font-mono text-lg font-bold transition-all ${bg} ${answered ? "cursor-default" : "cursor-pointer hover:scale-105"}`}
                       >
                         {hex}
@@ -266,6 +278,7 @@ export default function HexGuesserPage() {
             )}
 
             {/* Feedback */}
+            <div role="status" aria-live="polite" aria-atomic="true">
             {answered && (
               <div className={`mt-6 p-4 rounded-lg text-center font-semibold ${
                 chosenAnswer === correctHex
@@ -273,10 +286,12 @@ export default function HexGuesserPage() {
                   : "bg-red-900/50 border border-red-500 text-red-200"
               }`}>
                 {chosenAnswer === correctHex
-                  ? `Correct! +${POINTS[difficulty]} points`
+                  ? (profile ? `Correct! Round worth ${POINTS[difficulty]} points.` : "Correct! Sign in to earn points.")
                   : `Wrong! The answer was ${correctHex}`}
               </div>
             )}
+            </div>
+            <button onClick={newRound} className="btn-secondary w-full mt-4">{answered ? "Next Round" : "Skip Round"}</button>
           </div>
 
           {/* How to Play */}
@@ -292,6 +307,6 @@ export default function HexGuesserPage() {
           </div>
         </div>
       </div>
-    </main>
+    </div>
   );
 }

@@ -14,15 +14,15 @@ export default function Dashboard() {
 
   return <div className="w-full h-full">
     {profile ?
-      <main className="w-full h-full flex flex-col">
+      <div className="w-full h-full flex flex-col">
         <div className="flex flex-col md:flex-row md:items-center gap-2 mb-2">
           <h1 className="text-3xl font-bold flex-1">Welcome, {profile.displayName}!</h1>
           <ShareButtons text={`I've earned ${Math.round(totalPoints)} points on HoCo Hour of Code / AI! Join me and compete!`} />
         </div>
         <hr className="border border-slate-600 mb-4" />
         <ProfileDashboard profile={profile} />
-      </main> : (
-        <main className="w-full h-full flex flex-col items-center justify-center py-16">
+      </div> : (
+        <div className="w-full h-full flex flex-col items-center justify-center py-16">
           <div className="max-w-md w-full text-center flex flex-col items-center gap-6">
             <div className="w-16 h-16 rounded-full bg-sky-900/50 border border-sky-800 flex items-center justify-center">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-sky-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -44,7 +44,7 @@ export default function Dashboard() {
               &larr; Back to home
             </Link>
           </div>
-        </main>
+        </div>
       )}
   </div>
 }

@@ -47,7 +47,7 @@ export default function PicturesPage() {
   const currentYearData = picturesByYear.find((group) => group.year === selectedYear)
 
   return (
-    <main className="bg-slate-950 min-h-screen text-white flex flex-col items-center p-4 selection:bg-sky-500/30">
+    <div className="bg-slate-950 min-h-screen text-white flex flex-col items-center p-4 selection:bg-sky-500/30">
       <div className="w-full max-w-4xl space-y-8 pt-4 pb-12">
         {/* Header Section */}
         <section className="relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/50 p-8 shadow-2xl backdrop-blur-sm">
@@ -254,6 +254,6 @@ export default function PicturesPage() {
           </div>
         </div>
       )}
-    </main>
+    </div>
   )
 }

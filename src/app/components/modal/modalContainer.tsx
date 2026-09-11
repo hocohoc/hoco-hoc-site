@@ -11,6 +11,8 @@ type Props = {
 
 export default function ModalContainer({ children, className, labelledBy, describedBy, ariaLabel, onDismiss }: Props) {
     const containerRef = useRef<HTMLDivElement | null>(null);
+    const dismissRef = useRef(onDismiss);
+    dismissRef.current = onDismiss;
 
     useEffect(() => {
         const previouslyFocused = document.activeElement as HTMLElement | null;
@@ -24,9 +26,9 @@ export default function ModalContainer({ children, className, labelledBy, descri
         (initialFocusTarget ?? container).focus();
 
         const handleKeyDown = (event: KeyboardEvent) => {
-            if (event.key === "Escape" && onDismiss) {
+            if (event.key === "Escape" && dismissRef.current) {
                 event.preventDefault();
-                onDismiss();
+                dismissRef.current();
                 return;
             }
 
@@ -35,7 +37,7 @@ export default function ModalContainer({ children, className, labelledBy, descri
             }
 
             const focusableElements = (Array.from(container.querySelectorAll<HTMLElement>(focusableSelector)) as HTMLElement[])
-                .filter(element => !element.hasAttribute("disabled"));
+                .filter(element => !element.hasAttribute("disabled") && element.getClientRects().length > 0);
             if (focusableElements.length === 0) {
                 event.preventDefault();
                 container.focus();
@@ -45,7 +47,10 @@ export default function ModalContainer({ children, className, labelledBy, descri
             const firstElement = focusableElements[0];
             const lastElement = focusableElements[focusableElements.length - 1];
 
-            if (!event.shiftKey && document.activeElement === lastElement) {
+            if (!container.contains(document.activeElement) || document.activeElement === container) {
+                event.preventDefault();
+                (event.shiftKey ? lastElement : firstElement).focus();
+            } else if (!event.shiftKey && document.activeElement === lastElement) {
                 event.preventDefault();
                 firstElement.focus();
             } else if (event.shiftKey && document.activeElement === firstElement) {
@@ -60,7 +65,7 @@ export default function ModalContainer({ children, className, labelledBy, descri
             document.removeEventListener("keydown", handleKeyDown);
             previouslyFocused?.focus?.();
         };
-    }, [onDismiss]);
+    }, []);
 
     return <div
         ref={containerRef}

@@ -7,6 +7,7 @@ import { useProfile } from "../auth-provider/authProvider";
 import UserPill from "../user-pill/userPill";
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import ModalContainer from "../modal/modalContainer";
 import { usePathname } from "next/navigation";
 
 const NAV_LINKS = [
@@ -33,7 +34,16 @@ const QUICK_LINKS = [
 export default function NavBar() {
   let profile = useProfile();
   let [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
-  const sidebarRef = useRef<HTMLElement | null>(null);
+  const navRef = useRef<HTMLElement>(null);
+  useEffect(() => {
+    const nav = navRef.current;
+    if (!nav) return;
+    const measure = () => document.documentElement.style.setProperty("--site-nav-height", `${nav.getBoundingClientRect().height}px`);
+    const observer = new ResizeObserver(measure);
+    observer.observe(nav);
+    measure();
+    return () => observer.disconnect();
+  }, []);
   const sidebarId = "sidebar-navigation";
   const pathname = usePathname();
 
@@ -46,48 +56,31 @@ export default function NavBar() {
     setSidebarOpen(false);
   }, [pathname]);
 
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        setSidebarOpen(false);
-      }
-    };
-
-    if (sidebarOpen) {
-      document.addEventListener("keydown", handleKeyDown);
-      const focusable =
-        sidebarRef.current?.querySelector<HTMLElement>("a, button");
-      focusable?.focus();
-    }
-
-    return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [sidebarOpen]);
 
   return (
     <>
       {/* Top Navigation Bar */}
       <nav
-        className="bg-slate-900 bg-opacity-50 backdrop-blur-md h-16 px-4 flex flex-row items-center justify-center border-b-2 border-b-sky-900 top-0 sticky z-40 w-full"
+        ref={navRef}
+        className="bg-slate-900 bg-opacity-50 backdrop-blur-md min-h-16 py-2 px-2 sm:px-4 flex flex-row items-center justify-center border-b-2 border-b-sky-900 top-0 sticky z-40 w-full"
         aria-label="Primary"
       >
-        <div className="flex flex-row items-center w-full max-w-screen-xl gap-4">
+        <div className="flex flex-row items-center w-full max-w-screen-xl gap-2 sm:gap-4 flex-wrap">
           {/* Logo + Title */}
           <Link
             onClick={() => setSidebarOpen(false)}
             href={"/"}
             aria-label="Howard County Hour of Code / AI home"
-            className="flex items-center gap-3"
+            className="flex items-center gap-2"
           >
             <Image
               src="/sponsors/hcpss-logo-outlined.png"
               alt="HCPSS Logo"
               width={40}
               height={40}
-              className="object-contain"
+              className="object-contain w-8 h-8 sm:w-10 sm:h-10"
             />
-            <span className="font-mono text-sky-300 text-xl md:text-2xl font-bold">
+            <span className="font-mono text-sky-300 text-base sm:text-xl md:text-2xl font-bold">
               &lt;HocoHOC/&gt;
             </span>
           </Link>
@@ -159,29 +152,19 @@ export default function NavBar() {
       {/* Sidebar */}
       <AnimatePresence>
         {sidebarOpen && (
-          <>
-            {/* Backdrop */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="fixed inset-0 bg-black bg-opacity-50 z-30 top-16"
-              onClick={() => setSidebarOpen(false)}
-            />
-
+          <ModalContainer ariaLabel="Site menu" onDismiss={() => setSidebarOpen(false)} className="!p-0 !items-end">
             {/* Sidebar */}
             <motion.nav
               initial={{ x: 300, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: 300, opacity: 0 }}
               transition={{ duration: 0.25, ease: "easeOut" }}
-              className="fixed right-0 top-16 h-[calc(100vh-4rem)] w-64 bg-slate-900 border-l border-sky-900 flex flex-col p-4 z-40"
+              className="h-full w-72 max-w-full bg-slate-900 border-l border-sky-900 flex flex-col p-4 z-40"
               id={sidebarId}
               aria-label="Sidebar"
-              ref={sidebarRef}
               tabIndex={-1}
             >
+              <button type="button" onClick={() => setSidebarOpen(false)} className="btn-secondary self-end mb-4">Close menu</button>
               {/* Scrollable Link Section */}
               <div className="flex-1 overflow-y-auto flex flex-col gap-3 pr-2 custom-scrollbar">
                 {NAV_LINKS.map((link) => (
@@ -221,7 +204,7 @@ export default function NavBar() {
                 </div>
               )}
             </motion.nav>
-          </>
+          </ModalContainer>
         )}
       </AnimatePresence>
     </>

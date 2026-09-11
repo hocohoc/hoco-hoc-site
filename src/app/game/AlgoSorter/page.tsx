@@ -135,13 +135,13 @@ export default function AlgoSorterPage() {
   }
 
   const diffColors: Record<Difficulty, string> = {
-    easy: "bg-green-600",
-    medium: "bg-yellow-600",
-    hard: "bg-red-600",
+    easy: "bg-green-700",
+    medium: "bg-yellow-700",
+    hard: "bg-red-700",
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-emerald-950 via-gray-900 to-black text-white relative">
+    <div className="min-h-screen bg-gradient-to-b from-emerald-950 via-gray-900 to-black text-white relative">
       <div className="absolute top-6 left-6">
         <Link
           href="/game"
@@ -153,13 +153,13 @@ export default function AlgoSorterPage() {
       <div className="pt-20 pb-10 px-6 flex flex-col items-center">
         <div className="w-full max-w-2xl">
           {/* Header */}
-          <div className="bg-gray-900 border border-gray-700 rounded-lg p-8 mb-6">
-            <h1 className="text-5xl font-bold mb-3">Algo Sorter</h1>
+          <div className="bg-gray-900 border border-gray-700 rounded-lg p-4 sm:p-8 mb-6">
+            <h1 className="text-3xl sm:text-5xl font-bold mb-3">Algo Sorter</h1>
             <p className="text-gray-400 text-lg">
               Swap elements to sort the array in ascending order{profile ? " and earn points" : " (sign in to earn points)"}!
             </p>
             {profile && (
-              <div className="flex gap-4 text-base mt-4">
+              <div className="flex flex-wrap gap-4 text-base mt-4">
                 <div className="bg-gray-800 border border-gray-600 px-5 py-3 rounded">
                   <span className="text-gray-400">Game Points: </span>
                   <span className="text-yellow-400 font-bold">{userPoints}</span>
@@ -173,10 +173,11 @@ export default function AlgoSorterPage() {
           </div>
 
           {/* Difficulty Selector */}
-          <div className="flex gap-3 mb-6">
+          <div className="flex flex-wrap gap-3 mb-6">
             {(["easy", "medium", "hard"] as const).map((d) => (
               <button
                 key={d}
+                aria-pressed={difficulty === d}
                 onClick={() => setDifficulty(d)}
                 className={`px-6 py-2 rounded-lg font-semibold transition-colors ${
                   difficulty === d ? diffColors[d] + " text-white" : "bg-gray-700 text-gray-300 hover:bg-gray-600"
@@ -188,8 +189,8 @@ export default function AlgoSorterPage() {
           </div>
 
           {/* Game Area */}
-          <div className="bg-gray-900 border border-gray-700 rounded-lg p-8">
-            <div className="flex justify-between items-center mb-6">
+          <div className="bg-gray-900 border border-gray-700 rounded-lg p-4 sm:p-8">
+            <div className="flex flex-wrap gap-3 justify-between items-center mb-6">
               <span className="text-gray-400 text-sm font-mono">Swaps: <span className="text-white font-bold text-lg">{swaps}</span></span>
               <span className="text-gray-400 text-sm font-mono">Target: ≤ <span className="text-yellow-400 font-bold text-lg">{config.optimalSwaps}</span> for full points</span>
             </div>
@@ -202,11 +203,13 @@ export default function AlgoSorterPage() {
                   <button
                     key={i}
                     onClick={() => handleTap(i)}
-                    disabled={solved}
+                    aria-disabled={solved}
+                    aria-pressed={isSelected}
+                    aria-label={`Number ${num}, position ${i + 1}`}
                     className={`
                       w-16 h-16 md:w-20 md:h-20 rounded-xl text-2xl md:text-3xl font-bold transition-all duration-200 border-2
                       ${isCorrectPos
-                        ? "bg-green-600 border-green-400 scale-105"
+                        ? "bg-green-700 border-green-400 scale-105"
                         : isSelected
                           ? "bg-indigo-600 border-indigo-400 scale-110 shadow-lg shadow-indigo-500/50"
                           : "bg-gray-800 border-gray-600 hover:bg-gray-700 hover:border-gray-500"
@@ -221,6 +224,7 @@ export default function AlgoSorterPage() {
             </div>
 
             {/* Feedback */}
+            <div role="status" aria-live="polite" aria-atomic="true">
             {feedback && (
               <div className={`p-4 rounded-lg text-center font-semibold text-lg mb-4 ${
                 solved ? "bg-green-900/50 border border-green-500 text-green-200" : ""
@@ -229,6 +233,7 @@ export default function AlgoSorterPage() {
               </div>
             )}
 
+            </div>
             <button
               onClick={newRound}
               className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 rounded-lg font-semibold transition-colors"
@@ -250,6 +255,6 @@ export default function AlgoSorterPage() {
           </div>
         </div>
       </div>
-    </main>
+    </div>
   );
 }

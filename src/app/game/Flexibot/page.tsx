@@ -6,7 +6,7 @@ import CustomTrainer from "@/app/components/games/CustomTrainer";
 
 export default function CatBotPage() {
   return (
-    <main className="min-h-screen bg-gradient-to-b from-blue-950 via-gray-900 to-black text-white relative">
+    <div className="min-h-screen bg-gradient-to-b from-blue-950 via-gray-900 to-black text-white relative">
       {/* Back Button */}
       <div className="absolute top-6 left-6">
         <Link
@@ -21,6 +21,6 @@ export default function CatBotPage() {
       <div className="flex flex-col items-center justify-center pt-20 pb-10">
         <CustomTrainer />
       </div>
-    </main>
+    </div>
   );
 }

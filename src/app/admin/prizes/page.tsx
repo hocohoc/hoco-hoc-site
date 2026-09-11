@@ -104,14 +104,14 @@ export default function AdminPrizesPage() {
 
     if (!profile || !profile.admin) {
         return (
-            <main>
+            <div>
                 <p className="p-4">You do not have admin access for this page.</p>
-            </main>
+            </div>
         );
     }
 
     return (
-        <main className="flex justify-center">
+        <div className="flex justify-center">
             <div className="max-w-4xl w-full p-4 flex flex-col gap-6">
                 <div className="p-3 bg-sky-900 text-sky-50 rounded flex items-center gap-3">
                     <ExclamationCircleIcon className="w-10 h-10" />
@@ -275,6 +275,6 @@ export default function AdminPrizesPage() {
                     )}
                 </section>
             </div>
-        </main>
+        </div>
     );
 }

@@ -57,7 +57,7 @@ export default function WinnersPage() {
   const minorWinners = orderedWinners.filter((winner) => winner.prizeTier !== "major")
 
   return (
-    <main className="bg-black min-h-screen text-white flex flex-col items-center p-4">
+    <div className="bg-black min-h-screen text-white flex flex-col items-center p-4">
       <div className="w-full max-w-4xl space-y-6 pt-4">
         <section className="rounded-2xl border border-slate-800 bg-slate-900 p-8 shadow-lg">
           <p className="text-xs uppercase tracking-[0.4em] text-sky-400 font-mono">2025 Awards</p>
@@ -173,6 +173,6 @@ export default function WinnersPage() {
           )}
         </section>
       </div>
-    </main>
+    </div>
   )
 }

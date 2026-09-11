@@ -56,7 +56,7 @@ const games: Game[] = [
 
 export default function GameHub() {
   return (
-    <main className="min-h-screen bg-gradient-to-b from-blue-950 to-black text-white flex flex-col items-center py-16">
+    <div className="min-h-screen bg-gradient-to-b from-blue-950 to-black text-white flex flex-col items-center py-16">
       <h1 className="text-4xl font-bold mb-2">Games</h1>
       <p className="text-gray-400 mb-10 text-center max-w-lg">
         Play games to learn CS concepts. Games marked with <span className="text-yellow-400 font-bold">⭐</span> earn you points toward prizes!
@@ -114,6 +114,6 @@ export default function GameHub() {
           </Link>
         ))}
       </div>
-    </main>
+    </div>
   );
 }

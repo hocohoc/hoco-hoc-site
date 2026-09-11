@@ -14,7 +14,7 @@ export default function HelpPage() {
   }, [])
 
   return <div className="w-full h-full">
-    <main className="w-full h-full flex flex-col">
+    <div className="w-full h-full flex flex-col">
       <div className="flex items-center gap-2">
         <h1 className="text-3xl font-bold mb-2 flex-1">Help</h1>
         <div className={`p-1 px-3 text-sm font-mono uppercase font-bold ${status && status.live ? 'animate-pulse text-slate-950 bg-emerald-400' : 'bg-red-600'} rounded-full`}> {status && status.live ? "Event is live!" : "Event is not live"} </div>
@@ -30,6 +30,6 @@ export default function HelpPage() {
         </div>
         : <p className="p-2 bg-sky-300/50 rounded border border-sky-300 font-bold">😀 No active status messages at this time! </p>
       }
-    </main>
+    </div>
   </div>
 }

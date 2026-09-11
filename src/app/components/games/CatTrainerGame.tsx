@@ -189,12 +189,12 @@ export default function CatTrainerGame() {
       {/* 🏷️ Label Phase */}
       {phase === "label" && current && (
         <div>
-          <p className="mb-2">
+          <p role="status" aria-atomic="true" className="mb-2">
             Image {index + 1} of {shuffledImages.length} ─ Is this a cat?
           </p>
           <img
             src={current.url}
-            alt="training"
+            alt={`Image ${index + 1} for the cat or fish classification exercise`}
             className="mx-auto w-64 h-64 object-cover rounded-xl mb-3 border bg-white border-slate-600"
           />
           <div className="flex justify-center gap-3">
@@ -230,7 +230,7 @@ export default function CatTrainerGame() {
       {/* ⚙️ Training Phase */}
       {phase === "train" && (
         <div>
-          <p className="text-amber-300 animate-pulse">{status}</p>
+          <p role="status" aria-atomic="true" className="text-amber-300">{status}</p>
         </div>
       )}
 
@@ -254,8 +254,8 @@ export default function CatTrainerGame() {
           )}
 
           {/* Test Results */}
-          <div className="grid grid-cols-3 gap-3 mb-8">
-            {results.map((r) => (
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-8">
+            {results.map((r, idx) => (
               <div
                 key={r.imageUrl}
                 className="border border-slate-700 rounded-lg overflow-hidden bg-slate-900"
@@ -263,7 +263,7 @@ export default function CatTrainerGame() {
                 <img
                   src={r.imageUrl}
                   className="w-64 h-64 object-cover"
-                  alt="test"
+                  alt={`Test image ${idx + 1}`}
                 />
                 <p className="text-sm p-2">
                   Purr-ceptron says:{" "}
@@ -286,7 +286,9 @@ export default function CatTrainerGame() {
             <h3 className="text-lg font-semibold text-sky-300 mb-2">
               Upload your own images for Purr-ceptron to guess!
             </h3>
+            <label htmlFor="cat-test-images" className="block mb-2">Choose images to classify</label>
             <input
+              id="cat-test-images"
               type="file"
               accept="image/*"
               multiple
@@ -295,7 +297,7 @@ export default function CatTrainerGame() {
             />
 
             {uploadedResults.length > 0 && (
-              <div className="grid grid-cols-2 gap-3 mt-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
                 {uploadedResults.map((r, idx) => (
                   <div
                     key={r.imageUrl + idx}
@@ -304,13 +306,13 @@ export default function CatTrainerGame() {
                     <img
                       src={r.imageUrl}
                       className="w-64 h-64 object-cover bg-white"
-                      alt="uploaded"
+                      alt={`Uploaded image ${idx + 1}`}
                     />
                     {/* 🗑️ Remove button */}
                     <button
                       onClick={() => removeUploadedImage(r.imageUrl)}
-                      className="absolute top-0 right-0 bg-red-600 hover:bg-red-700 text-xs text-white rounded-full w-5 h-5 flex items-center justify-center"
-                      title="Remove image"
+                      className="absolute top-0 right-0 bg-red-600 hover:bg-red-700 text-xs text-white rounded-full w-8 h-8 flex items-center justify-center"
+                      aria-label={`Remove image ${idx + 1}`} title="Remove image"
                     >
                       ×
                     </button>

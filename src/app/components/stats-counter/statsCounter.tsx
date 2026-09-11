@@ -47,7 +47,7 @@ export default function StatsCounter(props: Props) {
   }, [props.liveStats.totalUsers, props.liveStats.totalViews, props.liveStats.totalHours])
 
   return (
-    <main
+    <div
       className={`flex flex-col items-center ${props.className} bg-gradient-to-br from-black via-80% via-indigo-950 to-indigo-950 p-4 md:p-8 md:py-32 py-20`}
     >
       <div className="flex flex-col max-w-screen-xl items-start w-full">
@@ -80,6 +80,6 @@ export default function StatsCounter(props: Props) {
           </div>
         </div>
       </div>
-    </main>
+    </div>
   )
 }

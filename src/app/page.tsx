@@ -22,7 +22,7 @@ export default function Home() {
   }, [])
 
   return (
-    <main className="flex flex-col bg-black">
+    <div className="flex flex-col bg-black">
 
       <section className="bg-slate-900">
         <div className="max-w-screen-xl mx-auto px-6 py-12 md:py-20 flex flex-col gap-6 text-center">
@@ -58,6 +58,6 @@ export default function Home() {
       <div>
         <Sponsors />
       </div>
-    </main>
+    </div>
   );
 }

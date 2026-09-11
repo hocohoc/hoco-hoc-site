@@ -65,7 +65,7 @@ export default function BinaryDecoderPage() {
     }
 
     async function handleSubmit() {
-        if (!challenge || !userAnswer.trim()) return;
+        if (loading || feedback.correct || !challenge || !userAnswer.trim()) return;
 
         setLoading(true);
         const result = await checkBinaryAnswer(user?.uid || "anonymous", challenge.id, userAnswer);
@@ -79,22 +79,15 @@ export default function BinaryDecoderPage() {
                 correct: true,
                 message: pointsMsg
             });
-            // Reload stats and get new challenge after a delay
-            setTimeout(() => {
-                loadStats();
-                loadUserPoints();
-                loadNewChallenge();
-            }, 2000);
+            loadStats();
+            loadUserPoints();
         } else {
             setFeedback({
                 show: true,
                 correct: false,
-                message: "Incorrect. Moving to next question..."
+                message: "Incorrect. Check each byte using the ASCII table, then try again or choose Next Challenge."
             });
-            // Move to next question after brief delay
-            setTimeout(() => {
-                loadNewChallenge();
-            }, 1500);
+
         }
         setLoading(false);
     }
@@ -109,7 +102,7 @@ export default function BinaryDecoderPage() {
     }
 
     return (
-        <main className="min-h-screen bg-gradient-to-b from-blue-950 via-gray-900 to-black text-white relative">
+        <div className="min-h-screen bg-gradient-to-b from-blue-950 via-gray-900 to-black text-white relative">
             <div className="absolute top-6 left-6">
                 <Link
                     href="/game"
@@ -121,11 +114,11 @@ export default function BinaryDecoderPage() {
             <div className="pt-20 pb-10 px-6">
                 <div className="w-full">
                     {/* Header with Stats */}
-                    <div className="bg-gray-900 border border-gray-700 rounded-lg p-8 mb-6">
-                        <h1 className="text-5xl font-bold mb-3 text-white">Binary Decoder</h1>
+                    <div className="bg-gray-900 border border-gray-700 rounded-lg p-4 sm:p-8 mb-6">
+                        <h1 className="text-3xl sm:text-5xl font-bold mb-3 text-white">Binary Decoder</h1>
                         <p className="text-gray-400 text-lg mb-6">Convert binary to decimal numbers{user ? " to earn points" : " (sign in to earn points)"}!</p>
                         {user && (
-                            <div className="flex gap-4 text-base">
+                            <div className="flex flex-wrap gap-4 text-base">
                                 <div className="bg-gray-800 border border-gray-600 px-5 py-3 rounded">
                                     <span className="text-gray-400">Points: </span>
                                     <span className="text-yellow-400 font-bold">{userPoints}</span>
@@ -143,6 +136,7 @@ export default function BinaryDecoderPage() {
                 <h2 className="text-2xl font-semibold mb-4">Difficulty</h2>
                 <div className="flex flex-wrap gap-3">
                     <button
+                        aria-pressed={difficulty === "all"}
                         onClick={() => handleDifficultyChange("all")}
                         className={`px-6 py-2 rounded-lg font-semibold transition-colors ${
                             difficulty === "all"
@@ -153,30 +147,33 @@ export default function BinaryDecoderPage() {
                         All Levels
                     </button>
                     <button
+                        aria-pressed={difficulty === "easy"}
                         onClick={() => handleDifficultyChange("easy")}
                         className={`px-6 py-2 rounded-lg font-semibold transition-colors ${
                             difficulty === "easy"
-                                ? "bg-green-600 text-white"
+                                ? "bg-green-700 text-white"
                                 : "bg-gray-700 text-gray-300 hover:bg-gray-600"
                         }`}
                     >
                         Easy (2-3 pts)
                     </button>
                     <button
+                        aria-pressed={difficulty === "medium"}
                         onClick={() => handleDifficultyChange("medium")}
                         className={`px-6 py-2 rounded-lg font-semibold transition-colors ${
                             difficulty === "medium"
-                                ? "bg-yellow-600 text-white"
+                                ? "bg-yellow-700 text-white"
                                 : "bg-gray-700 text-gray-300 hover:bg-gray-600"
                         }`}
                     >
                         Medium (4-5 pts)
                     </button>
                     <button
+                        aria-pressed={difficulty === "hard"}
                         onClick={() => handleDifficultyChange("hard")}
                         className={`px-6 py-2 rounded-lg font-semibold transition-colors ${
                             difficulty === "hard"
-                                ? "bg-red-600 text-white"
+                                ? "bg-red-700 text-white"
                                 : "bg-gray-700 text-gray-300 hover:bg-gray-600"
                         }`}
                     >
@@ -194,7 +191,7 @@ export default function BinaryDecoderPage() {
                     {/* Conversion Guide */}
                     <div className="bg-gray-800 border border-gray-600 p-5 rounded">
                         <h3 className="font-semibold text-xl text-cyan-400 mb-4">Position Values</h3>
-                        <div className="overflow-x-auto">
+                        <div tabIndex={0} role="region" aria-label="ASCII reference table; scroll with arrow keys" className="overflow-x-auto">
                             <table className="w-full text-center font-mono">
                                 <thead>
                                     <tr className="text-yellow-300 text-3xl font-bold">
@@ -291,33 +288,35 @@ export default function BinaryDecoderPage() {
                     <p className="mt-4 text-gray-400">Loading challenge...</p>
                 </div>
             ) : challenge ? (
-                <div className="bg-gray-900 border border-gray-700 rounded-lg p-8">
+                <div className="bg-gray-900 border border-gray-700 rounded-lg p-4 sm:p-8">
                     <div className="mb-6">
-                        <div className="flex justify-between items-center mb-4">
+                        <div className="flex flex-wrap gap-3 justify-between items-center mb-4">
                             <span className={`text-sm font-semibold uppercase ${getDifficultyColor(challenge.difficulty)}`}>
                                 {challenge.difficulty}
                             </span>
                             <span className="text-yellow-400 font-bold">{challenge.points} pts</span>
                         </div>
-                        <div className="bg-black bg-opacity-50 p-6 rounded-lg font-mono text-4xl mb-6 overflow-x-auto text-center font-bold">
+                        <div tabIndex={0} role="region" aria-label="Binary message; scroll with arrow keys" className="bg-black bg-opacity-50 p-6 rounded-lg font-mono text-4xl mb-6 overflow-x-auto text-center font-bold">
                             {challenge.binary}
                         </div>
                     </div>
 
                     <div className="space-y-4">
+                        <label htmlFor="binary-answer" className="block">Decoded message</label>
                         <input
+                            id="binary-answer"
                             type="text"
                             value={userAnswer}
                             onChange={(e) => setUserAnswer(e.target.value)}
                             onKeyPress={(e) => e.key === "Enter" && handleSubmit()}
                             placeholder="Enter decoded message..."
                             className="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg focus:outline-none focus:border-indigo-500 text-white placeholder-gray-500"
-                            disabled={loading}
+                            readOnly={loading || feedback.correct}
                         />
 
                         <button
                             onClick={handleSubmit}
-                            disabled={loading || !userAnswer.trim()}
+                            aria-disabled={loading || feedback.correct || !userAnswer.trim()}
                             className="w-full px-6 py-3 bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-600 disabled:cursor-not-allowed rounded-lg font-semibold transition-colors"
                         >
                             {loading ? "Checking..." : "Submit Answer"}
@@ -325,6 +324,7 @@ export default function BinaryDecoderPage() {
                     </div>
 
                     {/* Feedback */}
+                    <div role="status" aria-live="polite" aria-atomic="true">
                     {feedback.show && (
                         <div className={`mt-6 p-4 rounded-lg ${
                             feedback.correct 
@@ -335,6 +335,8 @@ export default function BinaryDecoderPage() {
                         </div>
                     )}
 
+                    </div>
+                    <button onClick={loadNewChallenge} disabled={loading} className="btn-secondary w-full mt-4">Next Challenge</button>
                     {/* Hint Section */}
                     <div className="mt-6 p-4 bg-blue-900 bg-opacity-30 rounded-lg border border-blue-700">
                         <p className="text-sm text-gray-300">
@@ -366,6 +368,6 @@ export default function BinaryDecoderPage() {
             </div>
                 </div>
             </div>
-        </main>
+        </div>
     );
 }

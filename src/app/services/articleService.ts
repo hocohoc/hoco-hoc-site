@@ -9,7 +9,10 @@ export type Article = {
     content: string,
     video?: {
         url: string,
-        type?: string
+        type?: string,
+        captionsUrl?: string,
+        transcript?: string,
+        audioDescriptionUrl?: string
     },
     tags: string[],
     sectionID: string,

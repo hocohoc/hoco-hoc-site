@@ -239,10 +239,17 @@ export default function CodingChallengesPage() {
   const [writeLoading, setWriteLoading] = useState(false);
   const [showHint, setShowHint] = useState(false);
   const [writeDifficulty, setWriteDifficulty] = useState<Difficulty>("all");
-  const [completedWriteIds, setCompletedWriteIds] = useState<Set<string>>(new Set());
+  const completedWriteIds = useRef<Set<string>>(new Set());
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const highlightRef = useRef<HTMLDivElement>(null);
-  const lineNumRef = useRef<HTMLDivElement>(null);
+  const editorEscape = useRef(false);
+  const predictResultRef = useRef<HTMLDivElement>(null);
+  const predictInputRef = useRef<HTMLInputElement>(null);
+  const previousFeedback = useRef(feedback);
+  useEffect(() => {
+    if (feedback) predictResultRef.current?.focus();
+    else if (previousFeedback.current) predictInputRef.current?.focus();
+    previousFeedback.current = feedback;
+  }, [feedback]);
   const [cursorInfo, setCursorInfo] = useState({ line: 1, col: 1 });
 
   // Fetch user stats
@@ -287,7 +294,7 @@ export default function CodingChallengesPage() {
     const filtered = writeDifficulty === "all"
       ? WRITE_CHALLENGES
       : WRITE_CHALLENGES.filter((c) => c.difficulty === writeDifficulty);
-    const available = filtered.filter((c) => !completedWriteIds.has(c.id));
+    const available = filtered.filter((c) => !completedWriteIds.current.has(c.id));
     if (available.length === 0) {
       setWriteChallenge(null);
       return;
@@ -295,7 +302,7 @@ export default function CodingChallengesPage() {
     const picked = available[Math.floor(Math.random() * available.length)];
     setWriteChallenge(picked);
     setCode(picked.starterCode);
-  }, [writeDifficulty, completedWriteIds]);
+  }, [writeDifficulty]);
 
   useEffect(() => {
     if (tab === "write") loadWriteChallenge();
@@ -303,7 +310,7 @@ export default function CodingChallengesPage() {
 
   // Submit predict answer
   async function handleSubmit() {
-    if (!challenge || !userAnswer.trim()) return;
+    if (loading || feedback || !challenge || !userAnswer.trim()) return;
     setLoading(true);
     try {
       const result = await checkCodingAnswer(userId, challenge, userAnswer.trim());
@@ -339,7 +346,7 @@ export default function CodingChallengesPage() {
 
   // Run & check write-code challenge (client-side Python eval via simple test harness)
   async function handleRunCode() {
-    if (!writeChallenge || !code.trim()) return;
+    if (writeLoading || !writeChallenge || !code.trim()) return;
     setWriteLoading(true);
     setWriteFeedback(null);
 
@@ -361,7 +368,7 @@ export default function CodingChallengesPage() {
       const allPassed = results.every((r) => r.pass);
 
       if (allPassed) {
-        setCompletedWriteIds((prev) => new Set(prev).add(writeChallenge.id));
+        completedWriteIds.current.add(writeChallenge.id);
         // Award points via game service if logged in
         if (userId !== "anonymous") {
           try {
@@ -376,7 +383,7 @@ export default function CodingChallengesPage() {
           type: "pass",
           message: `All ${results.length} test cases passed!`,
           results,
-          points: writeChallenge.points,
+          points: userId === "anonymous" ? 0 : writeChallenge.points,
         });
       } else {
         const passCount = results.filter((r) => r.pass).length;
@@ -407,6 +414,15 @@ export default function CodingChallengesPage() {
     const start = ta.selectionStart;
     const end = ta.selectionEnd;
 
+    if (e.key === "Escape") {
+      editorEscape.current = true;
+      return;
+    }
+    if (e.key === "Tab" && editorEscape.current) {
+      editorEscape.current = false;
+      return;
+    }
+    if (e.key !== "Shift") editorEscape.current = false;
     if (e.key === "Tab") {
       e.preventDefault();
       if (e.shiftKey) {
@@ -459,18 +475,6 @@ export default function CodingChallengesPage() {
     }
   }
 
-  // Sync scroll between textarea, highlight overlay, and line numbers
-  function handleEditorScroll() {
-    const ta = textareaRef.current;
-    if (ta && highlightRef.current) {
-      highlightRef.current.scrollTop = ta.scrollTop;
-      highlightRef.current.scrollLeft = ta.scrollLeft;
-    }
-    if (ta && lineNumRef.current) {
-      lineNumRef.current.scrollTop = ta.scrollTop;
-    }
-  }
-
   // Track cursor position for status bar
   function updateCursorInfo() {
     const ta = textareaRef.current;
@@ -488,7 +492,7 @@ export default function CodingChallengesPage() {
     : DIFFICULTY_CONFIG[difficulty];
 
   return (
-    <main className="min-h-screen bg-slate-900 text-white">
+    <div className="min-h-screen bg-slate-900 text-white">
       <div className="max-w-5xl mx-auto px-4 py-8 space-y-6">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
@@ -509,11 +513,11 @@ export default function CodingChallengesPage() {
             <div className="flex gap-3">
               <div className="bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-center min-w-[80px]">
                 <p className="text-2xl font-bold font-mono text-sky-300">{stats.totalPoints}</p>
-                <p className="text-[10px] uppercase tracking-wider text-slate-500">Points</p>
+                <p className="text-[10px] uppercase tracking-wider text-slate-400">Points</p>
               </div>
               <div className="bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-center min-w-[80px]">
                 <p className="text-2xl font-bold font-mono text-emerald-400">{stats.gamesCompleted}</p>
-                <p className="text-[10px] uppercase tracking-wider text-slate-500">Solved</p>
+                <p className="text-[10px] uppercase tracking-wider text-slate-400">Solved</p>
               </div>
               {streak > 1 && (
                 <div className="bg-amber-900/30 border border-amber-700 rounded-xl px-4 py-2.5 text-center min-w-[80px]">
@@ -528,6 +532,7 @@ export default function CodingChallengesPage() {
         {/* Tab Switcher */}
         <div className="flex gap-2 border-b border-slate-700 pb-0">
           <button
+            aria-pressed={tab === "predict"}
             onClick={() => setTab("predict")}
             className={`font-mono text-sm px-4 py-2.5 border-b-2 transition-colors ${
               tab === "predict"
@@ -538,6 +543,7 @@ export default function CodingChallengesPage() {
             Predict Output
           </button>
           <button
+            aria-pressed={tab === "write"}
             onClick={() => setTab("write")}
             className={`font-mono text-sm px-4 py-2.5 border-b-2 transition-colors ${
               tab === "write"
@@ -574,11 +580,12 @@ export default function CodingChallengesPage() {
                 return (
                   <button
                     key={d}
+                    aria-pressed={difficulty === d}
                     onClick={() => setDifficulty(d)}
                     className={`font-mono text-sm px-4 py-2 rounded-lg border transition-colors ${
                       difficulty === d
                         ? `${cfg.bg} ${cfg.border} ${cfg.color}`
-                        : "border-slate-700 text-slate-500 hover:text-slate-300 hover:border-slate-600 hover:bg-slate-800"
+                        : "border-slate-700 text-slate-400 hover:text-slate-300 hover:border-slate-600 hover:bg-slate-800"
                     }`}
                   >
                     {cfg.label} ({cfg.points} pts)
@@ -617,17 +624,17 @@ export default function CodingChallengesPage() {
                   className="rounded-xl border border-slate-700 bg-slate-800 overflow-hidden"
                 >
                   {/* Challenge Header */}
-                  <div className="flex items-center justify-between px-5 py-3 bg-slate-800 border-b border-slate-700">
+                  <div className="flex flex-wrap gap-2 items-center justify-between px-5 py-3 bg-slate-800 border-b border-slate-700">
                     <div className="flex items-center gap-3">
                       <span className={`text-xs font-mono font-semibold px-2.5 py-1 rounded-full ${diffConfig.bg} ${diffConfig.border} ${diffConfig.color} border`}>
                         {challenge.difficulty.toUpperCase()}
                       </span>
-                      <span className="text-xs text-slate-500 font-mono">
+                      <span className="text-xs text-slate-400 font-mono">
                         {challenge.id}
                       </span>
                     </div>
                     <div className="flex items-center gap-1.5">
-                      <span className="text-xs text-slate-500 font-mono">Reward:</span>
+                      <span className="text-xs text-slate-400 font-mono">Reward:</span>
                       <span className={`text-sm font-bold font-mono ${diffConfig.color}`}>
                         +{challenge.points} pts
                       </span>
@@ -636,13 +643,13 @@ export default function CodingChallengesPage() {
 
                   {/* Code Block */}
                   <div className="p-5">
-                    <p className="text-xs uppercase tracking-wider text-slate-500 mb-3 font-mono">
+                    <p className="text-xs uppercase tracking-wider text-slate-400 mb-3 font-mono">
                       What does this code print?
                     </p>
-                    <div className="bg-gray-950 border border-slate-700 rounded-lg p-4 font-mono text-sm leading-relaxed overflow-x-auto">
+                    <div tabIndex={0} role="region" aria-label="Code to predict; scroll with arrow keys" className="bg-gray-950 border border-slate-700 rounded-lg p-4 font-mono text-sm leading-relaxed overflow-x-auto">
                       {challenge.code.split("\n").map((line, i) => (
                         <div key={i} className="flex">
-                          <span className="text-slate-600 select-none w-8 inline-block text-right mr-4 text-xs leading-relaxed">
+                          <span className="text-slate-400 select-none w-8 inline-block text-right mr-4 text-xs leading-relaxed">
                             {i + 1}
                           </span>
                           <span className="text-sky-100 whitespace-pre">{line}</span>
@@ -654,16 +661,17 @@ export default function CodingChallengesPage() {
                   {/* Answer Input */}
                   <div className="px-5 pb-5">
                     {!feedback ? (
-                      <div className="flex gap-3">
+                      <div className="flex flex-wrap gap-3">
+                        <label htmlFor="predict-answer" className="w-full">Predicted output</label>
                         <input
+                          id="predict-answer" ref={predictInputRef}
                           type="text"
                           value={userAnswer}
                           onChange={(e) => setUserAnswer(e.target.value)}
                           onKeyDown={handleKeyDown}
                           placeholder="Type the exact output..."
-                          className="flex-1 bg-gray-950 border border-slate-600 rounded-lg px-4 py-3 font-mono text-sm text-white placeholder-slate-600 focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500/30 transition-all"
+                          className="flex-1 min-w-0 bg-gray-950 border border-slate-600 rounded-lg px-4 py-3 font-mono text-sm text-white placeholder-slate-600 focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500/30 transition-all"
                           disabled={loading}
-                          autoFocus
                         />
                         <button
                           onClick={handleSubmit}
@@ -675,6 +683,7 @@ export default function CodingChallengesPage() {
                       </div>
                     ) : (
                       <motion.div
+                        ref={predictResultRef} tabIndex={-1} role="region" aria-label="Answer result"
                         initial={{ opacity: 0, scale: 0.98 }}
                         animate={{ opacity: 1, scale: 1 }}
                         className={`rounded-lg p-4 border ${
@@ -686,11 +695,11 @@ export default function CodingChallengesPage() {
                         }`}
                       >
                         {feedback.type === "correct" && (
-                          <div className="flex items-center justify-between">
+                          <div className="flex flex-wrap gap-2 items-center justify-between">
                             <div>
                               <p className="font-mono font-bold text-emerald-300">Correct!</p>
                               {feedback.points > 0 && (
-                                <p className="text-xs text-emerald-400/70 font-mono">
+                                <p className="text-xs text-emerald-300 font-mono">
                                   +{feedback.points} points earned
                                 </p>
                               )}
@@ -703,7 +712,7 @@ export default function CodingChallengesPage() {
                         {feedback.type === "wrong" && (
                           <div>
                             <p className="font-mono font-bold text-red-300 mb-1">Not quite!</p>
-                            <p className="text-xs text-red-400/70 font-mono mb-3">
+                            <p className="text-xs text-red-300 font-mono mb-3">
                               The correct answer was: <code className="bg-red-900/30 px-1.5 py-0.5 rounded text-red-200">{feedback.correctAnswer}</code>
                             </p>
                             <button onClick={loadChallenge} className="font-mono text-sm font-semibold bg-slate-700 hover:bg-slate-600 text-slate-200 px-5 py-2 rounded-lg transition-colors">
@@ -712,7 +721,7 @@ export default function CodingChallengesPage() {
                           </div>
                         )}
                         {feedback.type === "already-done" && (
-                          <div className="flex items-center justify-between">
+                          <div className="flex flex-wrap gap-2 items-center justify-between">
                             <p className="font-mono text-amber-300 text-sm">
                               You&apos;ve already solved this one!
                             </p>
@@ -724,7 +733,7 @@ export default function CodingChallengesPage() {
                         {feedback.type === "error" && (
                           <div>
                             <p className="font-mono font-bold text-red-300 mb-1">Something went wrong</p>
-                            <p className="text-xs text-red-400/70 font-mono mb-3">{feedback.errorMsg || "Please try again."}</p>
+                            <p className="text-xs text-red-300 font-mono mb-3">{feedback.errorMsg || "Please try again."}</p>
                             <button onClick={loadChallenge} className="font-mono text-sm font-semibold bg-slate-700 hover:bg-slate-600 text-slate-200 px-5 py-2 rounded-lg transition-colors">
                               Try Again
                             </button>
@@ -758,11 +767,12 @@ export default function CodingChallengesPage() {
                 return (
                   <button
                     key={d}
+                    aria-pressed={writeDifficulty === d}
                     onClick={() => setWriteDifficulty(d)}
                     className={`font-mono text-sm px-4 py-2 rounded-lg border transition-colors ${
                       writeDifficulty === d
                         ? `${cfg.bg} ${cfg.border} ${cfg.color}`
-                        : "border-slate-700 text-slate-500 hover:text-slate-300 hover:border-slate-600 hover:bg-slate-800"
+                        : "border-slate-700 text-slate-400 hover:text-slate-300 hover:border-slate-600 hover:bg-slate-800"
                     }`}
                   >
                     {cfg.label} ({cfg.points} pts)
@@ -795,7 +805,7 @@ export default function CodingChallengesPage() {
                 >
                   {/* Problem Card */}
                   <div className="rounded-xl border border-slate-700 bg-slate-800 p-5">
-                    <div className="flex items-center justify-between mb-3">
+                    <div className="flex flex-wrap gap-2 items-center justify-between mb-3">
                       <div className="flex items-center gap-3">
                         <span className={`text-xs font-mono font-semibold px-2.5 py-1 rounded-full border ${DIFFICULTY_CONFIG[writeChallenge.difficulty].bg} ${DIFFICULTY_CONFIG[writeChallenge.difficulty].border} ${DIFFICULTY_CONFIG[writeChallenge.difficulty].color}`}>
                           {writeChallenge.difficulty.toUpperCase()}
@@ -810,10 +820,10 @@ export default function CodingChallengesPage() {
 
                     {/* Test case examples */}
                     <div className="mt-4">
-                      <p className="text-xs uppercase tracking-wider text-slate-500 font-mono mb-2">Examples</p>
+                      <p className="text-xs uppercase tracking-wider text-slate-400 font-mono mb-2">Examples</p>
                       <div className="grid gap-2">
                         {writeChallenge.testCases.slice(0, 2).map((tc, i) => (
-                          <div key={i} className="bg-gray-950 border border-slate-700 rounded-lg px-4 py-2 font-mono text-xs flex gap-6">
+                          <div key={i} className="bg-gray-950 border border-slate-700 rounded-lg px-4 py-2 font-mono text-xs flex flex-wrap gap-3">
                             <span className="text-slate-400">Input: <span className="text-sky-200">{tc.input}</span></span>
                             <span className="text-slate-400">Expected: <span className="text-emerald-300">{tc.expected}</span></span>
                           </div>
@@ -840,7 +850,7 @@ export default function CodingChallengesPage() {
                   {/* Code Editor — IDE style */}
                   <div className="rounded-xl border border-slate-700 bg-[#1e1e1e] overflow-hidden">
                     {/* Title bar with traffic lights */}
-                    <div className="flex items-center justify-between px-4 py-2 bg-[#2d2d2d] border-b border-[#404040]">
+                    <div className="flex flex-wrap gap-2 items-center justify-between px-4 py-2 bg-[#2d2d2d] border-b border-[#404040]">
                       <div className="flex items-center gap-3">
                         <div className="flex gap-1.5">
                           <span className="w-3 h-3 rounded-full bg-[#ff5f57]" />
@@ -853,98 +863,26 @@ export default function CodingChallengesPage() {
                       </div>
                       <button
                         onClick={() => { setCode(writeChallenge.starterCode); setWriteFeedback(null); }}
-                        className="font-mono text-xs text-slate-500 hover:text-slate-300 transition-colors"
+                        className="font-mono text-xs text-slate-400 hover:text-slate-300 transition-colors"
                       >
                         Reset
                       </button>
                     </div>
 
-                    {/* Editor body: line numbers + code area */}
-                    <div className="flex" style={{ height: "280px" }}>
-                      {/* Line numbers */}
-                      <div
-                        ref={lineNumRef}
-                        className="flex-shrink-0 bg-[#1e1e1e] text-right select-none overflow-hidden border-r border-[#333]"
-                        style={{ width: "48px", paddingTop: "16px", paddingBottom: "16px" }}
-                      >
-                        {code.split("\n").map((_, i) => (
-                          <div
-                            key={i}
-                            className="font-mono text-xs leading-[1.7rem] pr-3"
-                            style={{ color: cursorInfo.line === i + 1 ? "#c6c6c6" : "#6e7681" }}
-                          >
-                            {i + 1}
-                          </div>
-                        ))}
-                      </div>
-
-                      {/* Code area with highlight overlay + textarea */}
-                      <div className="relative flex-1 overflow-hidden">
-                        {/* Syntax highlight layer (behind textarea) */}
-                        <div
-                          ref={highlightRef}
-                          className="absolute inset-0 overflow-hidden pointer-events-none"
-                          aria-hidden
-                          style={{ padding: "16px 16px 16px 12px" }}
-                        >
-                          <SyntaxHighlighter
-                            language="python"
-                            style={vscDarkPlus}
-                            customStyle={{
-                              background: "transparent",
-                              padding: 0,
-                              margin: 0,
-                              fontSize: "14px",
-                              lineHeight: "1.7rem",
-                              fontFamily: "var(--font-jbm), ui-monospace, monospace",
-                              overflow: "visible",
-                              whiteSpace: "pre",
-                            }}
-                            codeTagProps={{
-                              style: {
-                                fontFamily: "var(--font-jbm), ui-monospace, monospace",
-                                fontSize: "14px",
-                                lineHeight: "1.7rem",
-                              }
-                            }}
-                          >
-                            {code || " "}
-                          </SyntaxHighlighter>
-                        </div>
-
-                        {/* Transparent textarea (on top for input) */}
-                        <textarea
-                          ref={textareaRef}
-                          value={code}
-                          onChange={(e) => { setCode(e.target.value); updateCursorInfo(); }}
-                          onKeyDown={handleCodeKeyDown}
-                          onKeyUp={updateCursorInfo}
-                          onClick={updateCursorInfo}
-                          onScroll={handleEditorScroll}
-                          className="absolute inset-0 w-full h-full resize-none focus:outline-none font-mono text-sm"
-                          style={{
-                            padding: "16px 16px 16px 12px",
-                            background: "transparent",
-                            color: "transparent",
-                            caretColor: "#aeafad",
-                            lineHeight: "1.7rem",
-                            fontSize: "14px",
-                            fontFamily: "var(--font-jbm), ui-monospace, monospace",
-                            whiteSpace: "pre",
-                            overflowWrap: "normal",
-                            overflowX: "auto",
-                            overflowY: "auto",
-                          }}
-                          spellCheck={false}
-                          autoCapitalize="off"
-                          autoCorrect="off"
-                          placeholder="Write your Python code here..."
-                        />
-                      </div>
-                    </div>
+                    <label htmlFor="python-code" className="block px-4 pt-4 font-mono text-sm text-slate-200">Python solution</label>
+                    <p id="python-code-help" className="px-4 py-2 text-sm text-slate-300">Tab indents; Shift+Tab removes indentation. Press Escape, then Tab or Shift+Tab to move out of the editor.</p>
+                    <textarea
+                      id="python-code" ref={textareaRef} value={code}
+                      aria-describedby="python-code-help"
+                      onChange={(e) => { setCode(e.target.value); updateCursorInfo(); }}
+                      onKeyDown={handleCodeKeyDown} onKeyUp={updateCursorInfo} onClick={updateCursorInfo}
+                      onBlur={() => { editorEscape.current = false; }}
+                      className="block w-full min-h-[280px] resize-y font-mono text-sm leading-relaxed !bg-[#1e1e1e] text-slate-100 p-4 focus-visible:-outline-offset-4"
+                      spellCheck={false} autoCapitalize="off" autoCorrect="off"
+                    />
 
                     {/* Status bar */}
-                    <div className="flex items-center justify-between px-4 py-1.5 bg-[#007acc] text-white text-xs font-mono">
+                    <div className="flex flex-wrap gap-2 items-center justify-between px-4 py-1.5 bg-[#005a9e] text-white text-xs font-mono">
                       <div className="flex items-center gap-4">
                         <span>Ln {cursorInfo.line}, Col {cursorInfo.col}</span>
                         <span>Spaces: 4</span>
@@ -954,7 +892,7 @@ export default function CodingChallengesPage() {
                         <span>Python</span>
                         <button
                           onClick={handleRunCode}
-                          disabled={writeLoading || !code.trim()}
+                          aria-disabled={writeLoading || !code.trim()}
                           className="bg-white/20 hover:bg-white/30 disabled:opacity-40 px-3 py-0.5 rounded transition-colors"
                         >
                           {writeLoading ? "Running..." : "▶ Run & Check"}
@@ -964,6 +902,8 @@ export default function CodingChallengesPage() {
                   </div>
 
                   {/* Results */}
+                  <div role="status" aria-live="polite" aria-atomic="true">
+                  {writeLoading && <p>Running your code…</p>}
                   {writeFeedback && (
                     <motion.div
                       initial={{ opacity: 0, y: 5 }}
@@ -976,13 +916,13 @@ export default function CodingChallengesPage() {
                           : "border-red-800 bg-red-950/30"
                       }`}
                     >
-                      <div className="flex items-center justify-between mb-3">
+                      <div className="flex flex-wrap gap-2 items-center justify-between mb-3">
                         <div>
                           <p className={`font-mono font-bold ${writeFeedback.type === "pass" ? "text-emerald-300" : "text-red-300"}`}>
                             {writeFeedback.type === "pass" ? "All Tests Passed!" : writeFeedback.type === "fail" ? "Some Tests Failed" : "Error"}
                           </p>
                           <p className="text-xs text-slate-400 font-mono">{writeFeedback.message}</p>
-                          {writeFeedback.points && writeFeedback.points > 0 && (
+                          {(writeFeedback.points ?? 0) > 0 && (
                             <p className="text-xs text-emerald-400 font-mono mt-1">+{writeFeedback.points} points earned</p>
                           )}
                         </div>
@@ -1000,7 +940,7 @@ export default function CodingChallengesPage() {
                             <div key={i} className={`font-mono text-xs rounded-lg px-3 py-2 border ${r.pass ? "border-emerald-800 bg-emerald-950/20" : "border-red-800 bg-red-950/20"}`}>
                               <div className="flex items-center gap-2 mb-1">
                                 <span className={r.pass ? "text-emerald-400" : "text-red-400"}>{r.pass ? "PASS" : "FAIL"}</span>
-                                <span className="text-slate-500">solve({r.input})</span>
+                                <span className="text-slate-400">solve({r.input})</span>
                               </div>
                               <div className="flex gap-4 text-slate-400">
                                 <span>Expected: <span className="text-emerald-300">{r.expected}</span></span>
@@ -1013,9 +953,10 @@ export default function CodingChallengesPage() {
                     </motion.div>
                   )}
 
+                  </div>
                   {/* Skip */}
                   {!writeFeedback?.type || writeFeedback.type !== "pass" ? (
-                    <button onClick={loadWriteChallenge} className="font-mono text-sm text-slate-500 hover:text-slate-300 transition-colors">
+                    <button onClick={loadWriteChallenge} className="font-mono text-sm text-slate-400 hover:text-slate-300 transition-colors">
                       Skip this challenge
                     </button>
                   ) : null}
@@ -1031,7 +972,7 @@ export default function CodingChallengesPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <p className="font-mono text-sm font-semibold text-slate-200 mb-1">1. Read the Problem</p>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-slate-400">
                 {tab === "predict"
                   ? "Each challenge shows a code snippet. Trace through the logic carefully."
                   : "Read the problem description and check the example test cases."}
@@ -1039,15 +980,15 @@ export default function CodingChallengesPage() {
             </div>
             <div>
               <p className="font-mono text-sm font-semibold text-slate-200 mb-1">2. Solve It</p>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-slate-400">
                 {tab === "predict"
                   ? "Type exactly what the code would print. Spaces and formatting matter!"
-                  : "Write your Python code in the editor. Tab inserts spaces, and you can reset anytime."}
+                  : "Write your Python code in the editor. Tab inserts spaces. Escape then Tab leaves the editor. Reset restores the starter code."}
               </p>
             </div>
             <div>
               <p className="font-mono text-sm font-semibold text-slate-200 mb-1">3. Earn Points</p>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-slate-400">
                 Easy = 3 pts, Medium = 5 pts, Hard = 8 pts. Points count towards the leaderboard!
               </p>
             </div>
@@ -1057,9 +998,9 @@ export default function CodingChallengesPage() {
         {/* Progress */}
         {profile && stats.gamesCompleted > 0 && (
           <div className="rounded-xl border border-slate-700 bg-slate-800 p-5">
-            <div className="flex items-center justify-between mb-3">
+            <div className="flex flex-wrap gap-2 items-center justify-between mb-3">
               <p className="font-mono text-sm text-slate-400">Challenge Progress</p>
-              <p className="font-mono text-xs text-slate-500">
+              <p className="font-mono text-xs text-slate-400">
                 {stats.gamesCompleted} / {totalAvailable} solved
               </p>
             </div>
@@ -1074,7 +1015,7 @@ export default function CodingChallengesPage() {
           </div>
         )}
       </div>
-    </main>
+    </div>
   );
 }
 

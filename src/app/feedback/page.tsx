@@ -6,7 +6,7 @@ const FORM_SRC = "https://forms.gle/row6o5G195S9Ha88A"
 
 export default function FeedbackPage() {
   return (
-    <main className="min-h-screen bg-black text-white flex flex-col items-center p-4">
+    <div className="min-h-screen bg-black text-white flex flex-col items-center p-4">
       <div className="w-full max-w-4xl space-y-6 pt-6">
         <header className="rounded-2xl border border-slate-800 bg-slate-900 p-8 shadow-lg">
           <p className="text-xs uppercase tracking-[0.4em] text-sky-400 font-mono">Share Your Thoughts</p>
@@ -36,6 +36,6 @@ export default function FeedbackPage() {
           </iframe>
         </section>
       </div>
-    </main>
+    </div>
   )
 }

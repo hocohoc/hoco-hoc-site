@@ -32,7 +32,7 @@ export default function ProfileDashboard(props: Props) {
     completedArticles = (articles.filter(a => props.profile.articlesCompletedID.includes(a.id)))
   }
 
-  return <main className="w-full h-full flex flex-col gap-4">
+  return <div className="w-full h-full flex flex-col gap-4">
     {(sectionLoadErr || articleLoadErr) && (
       <ErrorPopup error={articleLoadErr || sectionLoadErr}>
         <p className="mb-4">An error occured while loading your dashboard. </p>
@@ -84,5 +84,5 @@ export default function ProfileDashboard(props: Props) {
         </div>
       </div>
     </div>
-  </main>
+  </div>
 }

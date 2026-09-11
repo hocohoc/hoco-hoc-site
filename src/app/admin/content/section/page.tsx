@@ -61,7 +61,7 @@ export default function AdminSectionEditPage() {
         router.push("/admin/content")
     }
 
-    return <main>
+    return <div>
         {sectionLoadError && <span className="text-red-400"> An error occured while loading the requested section! </span>}
         {loadingSection && <span className="text-slate-400"> Loading... </span>}
         {(profile && profile.admin) ?
@@ -70,5 +70,5 @@ export default function AdminSectionEditPage() {
                     <SectionEditor section={!loadingSection && !sectionLoadError && editing ? section : defaultSection} editing={editing} onSave={handleSave} onCancel={handleCancel} onDelete={editing && section ? handleDelete : undefined}></SectionEditor>
                 </div>
             </div> : <p className="p-2">You don&apos;t have admin permissions. If you think this is a mistake, contact us.</p>}
-    </main>
+    </div>
 }
