@@ -54,7 +54,7 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="border-t border-gray-800 py-4 text-center text-xs text-slate-500">
+      <div className="border-t border-gray-800 py-4 text-center text-xs text-slate-400">
         Made with ❤️ by the HoCoHOC Team
       </div>
     </footer>

@@ -11,9 +11,18 @@ body {
   @apply text-slate-200 bg-slate-900
 }
 
-:is(a, button, input, select, textarea):focus-visible {
-  outline: 2px solid theme('colors.sky.300');
+:is(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 3px solid theme('colors.sky.300') !important;
   outline-offset: 2px;
+}
+
+html { scroll-padding-top: calc(var(--site-nav-height, 4rem) + 1rem); }
+body { overflow-wrap: anywhere; }
+button, input, select, textarea { max-width: 100%; }
+button, a, input, select, textarea { scroll-margin-block: calc(var(--site-nav-height, 4rem) + 1rem); }
+
+@media (forced-colors: active) {
+  button[aria-pressed="true"] { border: 3px solid Highlight; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -76,3 +85,7 @@ body {
     @apply text-sky-300 underline hover:text-sky-400;
   }
 }
+
+button[aria-pressed="true"] { box-shadow: inset 0 0 0 2px currentColor; }
+
+@media (forced-colors: active) { input[type="radio"] { appearance: auto; } }

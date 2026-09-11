@@ -57,18 +57,18 @@ export default function AdminStatsPage() {
     // gate by admin like your old page
     if (!profile || !profile.admin) {
         return (
-            <main>
+            <div>
                 <p className="p-2">
                     You don&apos;t have admin permissions. If you think this is a mistake, contact us.
                 </p>
-            </main>
+            </div>
         );
     }
 
     const stats = users ? computeStats(users) : null;
 
     return (
-        <main>
+        <div>
             <div className="w-full h-auto flex justify-center">
                 <div className="max-w-3xl w-full h-full p-4 flex flex-col gap-4">
                     <div className="p-2 bg-amber-400 text-slate-900 rounded flex items-center gap-2">
@@ -204,6 +204,6 @@ export default function AdminStatsPage() {
                     )}
                 </div>
             </div>
-        </main>
+        </div>
     );
 }

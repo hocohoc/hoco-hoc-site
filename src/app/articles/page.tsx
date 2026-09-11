@@ -100,7 +100,7 @@ export default function Articles() {
     }
 
 
-    return <main className="h-[calc(100vh-3.5rem-4rem)] overflow-hidden">
+    return <div className="h-[calc(100vh-3.5rem-4rem)] overflow-hidden">
         {error ? <ErrorPopup error={error}>
             <p className="mb-4">An error occured while fetching articles and sections. Try again or contact us if the problem persists.</p>
             <button onClick={() => refetch()} type="button" className={`font-mono btn-secondary text-left`}> Try Again </button>
@@ -205,5 +205,5 @@ export default function Articles() {
                 </div>
             </div>
         </div>
-    </main>
+    </div>
 }

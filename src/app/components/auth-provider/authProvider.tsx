@@ -3,7 +3,7 @@
 import { auth } from "@/app/firebase/config"
 import { Profile, createUserProfile, getUserData, logout } from "@/app/services/userService"
 import { User, onAuthStateChanged } from "firebase/auth"
-import { ReactNode, createContext, useContext, useEffect, useState } from "react"
+import { ReactNode, createContext, useContext, useEffect, useRef, useState } from "react"
 import ModalContainer from "../modal/modalContainer"
 import Modal from "../modal/modal"
 import { getAllSchools, School } from "@/app/services/schoolsService"
@@ -47,6 +47,8 @@ export default function AuthProvider(props: Props) {
     let [school, setSchool] = useState<School>(schools[0])
     let [language, setLanguage] = useState<string>(ALL_LANGUAGES[0])
     let [loading, setLoading] = useState(false)
+    const registrationDismissed = useRef(false);
+    const [saveError, setSaveError] = useState("");
     const registerHeadingId = "create-profile-heading";
 
     useEffect(() => {
@@ -61,7 +63,7 @@ export default function AuthProvider(props: Props) {
                                 { ...profileContext, profile: prof }
                             )
                         } else {
-                            setShowRegisterModal(true)
+                            if (!registrationDismissed.current) setShowRegisterModal(true)
                         }
                     }).catch(err => {
                         console.log(err)
@@ -75,6 +77,7 @@ export default function AuthProvider(props: Props) {
                         { ...profileContext, profile: null }
                     )
                 }
+                registrationDismissed.current = false;
                 setShowRegisterModal(false)
             }
         })
@@ -83,6 +86,8 @@ export default function AuthProvider(props: Props) {
     }, [profileContext, showRegisterModal, firebaseUser])
 
     function registerProfile() {
+        if (loading) return;
+        setSaveError("");
         setLoading(true);
         console.log(school)
         console.log(language)
@@ -93,47 +98,50 @@ export default function AuthProvider(props: Props) {
             setShowRegisterModal(false)
         }).catch(err => {
             console.log(err)
+            setSaveError("Your profile could not be saved. Check your connection and try Create again.");
             setLoading(false)
         })
     }
 
     function handleRegisterCancel() {
-        if (!loading) {
-            logout();
-        }
+        registrationDismissed.current = true;
+        setShowRegisterModal(false);
+        if (!loading) logout();
     }
 
     return (
         <AuthContext.Provider value={profileContext}>
-            {showRegisterModal && <ModalContainer labelledBy={registerHeadingId} onDismiss={loading ? undefined : handleRegisterCancel}>
+            {showRegisterModal && <ModalContainer labelledBy={registerHeadingId} onDismiss={handleRegisterCancel}>
                 <Modal className="flex flex-col">
                     <h1 className={`font-mono text-2xl font-bold mb-2`} id={registerHeadingId}>Create your profile</h1>
                     <p className="mb-4 text-slate-300 text-sm md:text-base">It looks like this is your first time logging in to Howard County Hour of Code, welcome! Please fill out the following information to create your profile and start learning.</p>
 
                     <div>
                         <div className="mb-2">
-                            <p className="font-bold text-md">Select Your School</p>
-                            <p className="text-sm text-slate-300">Note: You will not be able to change this later!</p>
+                            <label htmlFor="registration-school" className="font-bold text-md">Select Your School</label>
+                            <p id="school-note" className="text-sm text-slate-300">Note: You will not be able to change this later!</p>
                         </div>
-                        <select className="font-mono bg-gray-700 p-2 rounded border-2 border-gray-600 hover:bg-gray-600 w-full cursor-pointer" value={school.id} onChange={(e) => setSchool(schools.find(sc => sc.id == e.target.value))}>
+                        <select id="registration-school" aria-describedby="school-note" disabled={loading} className="font-mono bg-gray-700 p-2 rounded border-2 border-gray-600 hover:bg-gray-600 w-full cursor-pointer" value={school.id} onChange={(e) => setSchool(schools.find(sc => sc.id == e.target.value))}>
                             {schools.map((s, index) =>
                                 <option key={index} value={s.id}>{s.name}</option>
                             )}
                         </select>
                         <div className="my-2">
-                            <p className="font-bold text-md">Select your preferred programming language</p>
+                            <label htmlFor="registration-language" className="font-bold text-md">Select your preferred programming language</label>
                             <p className="text-sm text-slate-300">This is the language you will see code examples in by default (when they are available in that language).</p>
                         </div>
-                        <select className="font-mono bg-gray-700 p-2 rounded border-2 border-gray-600 hover:bg-gray-600 w-full cursor-pointer" value={ALL_LANGUAGES.indexOf(language)} onChange={(e) => { const selectedIndex = Number(e.target.value); setLanguage(ALL_LANGUAGES[selectedIndex]); }}>
+                        <select id="registration-language" disabled={loading} className="font-mono bg-gray-700 p-2 rounded border-2 border-gray-600 hover:bg-gray-600 w-full cursor-pointer" value={ALL_LANGUAGES.indexOf(language)} onChange={(e) => { const selectedIndex = Number(e.target.value); setLanguage(ALL_LANGUAGES[selectedIndex]); }}>
                             {ALL_LANGUAGES.map((lang, index) =>
                                 <option key={index} value={index}>{lang}</option>
                             )}
                         </select>
                     </div>
 
-                    <div className="mt-2 flex flex-row gap-2">
-                        <button className="btn-primary font-mono flex-1" type="button" onClick={() => registerProfile()} disabled={loading}>{loading ? "Creating..." : "Create"}</button>
-                        <button className="btn-secondary font-mono" type="button" onClick={handleRegisterCancel} disabled={loading}>Cancel</button>
+                    <p role="status" aria-atomic="true">{loading ? "Creating your profile. You can close this dialog while saving continues." : ""}</p>
+                    <p role="alert" className="text-red-300">{saveError}</p>
+                    <div className="mt-2 flex flex-row flex-wrap gap-2">
+                        <button className="btn-primary font-mono flex-1" type="button" onClick={() => registerProfile()} aria-disabled={loading}>{loading ? "Creating..." : "Create"}</button>
+                        <button className="btn-secondary font-mono" type="button" onClick={handleRegisterCancel}>{loading ? "Close" : "Cancel"}</button>
                     </div>
                 </Modal>
             </ModalContainer>}

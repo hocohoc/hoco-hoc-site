@@ -87,10 +87,10 @@ export default function Hero() {
         }
     }
 
-    return <main className="h-[60vh] md:h-[75vh] min-h-[30rem] bg-sky-950 relative border-b-2 border-b-sky-900 overflow-hidden">
-        <canvas ref={canvasRef} className="relative top-0 left-0" aria-hidden="true" role="presentation" tabIndex={-1}></canvas>
+    return <section className="min-h-[30rem] bg-sky-950 relative border-b-2 border-b-sky-900 overflow-hidden">
+        <canvas ref={canvasRef} className="absolute inset-0" aria-hidden="true" role="presentation" tabIndex={-1}></canvas>
 
-        <div className="flex flex-row items-center justify-center z-20 absolute top-0 left-0 w-full h-full p-8 bg-opacity-80 bg-slate-900 md:bg-opacity-100 md:bg-transparent md:bg-gradient-to-bl md:via-90% md:via-slate-900 md:from-transparent md:to-slate-900">
+        <div className="flex flex-row items-center justify-center z-20 relative w-full min-h-[30rem] md:min-h-[75vh] p-6 sm:p-8 py-16 bg-opacity-80 bg-slate-900 md:bg-opacity-100 md:bg-transparent md:bg-gradient-to-bl md:via-90% md:via-slate-900 md:from-transparent md:to-slate-900">
             <div className="flex flex-row items-center w-full max-w-screen-xl">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
@@ -99,7 +99,7 @@ export default function Hero() {
                     className="md:w-2/3 w-full"
                 >
                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-900/50 border border-sky-800 mb-4">
-                        <span className="w-2 h-2 bg-sky-400 rounded-full animate-pulse" />
+                        <span className="w-2 h-2 bg-sky-400 rounded-full" />
                         <span className="font-mono text-xs text-sky-300 tracking-wide">December 8 – 15, 2026</span>
                     </div>
 
@@ -115,7 +115,7 @@ export default function Hero() {
                         A 7-day event where students across Howard County explore computer science through articles, games, and coding challenges.
                     </p>
 
-                    <div className="font-mono flex flex-row mt-4 gap-2">
+                    <div className="font-mono flex flex-row flex-wrap mt-4 gap-2">
                         <button
                             className={`btn-primary ${profile && "bg-red-400 hover:bg-red-300"}`}
                             type="button"
@@ -133,5 +133,5 @@ export default function Hero() {
                 </motion.div>
             </div>
         </div>
-    </main>
+    </section>
 }

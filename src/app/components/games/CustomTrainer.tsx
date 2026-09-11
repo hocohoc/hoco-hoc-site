@@ -201,7 +201,9 @@ export default function FlexiBotGame() {
 
           {/* Two inputs with inside placeholders */}
           <div className="space-y-4">
+            <label htmlFor="category-1" className="block">Category 1 name</label>
             <input
+              id="category-1"
               type="text"
               value={categoryNames.zero}
               onChange={(e) =>
@@ -211,7 +213,9 @@ export default function FlexiBotGame() {
               placeholder="Category 1 (e.g. Dogs)"
             />
 
+            <label htmlFor="category-2" className="block">Category 2 name</label>
             <input
+              id="category-2"
               type="text"
               value={categoryNames.one}
               onChange={(e) =>
@@ -249,7 +253,9 @@ export default function FlexiBotGame() {
               <h3 className="font-semibold text-sky-300 mb-2">
                 {categoryNames.zero || "Category 1"} 
               </h3>
+              <label htmlFor="training-0" className="block mb-2">Upload {categoryNames.zero} training images</label>
               <input
+                id="training-0"
                 type="file"
                 accept="image/*"
                 multiple
@@ -270,13 +276,13 @@ export default function FlexiBotGame() {
                     <div key={img.url + idx} className="relative">
                       <img
                         src={img.url}
-                        alt="train-0"
+                        alt={`${categoryNames.zero} training image ${idx + 1}`}
                         className="w-20 h-20 object-cover rounded-md border border-slate-700 bg-white"
                       />
                       <button
                         onClick={() => removeTrainImage(img.url)}
-                        className="absolute top-0 right-0 bg-red-600 hover:bg-red-700 text-xs text-white rounded-full w-5 h-5 flex items-center justify-center"
-                        title="Remove image"
+                        className="absolute top-0 right-0 bg-red-600 hover:bg-red-700 text-xs text-white rounded-full w-8 h-8 flex items-center justify-center"
+                        aria-label={`Remove image ${idx + 1}`} title="Remove image"
                       >
                         ×
                       </button>
@@ -290,7 +296,9 @@ export default function FlexiBotGame() {
               <h3 className="font-semibold text-pink-300 mb-2">
                 {categoryNames.one || "Category 2"} 
               </h3>
+              <label htmlFor="training-1" className="block mb-2">Upload {categoryNames.one} training images</label>
               <input
+                id="training-1"
                 type="file"
                 accept="image/*"
                 multiple
@@ -311,13 +319,13 @@ export default function FlexiBotGame() {
                     <div key={img.url + idx} className="relative">
                       <img
                         src={img.url}
-                        alt="train-1"
+                        alt={`${categoryNames.one} training image ${idx + 1}`}
                         className="w-20 h-20 object-cover rounded-md border border-slate-700 bg-white"
                       />
                       <button
                         onClick={() => removeTrainImage(img.url)}
-                        className="absolute top-0 right-0 bg-red-600 hover:bg-red-700 text-xs text-white rounded-full w-5 h-5 flex items-center justify-center"
-                        title="Remove image"
+                        className="absolute top-0 right-0 bg-red-600 hover:bg-red-700 text-xs text-white rounded-full w-8 h-8 flex items-center justify-center"
+                        aria-label={`Remove image ${idx + 1}`} title="Remove image"
                       >
                         ×
                       </button>
@@ -353,7 +361,7 @@ export default function FlexiBotGame() {
       {/* ⚙️ Phase 3: Training */}
       {phase === "train" && (
         <div className="mt-6">
-          <p className="text-amber-300 animate-pulse">{status}</p>
+          <p role="status" aria-atomic="true" className="text-amber-300">{status}</p>
           <button
             onClick={handleReset}
             className="mt-4 bg-slate-700 px-4 py-2 rounded-full text-slate-100 font-semibold"
@@ -387,7 +395,9 @@ export default function FlexiBotGame() {
             <h3 className="text-lg font-semibold text-sky-300 mb-2">
               Upload test images
             </h3>
+            <label htmlFor="custom-test-images" className="block mb-2">Choose test images</label>
             <input
+              id="custom-test-images"
               type="file"
               accept="image/*"
               multiple
@@ -410,13 +420,13 @@ export default function FlexiBotGame() {
                 >
                   <img
                     src={r.imageUrl}
-                    alt="test"
+                    alt={`Test image ${idx + 1}`}
                     className="w-full h-48 object-cover bg-white"
                   />
                   <button
                     onClick={() => removeTestImage(r.imageUrl)}
-                    className="absolute top-0 right-0 bg-red-600 hover:bg-red-700 text-xs text-white rounded-full w-5 h-5 flex items-center justify-center"
-                    title="Remove image"
+                    className="absolute top-0 right-0 bg-red-600 hover:bg-red-700 text-xs text-white rounded-full w-8 h-8 flex items-center justify-center"
+                    aria-label={`Remove image ${idx + 1}`} title="Remove image"
                   >
                     ×
                   </button>

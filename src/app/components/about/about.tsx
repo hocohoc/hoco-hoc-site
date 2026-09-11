@@ -2,21 +2,10 @@ import Link from "next/link";
 import Leaderboard from "../leaderboard/leaderboard";
 import { School } from "@/app/services/schoolsService";
 import ArticleRenderer from "@/app/components/article-renderer/articleRenderer";
-import { Typewriter } from "react-simple-typewriter";
+
 
 
 export default function AboutSection() {
-    const phrases = [
-        "CS",
-        "Algorithms",
-        "Web Dev",
-        "ML",
-        "Python",
-        "Java",
-        "C++"
-    ]
-
-
     const dummySchools: School[] = [
         { id: "School 1", name: "School 1", score: 5000 },
         { id: "School 2", name: "School 2", score: 4000 },
@@ -44,7 +33,7 @@ export default function AboutSection() {
         <div className="p-4 md:p-8 md:py-32 py-16 w-full flex flex-wrap justify-center">
             <div className="max-w-screen-xl w-full flex flex-col gap-20 md:gap-32 justify-center">
                 <div>
-                    <h3 className="text-slate-200 font-bold  text-5xl md:text-6xl leading-tight pb-8">Learn <span className="block md:inline bg-gradient-to-b from-sky-300 to-sky-500 text-transparent bg-clip-text font-mono"><Typewriter words={phrases} cursor={true} cursorStyle={"_"} loop={true} /></span> <span className="underline">the fun way! </span> </h3>
+                    <h3 className="text-slate-200 font-bold  text-4xl md:text-6xl leading-tight pb-8">Learn <span className="block md:inline bg-gradient-to-b from-sky-300 to-sky-500 text-transparent bg-clip-text font-mono">computer science</span> <span className="underline">the fun way! </span> </h3>
                     <p className="text-lg md:text-xl font-sans text-slate-300 flex flex-row gap-2 w-full max-w-4xl">
                         The Hour of Code started as a one-hour introduction to computer science, designed to demystify &quot;code&quot;, to show that anybody can learn the basics, and to broaden participation in the field of computer science. It has since become a worldwide effort to celebrate computer science, starting with 1-hour coding activities but expanding to all sorts of community efforts. Howard County&apos;s version of Hour of Code is made by students, for students.
                     </p>

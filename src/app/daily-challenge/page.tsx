@@ -53,7 +53,7 @@ export default function DailyChallengePage() {
         setAlreadyCompleted(true)
         setConfetti(true)
         setShowAchievement(true)
-        setTimeout(() => setConfetti(false), 7000)
+        setTimeout(() => setConfetti(false), 4000)
       }
     } catch (err) {
       setResult({ correct: false, points: 0 })
@@ -69,18 +69,18 @@ export default function DailyChallengePage() {
 
   if (loading) {
     return (
-      <main className="p-4 flex flex-col items-center">
+      <div className="p-4 flex flex-col items-center">
         <div className="max-w-2xl w-full flex flex-col gap-4">
           <div className="h-8 w-48 bg-slate-800 animate-pulse rounded" />
           <div className="h-40 bg-slate-800 animate-pulse rounded" />
         </div>
-      </main>
+      </div>
     )
   }
 
   if (!challenge) {
     return (
-      <main className="p-4 flex flex-col items-center">
+      <div className="p-4 flex flex-col items-center">
         <div className="max-w-2xl w-full text-center py-16">
           <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-slate-800 flex items-center justify-center">
             <svg className="w-8 h-8 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -97,15 +97,16 @@ export default function DailyChallengePage() {
             </p>
           )}
         </div>
-      </main>
+      </div>
     )
   }
 
   return (
-    <main className="p-4 flex flex-col items-center">
+    <div className="p-4 flex flex-col items-center">
       {confetti && (
         <Confetti
-          className="fixed top-0 left-0"
+          aria-hidden="true"
+          className="fixed top-0 left-0 pointer-events-none motion-reduce:hidden"
           numberOfPieces={400}
           recycle={false}
           style={{ position: "fixed" }}
@@ -161,17 +162,18 @@ export default function DailyChallengePage() {
               </div>
             ) : (
               <>
-                <label className="text-sm font-mono text-slate-400">Your Answer</label>
+                <label htmlFor="daily-answer" className="text-sm font-mono text-slate-400">Your Answer</label>
                 <input
+                  id="daily-answer"
                   type="text"
                   value={answer}
                   onChange={(e) => setAnswer(e.target.value)}
                   placeholder="Type your answer..."
                   className="w-full"
                 />
-                {result && !result.correct && (
+                <div role="status" aria-atomic="true">{result && !result.correct && (
                   <p className="text-red-400 text-sm font-mono">Incorrect — try again!</p>
-                )}
+                )}</div>
                 <button
                   type="button"
                   className="btn-primary font-mono w-full"
@@ -194,6 +196,6 @@ export default function DailyChallengePage() {
           </div>
         )}
       </div>
-    </main>
+    </div>
   )
 }

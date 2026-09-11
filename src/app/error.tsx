@@ -17,9 +17,9 @@ export default function CustomError({
     console.log(error)
   }, [error])
 
-  return <main>
+  return <div>
     <ErrorPopup error={error}>
       <p className="mb-4">Sorry, an uncaught error occurred somewhere. This is not supposed to happen. Contact us if the problem persists.</p>
     </ErrorPopup>
-  </main>
+  </div>
 }

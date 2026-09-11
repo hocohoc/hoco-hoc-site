@@ -30,7 +30,7 @@ export default function LeaderboardPage() {
 
     const loading = schools.length === 0
 
-    return <main className="p-4 flex flex-col items-center">
+    return <div className="p-4 flex flex-col items-center">
         <div className="max-w-2xl w-full">
             <div className="bg-sky-800 p-4 rounded mb-2 border-2 border-sky-900">
                 <h1 className="font-mono text-2xl font-bold mb-2">School Leaderboard</h1>
@@ -47,5 +47,5 @@ export default function LeaderboardPage() {
                 : <p className="p-2 bg-slate-800 rounded"> No schools have gained any points... </p>
             }
         </div>
-    </main>
+    </div>
 }

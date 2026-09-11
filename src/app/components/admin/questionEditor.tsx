@@ -55,7 +55,7 @@ export default function QuestionEditor(props: Props) {
         props.onChange(props.number, { ...question, question: text }, correctIndex)
     }
 
-    return <main className={`flex flex-col gap-1 border rounded bg-slate-800/50 border-slate-700 p-2 ${props.className}`}>
+    return <div className={`flex flex-col gap-1 border rounded bg-slate-800/50 border-slate-700 p-2 ${props.className}`}>
         <div className="flex flex-row gap-2 items-center">
             <p className="flex-1">Question {props.number + 1}</p>
             <button className="btn-danger font-mono" type="button" onClick={() => props.onDelete(props.number)}>Delete</button>
@@ -89,5 +89,5 @@ export default function QuestionEditor(props: Props) {
             <textarea className="flex-1" value={newOpt} placeholder="Add another option..." onChange={e => setNewOpt(e.target.value)} />
             <button className="btn-primary font-mono" type="button" onClick={handleAddOption} disabled={newOpt.length == 0}>Add Option</button>
         </div>
-    </main>
+    </div>
 }

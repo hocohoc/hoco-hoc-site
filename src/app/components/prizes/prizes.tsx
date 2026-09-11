@@ -92,7 +92,6 @@ export default function Prizes() {
               <ul className="rounded-b bg-slate-800 p-4 pl-8 list-disc text-lg border border-slate-700">
                 <li>Website banner</li>
                 <li>$300 to the winning school&apos;s computer science department</li>
-                <br />
               </ul>
             </div>
           </div>

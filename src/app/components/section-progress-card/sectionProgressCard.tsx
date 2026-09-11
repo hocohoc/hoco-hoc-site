@@ -22,7 +22,7 @@ export default function SectionProgressCard(props: Props) {
 
   const isComplete = percentComplete() === 100
 
-  return <main className={`rounded p-4 flex flex-col ${isComplete ? "bg-emerald-900/30 border border-emerald-500/40" : "bg-slate-800"} ${props.className || ""}`}>
+  return <div className={`rounded p-4 flex flex-col ${isComplete ? "bg-emerald-900/30 border border-emerald-500/40" : "bg-slate-800"} ${props.className || ""}`}>
     <div className="flex items-center gap-2">
       <h1 className="font-bold text-lg mb-2 flex-1"> {props.section.title} </h1>
       {isComplete && (
@@ -36,5 +36,5 @@ export default function SectionProgressCard(props: Props) {
     <div className="w-full bg-slate-700 rounded-full mt-2 h-2 overflow-hidden">
       <div style={{ width: `${percentComplete()}%` }} className={`h-full ${isComplete ? "bg-emerald-300" : "bg-emerald-400"}`}> </div>
     </div>
-  </main >
+  </div>
 }

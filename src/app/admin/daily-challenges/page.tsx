@@ -100,7 +100,7 @@ export default function AdminDailyChallengesPage() {
   }
 
   return (
-    <main className="p-4 max-w-4xl mx-auto flex flex-col gap-6">
+    <div className="p-4 max-w-4xl mx-auto flex flex-col gap-6">
       <h1 className="text-3xl font-bold font-mono">Daily Challenges</h1>
       <p className="text-slate-400 text-sm">
         Set up one challenge per day for the event week (Dec 8–15, 2026). Students see the challenge for the current day only.
@@ -264,6 +264,6 @@ export default function AdminDailyChallengesPage() {
           {saving ? "Saving..." : editing ? "Update Challenge" : "Create Challenge"}
         </button>
       </div>
-    </main>
+    </div>
   )
 }

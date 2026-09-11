@@ -121,7 +121,7 @@ export default function MindstormPage() {
     }
 
     async function handleSubmit() {
-        if (!challenge || !userAnswer.trim()) return;
+        if (loading || feedback.correct || !challenge || !userAnswer.trim()) return;
 
         setLoading(true);
         const result = await checkCodingAnswer(
@@ -141,9 +141,7 @@ export default function MindstormPage() {
             });
             await loadStats();
             await loadUserPoints();
-            setTimeout(() => {
-                loadNewChallenge();
-            }, 2000);
+
         } else {
             setFeedback({
                 show: true,
@@ -155,10 +153,10 @@ export default function MindstormPage() {
     }
 
     const difficultyColors: Record<Difficulty, string> = {
-        easy: "bg-green-500 hover:bg-green-600",
-        medium: "bg-yellow-500 hover:bg-yellow-600",
-        hard: "bg-red-500 hover:bg-red-600",
-        all: "bg-blue-500 hover:bg-blue-600",
+        easy: "bg-green-700 hover:bg-green-700",
+        medium: "bg-yellow-700 hover:bg-yellow-700",
+        hard: "bg-red-700 hover:bg-red-700",
+        all: "bg-blue-700 hover:bg-blue-800",
     };
 
     function renderChallengeCode() {
@@ -195,7 +193,7 @@ export default function MindstormPage() {
     }
 
     return (
-        <main className="min-h-screen bg-gradient-to-b from-gray-900 to-black text-white flex flex-col items-center py-12 px-4">
+        <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black text-white flex flex-col items-center py-12 px-4">
             {/* Header */}
             <div className="w-full max-w-5xl mb-8">
                 <Link
@@ -204,8 +202,8 @@ export default function MindstormPage() {
                 >
                     ← Back to Games
                 </Link>
-                <div className="flex justify-between items-center">
-                    <h1 className="text-5xl font-bold">Mindstorm</h1>
+                <div className="flex flex-wrap gap-3 justify-between items-center">
+                    <h1 className="text-3xl sm:text-5xl font-bold">Mindstorm</h1>
                     <div className="flex items-center gap-4">
                         {user && (
                             <>
@@ -243,6 +241,7 @@ export default function MindstormPage() {
                     {(["easy", "medium", "hard", "all"] as const).map((diff) => (
                         <button
                             key={diff}
+                            aria-pressed={difficulty === diff}
                             onClick={() => handleDifficultyChange(diff)}
                             disabled={loading}
                             className={`px-6 py-3 rounded-lg font-bold transition ${
@@ -269,7 +268,7 @@ export default function MindstormPage() {
 
                 {/* Challenge Display */}
                 {challenge && (
-                    <div className="bg-gray-800 rounded-2xl p-8 shadow-2xl">
+                    <div className="bg-gray-800 rounded-2xl p-4 sm:p-8 shadow-2xl">
                         <div className="mb-6">
                             <h2 className="text-2xl font-bold mb-4 text-blue-300">
                                 {isBlockBased
@@ -282,10 +281,11 @@ export default function MindstormPage() {
 
                         {/* Answer Input */}
                         <div className="mb-6">
-                            <label className="block text-lg mb-2 text-gray-300">
+                            <label htmlFor="mindstorm-answer" className="block text-lg mb-2 text-gray-300">
                                 Enter the output:
                             </label>
                             <input
+                                id="mindstorm-answer"
                                 type="text"
                                 value={userAnswer}
                                 onChange={(e) => setUserAnswer(e.target.value)}
@@ -299,7 +299,7 @@ export default function MindstormPage() {
                                         ? "Type exactly what the sprite will say / what appears..."
                                         : "Type the exact output..."
                                 }
-                                disabled={loading}
+                                readOnly={loading || feedback.correct}
                                 className="w-full px-5 py-4 bg-gray-700 border-2 border-gray-600 rounded-lg text-white text-lg focus:border-blue-500 focus:outline-none disabled:opacity-50"
                             />
                             <p className="text-sm text-gray-400 mt-2">
@@ -311,14 +311,15 @@ export default function MindstormPage() {
                         {/* Submit Button */}
                         <button
                             onClick={handleSubmit}
-                            disabled={loading || !userAnswer.trim()}
+                            aria-disabled={loading || feedback.correct || !userAnswer.trim()}
                             className="w-full py-4 bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-600 disabled:cursor-not-allowed rounded-lg font-bold text-lg transition"
                         >
                             {loading ? "Checking..." : "Check Answer"}
                         </button>
 
                         {/* Feedback */}
-                        {feedback.show && (
+                        <div role="status" aria-live="polite" aria-atomic="true">
+                    {feedback.show && (
                             <div
                                 className={`mt-6 p-5 rounded-lg ${
                                     feedback.correct
@@ -331,6 +332,8 @@ export default function MindstormPage() {
                                 </p>
                             </div>
                         )}
+                        </div>
+                        <button onClick={loadNewChallenge} disabled={loading} className="btn-secondary w-full mt-4">Next Challenge</button>
                     </div>
                 )}
 
@@ -365,6 +368,6 @@ export default function MindstormPage() {
                     </div>
                 )}
             </div>
-        </main>
+        </div>
     );
 }

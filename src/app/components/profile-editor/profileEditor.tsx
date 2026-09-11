@@ -24,10 +24,10 @@ export default function ProfileEditor(props: Props) {
             {getSchoolByID(profile.school).name}
         </p>
         <div className="my-2">
-            <p className="font-bold text-md">Preferred programming language</p>
+            <label htmlFor="profile-language" className="font-bold text-md">Preferred programming language</label>
             <p className="text-sm text-slate-300">This is the language you will see code examples in by default (when they are available in that language).</p>
         </div>
-    <select className="font-mono bg-gray-950 p-2 rounded border border-gray-800 hover:bg-gray-900 w-full cursor-pointer" value={ALL_LANGUAGES.indexOf(profile.preferredLanguage.toLowerCase())} onChange={(e) => { const selectedIndex = Number(e.target.value); const nextLanguage = ALL_LANGUAGES[selectedIndex] as ("python" | "java" | "cpp"); setProfile({ ...profile, preferredLanguage: nextLanguage }) }}>
+    <select id="profile-language" className="font-mono bg-gray-950 p-2 rounded border border-gray-800 hover:bg-gray-900 w-full cursor-pointer" value={ALL_LANGUAGES.indexOf(profile.preferredLanguage.toLowerCase())} onChange={(e) => { const selectedIndex = Number(e.target.value); const nextLanguage = ALL_LANGUAGES[selectedIndex] as ("python" | "java" | "cpp"); setProfile({ ...profile, preferredLanguage: nextLanguage }) }}>
             {ALL_LANGUAGES.map((lang, index) =>
                 <option key={index} value={index}>{lang}</option>
             )}
