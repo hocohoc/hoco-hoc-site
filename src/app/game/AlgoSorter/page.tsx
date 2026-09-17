@@ -244,7 +244,7 @@ export default function AlgoSorterPage() {
 
           {/* How to Play */}
           <div className="bg-gray-900 border border-gray-700 rounded-lg p-6 mt-6">
-            <h3 className="text-2xl font-semibold mb-4">How to Play</h3>
+            <h2 className="text-2xl font-semibold mb-4">How to Play</h2>
             <ul className="space-y-2 text-gray-300">
               <li>• Tap two numbers to swap their positions</li>
               <li>• Sort all numbers in ascending order (1, 2, 3...)</li>

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import * as tf from "@tensorflow/tfjs";
 import { trainModel, evaluateModel, LabeledSample } from "@/ml/model";
 import { useProfile } from "@/app/components/auth-provider/authProvider";
@@ -71,6 +71,13 @@ export default function CatTrainerGame() {
     setShuffledImages(shuffleArray(allImages));
   }, []);
 
+  const headingRef = useRef<HTMLHeadingElement>(null);
+  const previousPhase = useRef(phase);
+  useEffect(() => {
+    if (previousPhase.current !== phase) headingRef.current?.focus();
+    previousPhase.current = phase;
+  }, [phase]);
+
   const current = shuffledImages[index];
 
   // 🧠 Train and test automatically
@@ -83,6 +90,7 @@ export default function CatTrainerGame() {
       label: labels[i.url]!,
     }));
 
+    try {
     const m = await trainModel(samples, (epoch, logs) =>
       setStatus(`Epoch ${epoch + 1}: loss ${logs?.loss?.toFixed(3)}`)
     );
@@ -111,10 +119,18 @@ export default function CatTrainerGame() {
 
       if (points > 0) {
         const gameId = `purrceptron-${Date.now()}`;
-        await awardGamePoints(user.uid, gameId, "purrceptron", accuracy * 100, points);
-        setPointsAwarded(true);
-        setPointsEarned(points);
+        try {
+          await awardGamePoints(user.uid, gameId, "purrceptron", accuracy * 100, points);
+          setPointsAwarded(true);
+          setPointsEarned(points);
+        } catch {
+          setStatus("Training completed, but points could not be saved. Check your connection and contact us if your score is missing.");
+        }
       }
+    }
+    } catch {
+      setStatus("Training failed. Check your connection, then choose Train Purr-ceptron to try again. Your labels are still available.");
+      setPhase("label");
     }
   }
 
@@ -143,12 +159,18 @@ export default function CatTrainerGame() {
     const files = (e.target.files ? Array.from(e.target.files) : []) as File[];
     const urls = files.map((file) => URL.createObjectURL(file));
 
+    try {
     const { results } = await evaluateModel(
       model,
       urls.map((u) => ({ imageUrl: u, groundTruth: 0 }))
     );
 
-    setUploadedResults((prev) => [...prev, ...results]);
+    setUploadedResults((prev) => [...prev, ...results.map((r, i) => ({ ...r, name: files[i].name }))]);
+    setStatus(`${results.length} uploaded image predictions are ready below.`);
+    } catch {
+      urls.forEach(URL.revokeObjectURL);
+      setStatus("These images could not be classified. Try a different PNG or JPEG image.");
+    }
   }
 
   // 🗑️ Remove uploaded photo
@@ -174,7 +196,7 @@ export default function CatTrainerGame() {
           </ul> 
           <h3 className="text-lg font-semibold text-sky-300 mb-1">How to play:</h3>
          <ol className="list-decimal list-inside text-slate-200"> 
-          <li>Look at each picture carefully.</li>
+          <li>Use each picture or its text description to choose a label. This activity teaches model training; you do not need to identify images by sight.</li>
           <li>Click <span className="text-sky-400 font-semibold">“🐱 Cat”</span> if it’s a cat, or 
           <span className="text-pink-400 font-semibold">“🐟 Fish</span> if it’s a fish.</li>
            <li>After you label all the pictures, click <span className="text-emerald-300 font-semibold">“Train Purr-ceptron”</span>. </li> 
@@ -182,21 +204,23 @@ export default function CatTrainerGame() {
           </ol> 
           <p className="text-slate-300 mt-4 italic"> Tip: If Purr-ceptron makes mistakes, try training again! </p>
            </div>
-      <h1 className="text-2xl font-bold text-sky-300 mb-3">
+      <h1 ref={headingRef} tabIndex={-1} className="text-2xl font-bold text-sky-300 mb-3">
         Train Purr-ceptron!
       </h1>
+      <p role="status" aria-atomic="true" className="mb-3 text-slate-200">{status}</p>
 
       {/* 🏷️ Label Phase */}
       {phase === "label" && current && (
         <div>
           <p role="status" aria-atomic="true" className="mb-2">
-            Image {index + 1} of {shuffledImages.length} ─ Is this a cat?
+            Image {index + 1} of {shuffledImages.length} — {current.isCat ? "a cat" : "a fish"}. Choose its training label.
           </p>
           <img
             src={current.url}
-            alt={`Image ${index + 1} for the cat or fish classification exercise`}
+            alt={`Illustration of a ${current.isCat ? "cat" : "fish"}`}
             className="mx-auto w-64 h-64 object-cover rounded-xl mb-3 border bg-white border-slate-600"
           />
+          <p className="mb-3">Image description: an illustration of a {current.isCat ? "cat" : "fish"}.</p>
           <div className="flex justify-center gap-3">
             <button
               onClick={() => handleLabel(1)}
@@ -230,7 +254,7 @@ export default function CatTrainerGame() {
       {/* ⚙️ Training Phase */}
       {phase === "train" && (
         <div>
-          <p role="status" aria-atomic="true" className="text-amber-300">{status}</p>
+          <p>Training is in progress. Results will appear when it finishes.</p>
         </div>
       )}
 
@@ -263,7 +287,7 @@ export default function CatTrainerGame() {
                 <img
                   src={r.imageUrl}
                   className="w-64 h-64 object-cover"
-                  alt={`Test image ${idx + 1}`}
+                  alt={`Test image ${idx + 1}: illustration of a ${r.groundTruth === 1 ? "cat" : "fish"}`}
                 />
                 <p className="text-sm p-2">
                   Purr-ceptron says:{" "}
@@ -306,7 +330,7 @@ export default function CatTrainerGame() {
                     <img
                       src={r.imageUrl}
                       className="w-64 h-64 object-cover bg-white"
-                      alt={`Uploaded image ${idx + 1}`}
+                      alt={`Uploaded image: ${r.name}`}
                     />
                     {/* 🗑️ Remove button */}
                     <button

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { onAuthStateChanged, User } from "firebase/auth";
 import {
   collection,
@@ -53,6 +53,9 @@ export default function TeachersPage() {
     {}
   );
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
+
+  const detailsRef = useRef<HTMLHeadingElement>(null);
+  useEffect(() => { if (selectedStudent) detailsRef.current?.focus(); }, [selectedStudent]);
 
   // NEW: pagination state
   const [pageSize, setPageSize] = useState<number>(25);
@@ -318,13 +321,15 @@ export default function TeachersPage() {
   if (loading)
     return (
       <div className="min-h-screen bg-black text-white p-6">
-        Loading teacher dashboard…
+        <h1 className="text-2xl font-semibold mb-4">Teacher Dashboard</h1>
+        <p role="status">Loading teacher dashboard…</p>
       </div>
     );
 
   if (unauthorized) {
     return (
       <div className="min-h-screen bg-black text-white p-6">
+        <h1 className="text-2xl font-semibold mb-4">Teacher Dashboard</h1>
         You must be logged in with an <code>@hcpss.org</code> account or an
         admin account to view this page.
       </div>
@@ -334,7 +339,8 @@ export default function TeachersPage() {
   if (error) {
     return (
       <div className="min-h-screen bg-black text-white p-6">
-        <p className="text-red-400">
+        <h1 className="text-2xl font-semibold mb-4">Teacher Dashboard</h1>
+        <p role="alert" className="text-red-300">
           Error loading teacher dashboard: {error}
         </p>
       </div>
@@ -344,6 +350,7 @@ export default function TeachersPage() {
   if (!authUser) {
     return (
       <div className="min-h-screen bg-black text-white p-6">
+        <h1 className="text-2xl font-semibold mb-4">Teacher Dashboard</h1>
         Something went wrong loading your teacher profile.
       </div>
     );
@@ -403,12 +410,13 @@ export default function TeachersPage() {
       {/* Top students */}
       <section>
         {/* header + page size selector */}
-        <div className="flex items-center justify-between mb-2">
+        <div className="flex flex-wrap gap-3 items-center justify-between mb-2">
           <h2 className="text-xl font-semibold">Top Students</h2>
           {rankedStudents.length > 0 && (
             <div className="flex items-center gap-2 text-xs text-gray-300">
-              <span>Students per page:</span>
+              <label htmlFor="students-per-page">Students per page:</label>
               <select
+                id="students-per-page"
                 className="bg-gray-900 border border-gray-700 rounded px-2 py-1 text-xs"
                 value={pageSize}
                 onChange={(e) => {
@@ -430,7 +438,7 @@ export default function TeachersPage() {
             No students found for this school yet.
           </p>
         ) : (
-          <div className="overflow-x-auto border border-gray-700 rounded-lg">
+          <div tabIndex={0} role="region" aria-label="Scrollable results table" className="overflow-x-auto border border-gray-700 rounded-lg">
             <table className="min-w-full text-sm">
               <thead className="bg-gray-800">
                 <tr>
@@ -458,7 +466,9 @@ export default function TeachersPage() {
                       <button
                         type="button"
                         onClick={() => setSelectedStudent(s)}
-                        className="text-blue-400 hover:underline"
+                        aria-expanded={selectedStudent?.uid === s.uid}
+                        aria-controls={selectedStudent?.uid === s.uid ? "student-details" : undefined}
+                        className="text-blue-300 hover:underline"
                       >
                         {s.displayName ?? "(no name)"}
                       </button>
@@ -527,10 +537,10 @@ export default function TeachersPage() {
 
         {/* Selected student details */}
         {selectedStudent && (
-          <div className="mt-4 border border-gray-700 rounded-lg p-4 bg-gray-900">
+          <div id="student-details" className="mt-4 border border-gray-700 rounded-lg p-4 bg-gray-900">
             <div className="flex items-start justify-between gap-2">
               <div>
-                <h3 className="text-lg font-semibold mb-1">
+                <h3 tabIndex={-1} ref={detailsRef} className="text-lg font-semibold mb-1">
                   Articles completed by{" "}
                   {selectedStudent.displayName ||
                     selectedStudent.email ||
@@ -581,7 +591,7 @@ export default function TeachersPage() {
             No completed articles recorded yet.
           </p>
         ) : (
-          <div className="overflow-x-auto border border-gray-700 rounded-lg">
+          <div tabIndex={0} role="region" aria-label="Scrollable results table" className="overflow-x-auto border border-gray-700 rounded-lg">
             <table className="min-w-full text-sm">
               <thead className="bg-gray-800">
                 <tr>
