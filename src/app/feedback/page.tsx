@@ -23,6 +23,7 @@ export default function FeedbackPage() {
             </Link>
             .
           </p>
+          <p>You can also send feedback or request accessibility help by email: <a className="link" href="mailto:mdhocohoc@gmail.com">mdhocohoc@gmail.com</a>.</p>
         </header>
 
         <section className="rounded-2xl border border-slate-800 bg-slate-900 p-2 shadow-lg">

@@ -1,0 +1,405 @@
+{
+  "scan": {
+    "browser": "151.0.7922.170",
+    "axe": "4.7.0",
+    "report": [
+      {
+        "route": "/",
+        "title": "HoCoHOC | Howard County Hour of Code / AI",
+        "violations": [],
+        "incomplete": [
+          "color-contrast"
+        ],
+        "narrow": {
+          "width": 320,
+          "scroll": 320,
+          "overflow": []
+        }
+      },
+      {
+        "route": "/accessibility",
+        "title": "Accessibility | HoCoHOC",
+        "violations": [],
+        "incomplete": [],
+        "narrow": {
+          "width": 320,
+          "scroll": 320,
+          "overflow": []
+        }
+      },
+      {
+        "route": "/articles",
+        "title": "Computer Science Articles for Students | HoCoHOC",
+        "violations": [],
+        "incomplete": [
+          "color-contrast"
+        ],
+        "narrow": {
+          "width": 320,
+          "scroll": 320,
+          "overflow": []
+        }
+      },
+      {
+        "route": "/game",
+        "title": "Free Coding and AI Games | HoCoHOC",
+        "violations": [],
+        "incomplete": [
+          "color-contrast"
+        ],
+        "narrow": {
+          "width": 320,
+          "scroll": 320,
+          "overflow": []
+        }
+      },
+      {
+        "route": "/game/AlgoSorter",
+        "title": "Algo Sorter Game",
+        "violations": [],
+        "incomplete": [],
+        "narrow": {
+          "width": 320,
+          "scroll": 320,
+          "overflow": []
+        }
+      },
+      {
+        "route": "/game/HexGuesser",
+        "title": "Hex Guesser Game",
+        "violations": [],
+        "incomplete": [],
+        "narrow": {
+          "width": 320,
+          "scroll": 320,
+          "overflow": []
+        }
+      },
+      {
+        "route": "/game/BinaryDecoder",
+        "title": "Binary Decoder Game",
+        "violations": [],
+        "incomplete": [],
+        "narrow": {
+          "width": 320,
+          "scroll": 320,
+          "overflow": []
+        }
+      },
+      {
+        "route": "/game/Mindstorm",
+        "title": "Mindstorm Coding Game",
+        "violations": [],
+        "incomplete": [
+          "color-contrast"
+        ],
+        "narrow": {
+          "width": 320,
+          "scroll": 320,
+          "overflow": []
+        }
+      },
+      {
+        "route": "/game/Purrceptron",
+        "title": "Purr-ceptron AI Game",
+        "violations": [],
+        "incomplete": [
+          "color-contrast"
+        ],
+        "narrow": {
+          "width": 320,
+          "scroll": 320,
+          "overflow": []
+        }
+      },
+      {
+        "route": "/game/Flexibot",
+        "title": "FlexiBot Coding Game",
+        "violations": [],
+        "incomplete": [
+          "color-contrast"
+        ],
+        "narrow": {
+          "width": 320,
+          "scroll": 320,
+          "overflow": []
+        }
+      },
+      {
+        "route": "/sandbox",
+        "title": "Interactive Coding Challenges | HoCoHOC",
+        "violations": [],
+        "incomplete": [],
+        "narrow": {
+          "width": 320,
+          "scroll": 320,
+          "overflow": []
+        }
+      },
+      {
+        "route": "/daily-challenge",
+        "title": "Daily Coding Challenge | HoCoHOC",
+        "violations": [],
+        "incomplete": [],
+        "narrow": {
+          "width": 320,
+          "scroll": 320,
+          "overflow": []
+        }
+      },
+      {
+        "route": "/teachers",
+        "title": "Teacher Dashboard | HoCoHOC",
+        "violations": [],
+        "incomplete": [],
+        "narrow": {
+          "width": 320,
+          "scroll": 320,
+          "overflow": []
+        }
+      },
+      {
+        "route": "/aboutus",
+        "title": "About Howard County Hour of Code / AI | HoCoHOC",
+        "violations": [],
+        "incomplete": [
+          "color-contrast"
+        ],
+        "narrow": {
+          "width": 320,
+          "scroll": 320,
+          "overflow": []
+        }
+      },
+      {
+        "route": "/winners",
+        "title": "HoCoHOC Winners and Champions | HoCoHOC",
+        "violations": [],
+        "incomplete": [],
+        "narrow": {
+          "width": 320,
+          "scroll": 320,
+          "overflow": []
+        }
+      },
+      {
+        "route": "/pictures",
+        "title": "Event Pictures and Highlights | HoCoHOC",
+        "violations": [],
+        "incomplete": [
+          "color-contrast"
+        ],
+        "narrow": {
+          "width": 320,
+          "scroll": 320,
+          "overflow": [
+            {
+              "tag": "DIV",
+              "text": "",
+              "class": "absolute top-0 right-0 -mt-16 -mr-16 h-64 w-64 rounded-full bg-sky-500/5 blur-[80px]"
+            }
+          ]
+        }
+      },
+      {
+        "route": "/recruitment",
+        "title": "Join the HoCoHOC Team | HoCoHOC",
+        "violations": [],
+        "incomplete": [
+          "frame-tested"
+        ],
+        "narrow": {
+          "width": 320,
+          "scroll": 320,
+          "overflow": []
+        }
+      },
+      {
+        "route": "/feedback",
+        "title": "Share Feedback | HoCoHOC",
+        "violations": [],
+        "incomplete": [
+          "frame-tested"
+        ],
+        "narrow": {
+          "width": 320,
+          "scroll": 320,
+          "overflow": []
+        }
+      },
+      {
+        "route": "/leaderboard",
+        "title": "Howard County School Leaderboard | HoCoHOC",
+        "violations": [],
+        "incomplete": [],
+        "narrow": {
+          "width": 320,
+          "scroll": 320,
+          "overflow": []
+        }
+      },
+      {
+        "route": "/me",
+        "title": "Student Dashboard | HoCoHOC",
+        "violations": [],
+        "incomplete": [],
+        "narrow": {
+          "width": 320,
+          "scroll": 320,
+          "overflow": []
+        }
+      },
+      {
+        "route": "/me/help",
+        "title": "Student Dashboard | HoCoHOC",
+        "violations": [],
+        "incomplete": [],
+        "narrow": {
+          "width": 320,
+          "scroll": 320,
+          "overflow": []
+        }
+      },
+      {
+        "route": "/me/settings",
+        "title": "Student Dashboard | HoCoHOC",
+        "violations": [],
+        "incomplete": [],
+        "narrow": {
+          "width": 320,
+          "scroll": 320,
+          "overflow": []
+        }
+      }
+    ]
+  },
+  "interactions": [
+    {
+      "test": "First keyboard stop",
+      "text": "Skip to main content"
+    },
+    {
+      "test": "Skip target",
+      "id": "main-content"
+    },
+    {
+      "test": "Nonvisual classification",
+      "description": "Image description: an illustration of a fish."
+    },
+    {
+      "test": "Keyboard label advances",
+      "status": "Image 2 of 20 \u2014 a cat. Choose its training label.",
+      "focus": "\ud83d\udc31 Cat"
+    },
+    {
+      "test": "Classifier phase focus",
+      "focus": "Build Your Own Image Classifier"
+    },
+    {
+      "test": "Uploaded image description",
+      "alt": 1
+    },
+    {
+      "test": "320px with text spacing",
+      "route": "/",
+      "viewport": 320,
+      "scroll": 320
+    },
+    {
+      "test": "200% root text size with spacing",
+      "route": "/",
+      "viewport": 1280,
+      "scroll": 1280
+    },
+    {
+      "test": "320px with text spacing",
+      "route": "/game",
+      "viewport": 320,
+      "scroll": 320
+    },
+    {
+      "test": "200% root text size with spacing",
+      "route": "/game",
+      "viewport": 1280,
+      "scroll": 1280
+    },
+    {
+      "test": "320px with text spacing",
+      "route": "/accessibility",
+      "viewport": 320,
+      "scroll": 320
+    },
+    {
+      "test": "200% root text size with spacing",
+      "route": "/accessibility",
+      "viewport": 1280,
+      "scroll": 1280
+    },
+    {
+      "test": "320px with text spacing",
+      "route": "/sandbox",
+      "viewport": 320,
+      "scroll": 320
+    },
+    {
+      "test": "200% root text size with spacing",
+      "route": "/sandbox",
+      "viewport": 1280,
+      "scroll": 1280
+    },
+    {
+      "test": "320px with text spacing",
+      "route": "/game/Purrceptron",
+      "viewport": 320,
+      "scroll": 320
+    },
+    {
+      "test": "200% root text size with spacing",
+      "route": "/game/Purrceptron",
+      "viewport": 1280,
+      "scroll": 1280
+    },
+    {
+      "test": "320px with text spacing",
+      "route": "/game/Flexibot",
+      "viewport": 320,
+      "scroll": 320
+    },
+    {
+      "test": "200% root text size with spacing",
+      "route": "/game/Flexibot",
+      "viewport": 1280,
+      "scroll": 1280
+    },
+    {
+      "test": "320px with text spacing",
+      "route": "/me/help",
+      "viewport": 320,
+      "scroll": 320
+    },
+    {
+      "test": "200% root text size with spacing",
+      "route": "/me/help",
+      "viewport": 1280,
+      "scroll": 1280
+    }
+  ],
+  "fixture": {
+    "passed": [
+      "Unanswered quiz validation",
+      "Review before submit",
+      "Completion focus",
+      "Question/option labels",
+      "Correct-answer pressed state",
+      "Remove option",
+      "Video failure recovery",
+      "Transcript disclosure"
+    ],
+    "violations": [],
+    "incomplete": [
+      "color-contrast",
+      "link-in-text-block",
+      "video-caption"
+    ]
+  }
+}

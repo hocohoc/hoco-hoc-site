@@ -49,6 +49,7 @@ export default function AuthProvider(props: Props) {
     let [loading, setLoading] = useState(false)
     const registrationDismissed = useRef(false);
     const [saveError, setSaveError] = useState("");
+    const [reviewing, setReviewing] = useState(false);
     const registerHeadingId = "create-profile-heading";
 
     useEffect(() => {
@@ -87,6 +88,7 @@ export default function AuthProvider(props: Props) {
 
     function registerProfile() {
         if (loading) return;
+        if (!reviewing) { setReviewing(true); return; }
         setSaveError("");
         setLoading(true);
         console.log(school)
@@ -121,7 +123,7 @@ export default function AuthProvider(props: Props) {
                             <label htmlFor="registration-school" className="font-bold text-md">Select Your School</label>
                             <p id="school-note" className="text-sm text-slate-300">Note: You will not be able to change this later!</p>
                         </div>
-                        <select id="registration-school" aria-describedby="school-note" disabled={loading} className="font-mono bg-gray-700 p-2 rounded border-2 border-gray-600 hover:bg-gray-600 w-full cursor-pointer" value={school.id} onChange={(e) => setSchool(schools.find(sc => sc.id == e.target.value))}>
+                        <select id="registration-school" aria-describedby="school-note" disabled={loading} className="font-mono bg-gray-700 p-2 rounded border-2 border-gray-600 hover:bg-gray-600 w-full cursor-pointer" value={school.id} onChange={(e) => { setReviewing(false); setSchool(schools.find(sc => sc.id == e.target.value)); }}>
                             {schools.map((s, index) =>
                                 <option key={index} value={s.id}>{s.name}</option>
                             )}
@@ -130,7 +132,7 @@ export default function AuthProvider(props: Props) {
                             <label htmlFor="registration-language" className="font-bold text-md">Select your preferred programming language</label>
                             <p className="text-sm text-slate-300">This is the language you will see code examples in by default (when they are available in that language).</p>
                         </div>
-                        <select id="registration-language" disabled={loading} className="font-mono bg-gray-700 p-2 rounded border-2 border-gray-600 hover:bg-gray-600 w-full cursor-pointer" value={ALL_LANGUAGES.indexOf(language)} onChange={(e) => { const selectedIndex = Number(e.target.value); setLanguage(ALL_LANGUAGES[selectedIndex]); }}>
+                        <select id="registration-language" disabled={loading} className="font-mono bg-gray-700 p-2 rounded border-2 border-gray-600 hover:bg-gray-600 w-full cursor-pointer" value={ALL_LANGUAGES.indexOf(language)} onChange={(e) => { setReviewing(false); const selectedIndex = Number(e.target.value); setLanguage(ALL_LANGUAGES[selectedIndex]); }}>
                             {ALL_LANGUAGES.map((lang, index) =>
                                 <option key={index} value={index}>{lang}</option>
                             )}
@@ -139,8 +141,9 @@ export default function AuthProvider(props: Props) {
 
                     <p role="status" aria-atomic="true">{loading ? "Creating your profile. You can close this dialog while saving continues." : ""}</p>
                     <p role="alert" className="text-red-300">{saveError}</p>
+                    {reviewing && <p role="status">Review before creating your profile: your school is {school.name}, and your preferred programming language is {language}. Change either selection above or confirm below. Your school cannot be changed after creation.</p>}
                     <div className="mt-2 flex flex-row flex-wrap gap-2">
-                        <button className="btn-primary font-mono flex-1" type="button" onClick={() => registerProfile()} aria-disabled={loading}>{loading ? "Creating..." : "Create"}</button>
+                        <button className="btn-primary font-mono flex-1" type="button" onClick={() => registerProfile()} aria-disabled={loading}>{loading ? "Creating..." : reviewing ? "Confirm and create profile" : "Review profile"}</button>
                         <button className="btn-secondary font-mono" type="button" onClick={handleRegisterCancel}>{loading ? "Close" : "Cancel"}</button>
                     </div>
                 </Modal>

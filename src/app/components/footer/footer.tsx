@@ -7,6 +7,7 @@ const FOOTER_LINKS = [
   { href: "/leaderboard", label: "Leaderboard" },
   { href: "/aboutus", label: "About Us" },
   { href: "/feedback", label: "Feedback" },
+  { href: "/accessibility", label: "Accessibility" },
 ]
 
 export default function Footer() {

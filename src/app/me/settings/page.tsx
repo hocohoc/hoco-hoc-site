@@ -35,6 +35,6 @@ export default function ProfileSettingsPage() {
         <p role="alert" className="text-red-300">{error ? "Your changes could not be saved. Check your connection and try Update Profile again." : ""}</p>
         <p role="status" aria-atomic="true">{working ? "Saving profile…" : saved ? "Profile saved." : ""}</p>
         <ProfileEditor working={working} profile={profile} onSave={(newProf) => handleEdit(newProf)} />
-      </div> : "You are not logged in!"}
+      </div> : <div><h1 className="text-3xl font-bold mb-2">Profile Settings</h1><p>Log in to view and update your profile.</p></div>}
   </div>
 }

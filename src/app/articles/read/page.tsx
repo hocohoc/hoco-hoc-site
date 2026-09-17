@@ -57,6 +57,10 @@ export default function Read() {
     })
 
     useEffect(() => {
+        if (article?.title) document.title = `${article.title} | HoCoHOC`;
+    }, [article?.title]);
+
+    useEffect(() => {
         if (!enterTime) {
             setEnterTime(new Date())
         }
@@ -151,7 +155,10 @@ export default function Read() {
 
 
     async function handleQuizSubmit(answers: number[]) {
+        if (quizCheckWorking) return;
+        if (!profile) { setQuizError("not-authenticated"); return; }
         setQuizCheckWorking(true)
+        try {
         const quizID = article.id + "-quiz";
         const checkerResponse = await checkAnswers(quizID, article.id,
             article.sectionID, profile.uid, answers);
@@ -173,7 +180,11 @@ export default function Read() {
                 setQuizError(checkerResponse.verdict)
                 break;
         }
-        // setQuizError("contest-not-live")
+        } catch {
+            setQuizError("error");
+        } finally {
+            setQuizCheckWorking(false);
+        }
     }
 
     return <div className="flex flex-col items-center h-auto">
@@ -194,7 +205,7 @@ export default function Read() {
         {
             quizError &&
             <ErrorPopup error={new Error(quizError)}>
-                <p className="mb-4">An error occurred while trying to submit your quiz.</p>
+                <p className="mb-4">{quizError === "contest-not-live" ? "Quiz submissions are available during the event. Your answers remain selected on this page." : quizError === "not-authenticated" ? "Please sign in before submitting your quiz." : quizError === "already-completed" ? "This quiz has already been completed. Reload the page to see your progress." : "We could not confirm your quiz submission. Your answers remain selected. Check your connection and try again; if it was already saved, reload the page to see your progress."}</p>
                 <button onClick={() => setQuizError(undefined)} type="button" className="btn-secondary font-mono">Close</button>
             </ErrorPopup>
         }

@@ -48,7 +48,7 @@ button, a, input, select, textarea { scroll-margin-block: calc(var(--site-nav-he
 
 @layer components {
   textarea, input[type=text], input[type=number] {
-    @apply bg-gray-950 p-2 rounded border-2 border-gray-800;
+    @apply bg-gray-950 p-2 rounded border-2 border-slate-500;
   }
 
   .btn-primary,

@@ -118,7 +118,7 @@ export default function ArticleEditor(props: Props) {
         setArticleQuiz(props.article.id, props.sectionID, false, 0)
     }
 
-    return <div className="flex flex-row w-full flex-1 h-[calc(100vh-7.5rem)]">
+    return <div className="flex flex-col lg:flex-row w-full flex-1 min-h-[calc(100vh-7.5rem)]">
         {
             quizModal ? <ModalContainer labelledBy="quiz-editor-heading" onDismiss={() => setQuizModal(false)}>
                 <Modal>
@@ -127,7 +127,7 @@ export default function ArticleEditor(props: Props) {
                 </Modal>
             </ModalContainer> : ""
         }
-        <div className="flex flex-col gap-2 p-2 bg-gray-900 border-r-2 border-r-slate-700 h-[calc(100vh-7.5rem)] overflow-y-scroll">
+        <div className="flex flex-col gap-2 p-2 bg-gray-900 border-r-2 border-r-slate-700 lg:max-w-sm lg:h-[calc(100vh-7.5rem)] overflow-y-auto">
             <h1 className="text-xl font-bold">{props.editing ? "Edit Article" : "Create Article"}</h1>
 
             {!props.editing ? <div>
@@ -149,6 +149,15 @@ export default function ArticleEditor(props: Props) {
 
             <label className="block" htmlFor={descriptionFieldId}>Description</label>
             <textarea id={descriptionFieldId} value={article.description} onChange={e => setArticle({ ...article, description: e.target.value })}></textarea>
+            <details className="border border-slate-500 rounded p-3">
+                <summary className="cursor-pointer font-semibold">Accessibility before publishing</summary>
+                <ul className="list-disc pl-5 space-y-2 mt-2 text-sm">
+                    <li>Use headings in order and descriptive link text.</li>
+                    <li>Describe meaningful images in Markdown: ![description](image URL). Use an empty description only for decoration. Explain instructional screenshots in the lesson text.</li>
+                    <li>Provide accurate captions for spoken video, an equivalent transcript, and audio description for important visuals missing from the narration.</li>
+                    <li>Check the preview using the keyboard, enlarged text, and a narrow screen before saving.</li>
+                </ul>
+            </details>
 
             <label className="block" htmlFor={tagsFieldId}>Tags (Comma separated)</label>
             <input id={tagsFieldId} type="text" value={article.tags.join(",")} onChange={(e) => setArticle({ ...article, tags: (e.target.value.split(",")) })}></input>
@@ -220,8 +229,9 @@ export default function ArticleEditor(props: Props) {
                 onDelete={props.onDelete}
             />}
         </div>
-        <div className="flex-1 flex-col h-[calc(100vh-7.5rem)]" data-color-mode="dark">
+        <div className="min-w-0 flex-1 flex-col h-[calc(100vh-7.5rem)]" data-color-mode="dark">
             <MDEditor className="flex-1"
+                textareaProps={{ "aria-label": "Article content in Markdown" }}
                 value={article.content}
                 height={"100%"}
                 preview={"live"}

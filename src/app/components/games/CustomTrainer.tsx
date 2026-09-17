@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import * as tf from "@tensorflow/tfjs";
 import { trainModel, predictImages, LabeledSample } from "@/ml/model";
 import { useProfile } from "@/app/components/auth-provider/authProvider";
@@ -10,6 +10,7 @@ type Phase = "setup" | "upload" | "train" | "test";
 
 type TrainImage = {
   url: string;
+  description: string;
   label: 0 | 1;
 };
 
@@ -30,10 +31,17 @@ export default function FlexiBotGame() {
   const [status, setStatus] = useState("");
   const [model, setModel] = useState<tf.LayersModel | null>(null);
   const [testResults, setTestResults] = useState<
-    { imageUrl: string; prob: number; label: 0 | 1 }[]
+    { imageUrl: string; prob: number; label: 0 | 1; name: string }[]
   >([]);
   const [pointsAwarded, setPointsAwarded] = useState(false);
   const [pointsEarned, setPointsEarned] = useState(0);
+
+  const headingRef = useRef<HTMLHeadingElement>(null);
+  const previousPhase = useRef(phase);
+  useEffect(() => {
+    if (previousPhase.current !== phase) headingRef.current?.focus();
+    previousPhase.current = phase;
+  }, [phase]);
 
   const countLabel = (label: 0 | 1) =>
     trainImages.filter((img) => img.label === label).length;
@@ -68,6 +76,7 @@ export default function FlexiBotGame() {
 
     const newImages: TrainImage[] = files.map((file) => ({
       url: URL.createObjectURL(file),
+      description: file.name,
       label,
     }));
 
@@ -89,6 +98,7 @@ export default function FlexiBotGame() {
       label: img.label,
     }));
 
+    try {
     const m = await trainModel(samples, (epoch, logs) => {
       setStatus(
         `Epoch ${epoch + 1}: loss ${logs?.loss?.toFixed(3)} ` +
@@ -112,10 +122,18 @@ export default function FlexiBotGame() {
 
       if (points > 0) {
         const gameId = `flexibot-${Date.now()}`;
-        await awardGamePoints(user.uid, gameId, "flexibot", imageCount, points);
-        setPointsAwarded(true);
-        setPointsEarned(points);
+        try {
+          await awardGamePoints(user.uid, gameId, "flexibot", imageCount, points);
+          setPointsAwarded(true);
+          setPointsEarned(points);
+        } catch {
+          setStatus("Training completed, but points could not be saved. Check your connection and contact us if your score is missing.");
+        }
       }
+    }
+    } catch {
+      setStatus("Training failed. Your uploaded images are still available. Check your connection and try again.");
+      setPhase("upload");
     }
   }
 
@@ -128,9 +146,14 @@ export default function FlexiBotGame() {
     if (!files.length) return;
 
     const urls = files.map((file) => URL.createObjectURL(file));
-    const preds = await predictImages(model, urls);
-
-    setTestResults((prev) => [...prev, ...preds]);
+    try {
+      const preds = await predictImages(model, urls);
+      setTestResults((prev) => [...prev, ...preds.map((r, i) => ({ ...r, name: files[i].name }))]);
+      setStatus(`${preds.length} image predictions are ready below.`);
+    } catch {
+      urls.forEach(URL.revokeObjectURL);
+      setStatus("These images could not be classified. Try a different PNG or JPEG image.");
+    }
   }
 
   function removeTestImage(url: string) {
@@ -188,9 +211,10 @@ export default function FlexiBotGame() {
         </p>
       </div>
 
-      <h1 className="text-2xl font-bold text-sky-300 mb-4">
+      <h1 ref={headingRef} tabIndex={-1} className="text-2xl font-bold text-sky-300 mb-4">
         Build Your Own Image Classifier
       </h1>
+      <p role="status" aria-atomic="true" className="mb-3 text-slate-200">{status}</p>
 
       {/* 🧾 Phase 1: Setup category names */}
       {phase === "setup" && (
@@ -276,9 +300,12 @@ export default function FlexiBotGame() {
                     <div key={img.url + idx} className="relative">
                       <img
                         src={img.url}
-                        alt={`${categoryNames.zero} training image ${idx + 1}`}
+                        alt={img.description}
                         className="w-20 h-20 object-cover rounded-md border border-slate-700 bg-white"
                       />
+                      <label className="block text-sm max-w-48">Image description
+                        <input className="w-full" value={img.description} onChange={e => setTrainImages(prev => prev.map(item => item.url === img.url ? { ...item, description: e.target.value } : item))} />
+                      </label>
                       <button
                         onClick={() => removeTrainImage(img.url)}
                         className="absolute top-0 right-0 bg-red-600 hover:bg-red-700 text-xs text-white rounded-full w-8 h-8 flex items-center justify-center"
@@ -319,9 +346,12 @@ export default function FlexiBotGame() {
                     <div key={img.url + idx} className="relative">
                       <img
                         src={img.url}
-                        alt={`${categoryNames.one} training image ${idx + 1}`}
+                        alt={img.description}
                         className="w-20 h-20 object-cover rounded-md border border-slate-700 bg-white"
                       />
+                      <label className="block text-sm max-w-48">Image description
+                        <input className="w-full" value={img.description} onChange={e => setTrainImages(prev => prev.map(item => item.url === img.url ? { ...item, description: e.target.value } : item))} />
+                      </label>
                       <button
                         onClick={() => removeTrainImage(img.url)}
                         className="absolute top-0 right-0 bg-red-600 hover:bg-red-700 text-xs text-white rounded-full w-8 h-8 flex items-center justify-center"
@@ -359,17 +389,7 @@ export default function FlexiBotGame() {
       )}
 
       {/* ⚙️ Phase 3: Training */}
-      {phase === "train" && (
-        <div className="mt-6">
-          <p role="status" aria-atomic="true" className="text-amber-300">{status}</p>
-          <button
-            onClick={handleReset}
-            className="mt-4 bg-slate-700 px-4 py-2 rounded-full text-slate-100 font-semibold"
-          >
-            Reset
-          </button>
-        </div>
-      )}
+      {phase === "train" && <p>Training is in progress. Results will appear when it finishes.</p>}
 
       {/* 🧪 Phase 4: Test */}
       {phase === "test" && (
@@ -420,7 +440,7 @@ export default function FlexiBotGame() {
                 >
                   <img
                     src={r.imageUrl}
-                    alt={`Test image ${idx + 1}`}
+                    alt={`Test image: ${r.name}`}
                     className="w-full h-48 object-cover bg-white"
                   />
                   <button

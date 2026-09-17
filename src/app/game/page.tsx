@@ -62,12 +62,12 @@ export default function GameHub() {
         Play games to learn CS concepts. Games marked with <span className="text-yellow-400 font-bold">⭐</span> earn you points toward prizes!
       </p>
 
-      <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 px-6">
+      <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 px-6 w-full max-w-5xl">
         {games.map((game) => (
           <Link
             key={game.name}
             href={game.path}
-            className="group bg-gray-800 hover:bg-indigo-700 transition-all duration-300 rounded-2xl shadow-lg overflow-hidden flex flex-col justify-between w-72 transform hover:scale-105"
+            className="group bg-gray-800 hover:bg-indigo-700 transition-all duration-300 rounded-2xl shadow-lg overflow-hidden flex flex-col justify-between w-full min-w-0"
           >
             {/* Game preview image or placeholder */}
             <div className="relative">
@@ -91,7 +91,7 @@ export default function GameHub() {
                   </span>
                 )}
                 {game.tag && (
-                  <span className="bg-sky-600/90 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                  <span className="bg-sky-700 text-white text-xs font-bold px-2 py-0.5 rounded-full">
                     {game.tag}
                   </span>
                 )}
