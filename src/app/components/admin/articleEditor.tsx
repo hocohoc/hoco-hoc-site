@@ -230,6 +230,7 @@ export default function ArticleEditor(props: Props) {
             />}
         </div>
         <div className="min-w-0 flex-1 flex-col h-[calc(100vh-7.5rem)]" data-color-mode="dark">
+            <p className="text-sm text-slate-200 mb-2">Describe each instructional image in its Markdown alternative text and provide detailed steps or data in the lesson. Use empty alternative text only for decoration. Write quotations as text. For a passage in another language, use a span with a lang attribute, for example &lt;span lang=&quot;es&quot;&gt;Hola&lt;/span&gt;.</p>
             <MDEditor className="flex-1"
                 textareaProps={{ "aria-label": "Article content in Markdown" }}
                 value={article.content}

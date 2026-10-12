@@ -11,11 +11,11 @@ export default function Leaderboard(props: Props) {
 
     function topStyles(rank: number): string {
         if(rank == 0) {
-            return "bg-gradient-to-b from-yellow-600/90 to-yellow-700/90 font-bold"
+            return "bg-gradient-to-b from-yellow-200 to-yellow-300 text-slate-950 font-bold"
         } else if(rank == 1) {
-            return "bg-gradient-to-b from-slate-400 to-slate-500 font-bold"
+            return "bg-gradient-to-b from-slate-200 to-slate-300 text-slate-950 font-bold"
         } else if(rank == 2) {
-            return "bg-gradient-to-b from-amber-800 to-amber-900 font-bold"
+            return "bg-gradient-to-b from-amber-200 to-amber-300 text-slate-950 font-bold"
         } else {
             return "even:bg-gray-800"
         }
@@ -25,9 +25,9 @@ export default function Leaderboard(props: Props) {
         <table className={`w-full h-full table-auto`}>
             <thead className="bg-gradient-to-b from-sky-800 to-sky-900 font-mono md:text-xl text-left uppercase">
                 <tr>
-                    <th className="p-2 text-center border-r border-r-gray-700">Place</th>
-                    <th className="p-2 border-r border-r-gray-700">School</th>
-                    <th className="p-2 text-center">Points</th>
+                    <th scope="col" className="p-2 text-center border-r border-r-gray-700">Place</th>
+                    <th scope="col" className="p-2 border-r border-r-gray-700">School</th>
+                    <th scope="col" className="p-2 text-center">Points</th>
                 </tr>
             </thead>
             <tbody ref={animationParent}>

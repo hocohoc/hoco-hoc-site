@@ -14,6 +14,9 @@ export default function ArticleVideo({ video, title }: Props) {
     }, [video?.url]);
     if (!video?.url) return null;
     const url = video.url.trim();
+    if (["/videos/scratch/2.mp4", "/videos/scratch/3.mp4"].includes(url)) {
+        return <p className="my-4 rounded border border-slate-400 p-3">The video for this lesson is unavailable. The written lesson follows below. For help with this lesson, <a className="link" href="mailto:mdhocohoc@gmail.com">contact the HoCoHOC directors</a>.</p>;
+    }
     const youtubeMatch = url.match(/(?:v=|youtu\.be\/|youtube\.com\/embed\/)([A-Za-z0-9_-]{6,})/);
     const youtube = (video.type === "youtube" || !video.type) && youtubeMatch;
     const nativeVideo = video.type === "mp4" || url.toLowerCase().endsWith(".mp4");
