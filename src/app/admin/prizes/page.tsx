@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useId, useMemo, useState } from "react";
 import { useProfile } from "@/app/components/auth-provider/authProvider";
 import {
     DEFAULT_PRIZES,
@@ -23,6 +23,7 @@ function firstNameOf(name?: string) {
 
 export default function AdminPrizesPage() {
     const profile = useProfile();
+    const fieldPrefix = useId();
     const queryClient = useQueryClient();
     const [editablePrizes, setEditablePrizes] = useState<Prize[]>(DEFAULT_PRIZES);
     const [successMsg, setSuccessMsg] = useState("");
@@ -61,7 +62,7 @@ export default function AdminPrizesPage() {
             setErrorMsg("");
             queryClient.invalidateQueries({ queryKey: ["raffle-config"] });
             queryClient.invalidateQueries({ queryKey: ["raffle-results"] });
-            setTimeout(() => setSuccessMsg(""), 3000);
+
         },
         onError: (err) => {
             setErrorMsg((err as Error).message);
@@ -121,9 +122,9 @@ export default function AdminPrizesPage() {
                     </p>
                 </div>
 
-                {successMsg && <p className="p-3 bg-green-900 text-green-100 rounded">{successMsg}</p>}
-                {errorMsg && <p className="p-3 bg-red-900 text-red-100 rounded">{errorMsg}</p>}
-                {configError && <p className="p-3 bg-red-900 text-red-100 rounded">Error loading config.</p>}
+                <p role="status" className={successMsg ? "p-3 bg-green-900 text-green-100 rounded" : "sr-only"}>{successMsg}</p>
+                {errorMsg && <p role="alert" className="p-3 bg-red-900 text-red-100 rounded">{errorMsg}</p>}
+                {configError && <p role="alert" className="p-3 bg-red-900 text-red-100 rounded">Error loading config.</p>}
 
                 <section className="border border-slate-800 rounded bg-slate-900">
                     <div className="border-b border-slate-800 px-4 py-3 flex justify-between items-center">
@@ -146,34 +147,34 @@ export default function AdminPrizesPage() {
                                 <div key={prize.id} className="p-4 flex flex-col gap-4">
                                     <div className="flex flex-col md:flex-row gap-4">
                                         <div className="flex-1">
-                                            <label className="text-xs uppercase tracking-wide text-slate-400 block mb-1">
+                                            <label htmlFor={`${fieldPrefix}-${prize.id}-name`} className="text-xs uppercase tracking-wide text-slate-400 block mb-1">
                                                 Prize Name
                                             </label>
-                                            <input
+                                            <input id={`${fieldPrefix}-${prize.id}-name`}
                                                 type="text"
-                                                className="w-full rounded bg-slate-800 border border-slate-700 p-2"
+                                                className="w-full rounded bg-slate-800 border border-slate-400 p-2"
                                                 value={prize.name}
                                                 onChange={(e) => updatePrize(index, "name", e.target.value)}
                                             />
                                         </div>
                                         <div className="w-full md:w-32">
-                                            <label className="text-xs uppercase tracking-wide text-slate-400 block mb-1">
+                                            <label htmlFor={`${fieldPrefix}-${prize.id}-quantity`} className="text-xs uppercase tracking-wide text-slate-400 block mb-1">
                                                 Quantity
                                             </label>
-                                            <input
+                                            <input id={`${fieldPrefix}-${prize.id}-quantity`}
                                                 type="number"
                                                 min={1}
-                                                className="w-full rounded bg-slate-800 border border-slate-700 p-2"
+                                                className="w-full rounded bg-slate-800 border border-slate-400 p-2"
                                                 value={prize.quantity}
                                                 onChange={(e) => updatePrize(index, "quantity", e.target.value)}
                                             />
                                         </div>
                                         <div className="w-full md:w-40">
-                                            <label className="text-xs uppercase tracking-wide text-slate-400 block mb-1">
+                                            <label htmlFor={`${fieldPrefix}-${prize.id}-tier`} className="text-xs uppercase tracking-wide text-slate-400 block mb-1">
                                                 Tier
                                             </label>
-                                            <select
-                                                className="w-full rounded bg-slate-800 border border-slate-700 p-2"
+                                            <select id={`${fieldPrefix}-${prize.id}-tier`}
+                                                className="w-full rounded bg-slate-800 border border-slate-400 p-2"
                                                 value={prize.tier}
                                                 onChange={(e) => updatePrize(index, "tier", e.target.value)}
                                             >
@@ -183,21 +184,22 @@ export default function AdminPrizesPage() {
                                         </div>
                                     </div>
                                     <div>
-                                        <label className="text-xs uppercase tracking-wide text-slate-400 block mb-1">
+                                        <label htmlFor={`${fieldPrefix}-${prize.id}-description`} className="text-xs uppercase tracking-wide text-slate-400 block mb-1">
                                             Description
                                         </label>
-                                        <textarea
-                                            className="w-full rounded bg-slate-800 border border-slate-700 p-2"
+                                        <textarea id={`${fieldPrefix}-${prize.id}-description`}
+                                            className="w-full rounded bg-slate-800 border border-slate-400 p-2"
                                             rows={2}
                                             value={prize.description}
                                             onChange={(e) => updatePrize(index, "description", e.target.value)}
                                         />
                                     </div>
                                     <div className="flex justify-between items-center">
-                                        <p className="text-xs text-slate-500 font-mono">ID: {prize.id}</p>
+                                        <p className="text-xs text-slate-400 font-mono">ID: {prize.id}</p>
                                         {editablePrizes.length > 1 && (
                                             <button
                                                 className="text-red-400 text-sm hover:underline"
+                                                aria-label={`Remove ${prize.name || "prize"}`}
                                                 onClick={() => removePrize(index)}
                                             >
                                                 Remove
@@ -229,7 +231,7 @@ export default function AdminPrizesPage() {
                             </p>
                         </div>
                         {winners && winners.length > 0 && (
-                            <p className="text-xs text-slate-500">
+                            <p className="text-xs text-slate-400">
                                 Updated {winners[0].timestamp.toDate().toLocaleDateString()}
                             </p>
                         )}
@@ -242,15 +244,15 @@ export default function AdminPrizesPage() {
                     )}
 
                     {!loadingWinners && !winnersError && winners && winners.length > 0 && (
-                        <div className="overflow-x-auto">
+                        <div className="overflow-x-auto" tabIndex={0} role="region" aria-label="Current winners table">
                             <table className="min-w-full text-sm">
                                 <thead className="bg-slate-950 text-slate-300 uppercase text-xs">
                                     <tr>
-                                        <th className="text-left px-4 py-2">Tier</th>
-                                        <th className="text-left px-4 py-2">Prize</th>
-                                        <th className="text-left px-4 py-2">Winner</th>
-                                        <th className="text-left px-4 py-2">School</th>
-                                        <th className="text-left px-4 py-2">Drawn</th>
+                                        <th scope="col" className="text-left px-4 py-2">Tier</th>
+                                        <th scope="col" className="text-left px-4 py-2">Prize</th>
+                                        <th scope="col" className="text-left px-4 py-2">Winner</th>
+                                        <th scope="col" className="text-left px-4 py-2">School</th>
+                                        <th scope="col" className="text-left px-4 py-2">Drawn</th>
                                     </tr>
                                 </thead>
                                 <tbody>

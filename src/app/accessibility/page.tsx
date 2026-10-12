@@ -16,17 +16,18 @@ export default function AccessibilityPage() {
         <li>Use arrow keys to move between quiz answers. Review your selections before submitting.</li>
         <li>Games use buttons and text fields. Algo Sorter swaps two numbers by selecting each one. Hex Guesser provides numeric RGB values alongside colors.</li>
         <li>Use your browser zoom and your device’s reduced-motion preference. Game feedback stays available until you choose to continue.</li>
+        <li>Use the Pause live statistics button on the home page to stop automatic updates; Resume live statistics shows current values again.</li>
         <li>Where available, lesson videos include captions, a transcript, and a link to a version with audio description.</li>
       </ul>
     </section>
     <section className="space-y-3">
       <h2 className="text-2xl font-semibold">Known limitations</h2>
-      <p>The HoCoHOC team confirms that lesson videos have subtitles. Subtitle accuracy, coverage of meaningful sounds, transcripts, and audio description still need a complete accessibility review. Instructional images and uploaded classifier images may need fuller descriptions. Google sign-in, embedded forms, and embedded videos also need testing with assistive technology. We are not claiming full WCAG or Section 508 conformance at this time.</p>
+      <p>Some lesson videos have visible subtitles. The Sounds and Music video still needs verified captions, and media narration and visual alternatives need further review. Two unavailable Scratch videos have written lessons in their place. Instructional images and uploaded classifier images may need fuller descriptions. Google sign-in, embedded forms, and embedded videos also need testing with assistive technology. We are not claiming full WCAG or Section 508 conformance at this time.</p>
       <p>If a lesson or activity is inaccessible, contact us with the lesson name and the information or format you need. You can send feedback by email if the <Link className="link" href="/feedback">feedback form</Link> is difficult to use.</p>
     </section>
     <section className="space-y-3">
       <h2 className="text-2xl font-semibold">Get accessibility help</h2>
-      <p>Email <a className="link" href="mailto:mdhocohoc@gmail.com">mdhocohoc@gmail.com</a>. Include the page address, what you were trying to do, and the barrier you encountered. If helpful, include your browser and assistive technology. Please do not include passwords or student records.</p>
+      <p>Both directors monitor this email address. Email <a className="link" href="mailto:mdhocohoc@gmail.com">mdhocohoc@gmail.com</a>. Include the page address, what you were trying to do, and the barrier you encountered. If helpful, include your browser and assistive technology. Please do not include passwords or student records.</p>
     </section>
   </div>;
 }
