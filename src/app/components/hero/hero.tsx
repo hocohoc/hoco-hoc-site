@@ -105,7 +105,7 @@ export default function Hero() {
 
                     <h1 className="mb-2">
                         <span className="block text-2xl md:text-6xl">Howard County</span>
-                        <span className="block bg-gradient-to-b from-sky-300 to-sky-500 text-transparent bg-clip-text text-5xl md:text-6xl font-extrabold mt-2">
+                        <span className="block text-5xl md:text-6xl font-extrabold mt-2 text-sky-300">
                             Hour of Code / AI
                         </span>
                     </h1>

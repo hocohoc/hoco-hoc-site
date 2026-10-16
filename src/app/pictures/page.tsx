@@ -55,7 +55,7 @@ export default function PicturesPage() {
           
           <div className="relative z-10">
             <p className="text-xs uppercase tracking-[0.4em] text-sky-400 font-mono font-semibold">Memory Bank</p>
-            <h1 className="mt-4 text-4xl md:text-5xl font-mono font-extrabold bg-gradient-to-br from-white via-sky-100 to-sky-400 bg-clip-text text-transparent">
+            <h1 className="mt-4 text-4xl md:text-5xl font-mono font-extrabold text-sky-300">
               Past Events
             </h1>
             <p className="mt-6 text-lg text-slate-300 leading-relaxed max-w-2xl">

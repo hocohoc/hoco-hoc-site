@@ -6,7 +6,7 @@ export default function Faq() {
 
     return (
         <div className="p-4 py-20 md:py-32 md:p-8 flex-col items-center text-center bg-gradient-to-tr from-gray-950 to-gray-900">
-            <h3 className="font-mono mt-8 ml-25 mr-25 text-sky-300 font-bold bg-gradient-to-b from-gray-300 to-gray-400 text-transparent bg-clip-text text-5xl md:text-6xl mb-8 text-center leading-tight">Frequently Asked Questions</h3>
+            <h3 className="font-mono mt-8 ml-25 mr-25 font-bold text-5xl md:text-6xl mb-8 text-center leading-tight text-gray-300">Frequently Asked Questions</h3>
             <div className="mb-10 font-sans w:32 text-sm md:text-lg max-w-screen-xl mx-auto flex flex-col :text-4xl md:flex-row gap-0 md:gap-10 justify-center items-start">
                 <div className="w-full md:w-1/2 flex flex-col">
                     <FaqQuestion
