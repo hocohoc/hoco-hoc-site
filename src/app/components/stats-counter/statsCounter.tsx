@@ -20,7 +20,7 @@ export default function StatsCounter(props: Props) {
       <div className="flex flex-col max-w-screen-xl items-start w-full">
         <div className="w-full gap-12 flex flex-col max-w-3xl">
           <div className="flex-1">
-            <h2 className="font-mono leading-tight text-5xl md:text-6xl pb-4 bg-gradient-to-r from-indigo-300 to-indigo-400 text-transparent bg-clip-text font-bold">
+            <h2 className="font-mono leading-tight text-5xl md:text-6xl pb-4 font-bold text-indigo-300">
               Join a Growing Community
             </h2>
             <p className="text-xl">

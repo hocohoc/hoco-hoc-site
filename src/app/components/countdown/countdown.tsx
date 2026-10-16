@@ -37,7 +37,7 @@ function getTimeLeft(): { phase: "before" | "during" | "after"; timeLeft: TimeLe
 function Digit({ value, label }: { value: number; label: string }) {
   return (
     <div className="flex flex-col items-center">
-      <span className="font-mono text-3xl sm:text-5xl md:text-6xl font-extrabold tabular-nums bg-gradient-to-b from-sky-200 to-sky-400 text-transparent bg-clip-text">
+      <span className="font-mono text-3xl sm:text-5xl md:text-6xl font-extrabold tabular-nums text-sky-300">
         {String(value).padStart(2, "0")}
       </span>
       <span className="text-[10px] sm:text-xs uppercase tracking-widest text-sky-300/70 mt-1">

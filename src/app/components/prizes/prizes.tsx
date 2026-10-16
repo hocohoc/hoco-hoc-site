@@ -30,7 +30,7 @@ export default function Prizes() {
         <div className="flex flex-col max-w-screen-xl items-start w-full">
           <div className="w-full gap-12 flex flex-col max-w-3xl">
             <div className="flex-1">
-              <h1 className="font-mono leading-tight text-5xl md:text-6xl pb-4 text-sky-300 font-bold bg-gradient-to-b from-gray-300 to-gray-400 text-transparent bg-clip-text">
+              <h1 className="font-mono leading-tight text-5xl md:text-6xl pb-4 font-bold text-gray-300">
                 Prizes
               </h1>
             </div>
