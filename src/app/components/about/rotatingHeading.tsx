@@ -38,7 +38,7 @@ export default function RotatingHeading() {
             <h2 className="text-slate-200 font-bold text-4xl md:text-6xl leading-tight">
                 <span className="sr-only">Learn computer science the fun way!</span>
                 <span aria-hidden="true">
-                    Learn <span className="block md:inline-block min-h-[1.25em] font-mono text-sky-300 md:min-w-[11ch]">
+                    Learn <span className="block md:inline-block min-h-[1.25em] font-mono text-sky-300">
                         {reducedMotion ? "CS" : topics[frame.index].slice(0, frame.length)}
                         {!reducedMotion && <span>_</span>}
                     </span>{" "}<span className="underline">the fun way!</span>
