@@ -11,8 +11,6 @@ import {
 } from "@/app/services/dailyChallengeService"
 import { signInOrRegister } from "@/app/services/userService"
 import ArticleRenderer from "@/app/components/article-renderer/articleRenderer"
-import Confetti from "react-confetti"
-import AchievementBadge from "@/app/components/achievement-badge/achievementBadge"
 
 export default function DailyChallengePage() {
   const profile = useProfile()
@@ -23,8 +21,6 @@ export default function DailyChallengePage() {
   const [result, setResult] = useState<{ correct: boolean; points: number } | null>(null)
   const [alreadyCompleted, setAlreadyCompleted] = useState(false)
   const [completions, setCompletions] = useState<UserChallengeCompletion[]>([])
-  const [confetti, setConfetti] = useState(false)
-  const [showAchievement, setShowAchievement] = useState(false)
 
   useEffect(() => {
     getTodayChallenge()
@@ -51,9 +47,6 @@ export default function DailyChallengePage() {
       setResult(res)
       if (res.correct && res.points > 0) {
         setAlreadyCompleted(true)
-        setConfetti(true)
-        setShowAchievement(true)
-        setTimeout(() => setConfetti(false), 4000)
       }
     } catch (err) {
       setResult({ correct: false, points: 0 })
@@ -61,16 +54,10 @@ export default function DailyChallengePage() {
     setSubmitting(false)
   }
 
-  const diffColors = {
-    easy: "text-emerald-400",
-    medium: "text-amber-400",
-    hard: "text-red-400",
-  }
-
   if (loading) {
     return (
-      <div className="p-4 flex flex-col items-center">
-        <div className="max-w-2xl w-full flex flex-col gap-4">
+      <div className="mx-auto max-w-4xl px-6 py-12 sm:px-8 md:py-16">
+        <div className="w-full flex flex-col gap-8">
           <div className="h-8 w-48 bg-slate-800 animate-pulse rounded" />
           <div className="h-40 bg-slate-800 animate-pulse rounded" />
         </div>
@@ -80,19 +67,20 @@ export default function DailyChallengePage() {
 
   if (!challenge) {
     return (
-      <div className="p-4 flex flex-col items-center">
-        <div className="max-w-2xl w-full text-center py-16">
-          <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-slate-800 flex items-center justify-center">
-            <svg className="w-8 h-8 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
-            </svg>
+      <div className="mx-auto max-w-4xl px-6 py-12 sm:px-8 md:py-16">
+        <div className="w-full">
+          <header className="border-b border-slate-700 pb-8">
+            <h1 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">Daily challenge</h1>
+            <p className="mt-3 text-slate-300">A new computer science problem each day of the event.</p>
+          </header>
+          <div className="py-10">
+            <p className="mb-3 text-sm text-slate-400">December 8–15, 2026</p>
+            <h2 className="text-xl font-medium text-slate-100">Challenges begin during event week</h2>
+            <p className="mt-3 max-w-xl leading-relaxed text-slate-300">Return here during the event to read the day&apos;s problem and submit your answer.</p>
+            <a href="/articles" className="mt-6 inline-block text-sm text-sky-300 underline underline-offset-4 hover:text-sky-200">Browse articles while you wait</a>
           </div>
-          <h1 className="text-2xl font-bold mb-2">No Challenge Today</h1>
-          <p className="text-slate-400">
-            Daily challenges are available during the event week (December 8–15, 2026). Check back then!
-          </p>
           {completions.length > 0 && (
-            <p className="mt-4 text-sm text-slate-500 font-mono">
+            <p className="border-t border-slate-700 pt-6 text-sm text-slate-400">
               You&apos;ve completed {completions.length} daily challenge{completions.length !== 1 ? "s" : ""} so far.
             </p>
           )}
@@ -102,67 +90,49 @@ export default function DailyChallengePage() {
   }
 
   return (
-    <div className="p-4 flex flex-col items-center">
-      {confetti && (
-        <Confetti
-          aria-hidden="true"
-          className="fixed top-0 left-0 pointer-events-none motion-reduce:hidden"
-          numberOfPieces={400}
-          recycle={false}
-          style={{ position: "fixed" }}
-          width={typeof window !== "undefined" ? window.innerWidth : 800}
-          height={typeof window !== "undefined" ? window.innerHeight : 600}
-        />
-      )}
-      <AchievementBadge
-        show={showAchievement}
-        title="Daily Challenge Complete!"
-        description={`You earned ${challenge.points} points!`}
-        onClose={() => setShowAchievement(false)}
-      />
-
-      <div className="max-w-2xl w-full flex flex-col gap-4">
-        <div className="bg-gradient-to-br from-sky-900/50 to-slate-900 border border-sky-800 rounded-xl p-6">
-          <div className="flex items-center gap-2 mb-3">
-            <span className="text-xs font-mono uppercase tracking-widest text-sky-400">
-              Day {challenge.day} Challenge
+    <div className="mx-auto max-w-4xl px-6 py-12 sm:px-8 md:py-16">
+      <div className="w-full flex flex-col gap-8">
+        <div className="border-b border-slate-700 pb-8">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mb-5 text-sm text-slate-400">
+            <span className="text-sky-300">
+              Daily challenge / Day {challenge.day}
             </span>
-            <span className={`text-xs font-mono uppercase tracking-widest ${diffColors[challenge.difficulty]}`}>
-              · {challenge.difficulty}
+            <span className="capitalize">
+              {challenge.difficulty}
             </span>
-            <span className="text-xs font-mono text-slate-500 ml-auto">
-              {challenge.points} pts
+            <span className="text-sm tabular-nums text-slate-300 sm:ml-auto">
+              {challenge.points} points
             </span>
           </div>
 
-          <h1 className="text-3xl font-bold mb-2">{challenge.title}</h1>
-          <p className="text-slate-300">{challenge.description}</p>
+          <h1 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl mb-4">{challenge.title}</h1>
+          <p className="leading-relaxed text-slate-300">{challenge.description}</p>
         </div>
 
-        <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
+        <div className="py-2">
           <ArticleRenderer markdown={challenge.content} profile={profile} />
         </div>
 
         {/* Answer section */}
         {challenge.answer != null && challenge.answer !== "" && (
-          <div className="bg-slate-800 rounded-xl p-6 border border-slate-700 flex flex-col gap-3">
+          <div className="border-t border-slate-700 pt-8 flex flex-col gap-4">
             {alreadyCompleted ? (
-              <div className="flex items-center gap-2 text-emerald-400 font-mono">
+              <div role="status" className="flex items-center gap-2 text-emerald-300">
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                Challenge Completed!
+                {result?.correct ? `Answer accepted. You earned ${result.points} points.` : "You have completed this challenge."}
               </div>
             ) : !profile ? (
               <div className="flex flex-col md:flex-row md:items-center gap-3">
-                <p className="flex-1 font-bold">Log in to submit your answer!</p>
-                <button type="button" className="btn-primary font-mono" onClick={() => signInOrRegister()}>
+                <p className="flex-1 text-slate-300">Log in to submit your answer.</p>
+                <button type="button" className="btn-primary font-medium" onClick={() => signInOrRegister()}>
                   Log in / Sign up
                 </button>
               </div>
             ) : (
               <>
-                <label htmlFor="daily-answer" className="text-sm font-mono text-slate-400">Your Answer</label>
+                <label htmlFor="daily-answer" className="text-sm font-medium text-slate-300">Your answer</label>
                 <input
                   id="daily-answer"
                   type="text"
@@ -172,26 +142,26 @@ export default function DailyChallengePage() {
                   className="w-full"
                 />
                 <div role="status" aria-atomic="true">{result && !result.correct && (
-                  <p className="text-red-400 text-sm font-mono">Incorrect — try again!</p>
+                  <p className="text-red-300 text-sm">That answer isn’t correct. Try again.</p>
                 )}</div>
                 <button
                   type="button"
-                  className="btn-primary font-mono w-full"
+                  className="btn-primary font-medium self-start px-5 disabled:opacity-50 disabled:cursor-not-allowed"
                   disabled={submitting || !answer.trim()}
                   onClick={handleSubmit}
                 >
-                  {submitting ? "Checking..." : "Submit Answer"}
+                  {submitting ? "Checking..." : "Submit answer"}
                 </button>
               </>
             )}
           </div>
         )}
 
-        {/* Streak tracker */}
+        {/* Completion history */}
         {profile && completions.length > 0 && (
-          <div className="bg-slate-800/50 rounded-xl p-4 border border-slate-700">
-            <p className="text-sm font-mono text-slate-400">
-              Challenge Streak: <span className="text-amber-400 font-bold">{completions.length}</span> day{completions.length !== 1 ? "s" : ""}
+          <div className="border-t border-slate-800 pt-6">
+            <p className="text-sm font-medium text-slate-300">
+              Challenges completed: <span className="text-slate-100 font-medium">{completions.length}</span>
             </p>
           </div>
         )}

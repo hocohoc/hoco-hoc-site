@@ -1,8 +1,7 @@
 "use client"
 
-import Link from "next/link"
 import Image from "next/image"
-import { useMemo, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 
 interface PictureGroup {
   year: number
@@ -22,11 +21,11 @@ const PICTURE_DATA: PictureGroup[] = [
   {
     year: 2025,
     images: [
-      { src: "/hoco-hoc-winners/2025-DMS.jpg", alt: "2025 HOCO HOC Winners - DMS" },
-      { src: "/hoco-hoc-winners/2025-dms2.jpg", alt: "2025 HOCO HOC Winners - DMS 2" },
-      { src: "/hoco-hoc-winners/2025-gcs.jpg", alt: "2025 HOCO HOC Winners - GCS" },
-      { src: "/hoco-hoc-winners/2025winner.jpg", alt: "2025 HOCO HOC Winners" },
-      { src: "/hoco-hoc-winners/2025-12-22 Hour of AI swansfield.jpg", alt: "2025 HOCO HOC Winners - SES" }
+      { src: "/hoco-hoc-winners/2025-DMS.jpg", alt: "Dunloggin Middle School" },
+      { src: "/hoco-hoc-winners/2025-dms2.jpg", alt: "Dunloggin Middle School — photo 2" },
+      { src: "/hoco-hoc-winners/2025-gcs.jpg", alt: "Gorman Crossing Elementary School" },
+      { src: "/hoco-hoc-winners/2025winner.jpg", alt: "HoCoHOC 2025 winners" },
+      { src: "/hoco-hoc-winners/2025-12-22 Hour of AI swansfield.jpg", alt: "Swansfield Elementary School" }
     ],
     winners: [
       { rank: 1, school: "Dunloggin Middle School", points: 54825 },
@@ -37,222 +36,130 @@ const PICTURE_DATA: PictureGroup[] = [
 ]
 
 export default function PicturesPage() {
-  const [selectedYear, setSelectedYear] = useState<number | null>(null)
-  const [selectedImage, setSelectedImage] = useState<string | null>(null)
+  const [selectedPhoto, setSelectedPhoto] = useState<{ year: number; index: number } | null>(null)
+  const imageDialog = useRef<HTMLDialogElement>(null)
+  const opener = useRef<HTMLButtonElement | null>(null)
+  const picturesByYear = [...PICTURE_DATA].sort((a, b) => b.year - a.year)
+  const selectedGroup = picturesByYear.find((group) => group.year === selectedPhoto?.year)
+  const image = selectedGroup && selectedPhoto ? selectedGroup.images[selectedPhoto.index] : null
+  const viewerOpen = selectedPhoto !== null
 
-  const picturesByYear = useMemo(() => {
-    return PICTURE_DATA.sort((a, b) => b.year - a.year)
-  }, [])
+  useEffect(() => {
+    if (!viewerOpen) return
+    imageDialog.current?.showModal()
+    const previous = document.body.style.overflow
+    document.body.style.overflow = "hidden"
+    return () => { document.body.style.overflow = previous }
+  }, [viewerOpen])
 
-  const currentYearData = picturesByYear.find((group) => group.year === selectedYear)
+  function closePhoto() {
+    imageDialog.current?.close()
+    setSelectedPhoto(null)
+    opener.current?.focus()
+  }
+
+  function movePhoto(direction: number) {
+    if (!selectedGroup) return
+    setSelectedPhoto((current) => current && ({
+      ...current,
+      index: (current.index + direction + selectedGroup.images.length) % selectedGroup.images.length,
+    }))
+  }
 
   return (
-    <div className="bg-slate-950 min-h-screen text-white flex flex-col items-center p-4 selection:bg-sky-500/30">
-      <div className="w-full max-w-4xl space-y-8 pt-4 pb-12">
-        {/* Header Section */}
-        <section className="relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/50 p-8 shadow-2xl backdrop-blur-sm">
-          <div className="absolute top-0 right-0 -mt-16 -mr-16 h-64 w-64 rounded-full bg-sky-500/5 blur-[80px]"></div>
-          
-          <div className="relative z-10">
-            <p className="text-xs uppercase tracking-[0.4em] text-sky-400 font-mono font-semibold">Memory Bank</p>
-            <h1 className="mt-4 text-4xl md:text-5xl font-mono font-extrabold bg-gradient-to-br from-white via-sky-100 to-sky-400 bg-clip-text text-transparent">
-              Past Events
-            </h1>
-            <p className="mt-6 text-lg text-slate-300 leading-relaxed max-w-2xl">
-              Explore photos from previous years of HoCoHOC events. Select a year to view the gallery and relive those memorable moments! 2026 is coming soon — get excited!
-            </p>
-          </div>
-        </section>
+    <div className="mx-auto max-w-screen-xl px-6 py-12 sm:px-8 md:py-16">
+      <header className="border-b border-slate-700 pb-8">
+        <h1 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">Event photos</h1>
+        <p className="mt-3 text-base leading-relaxed text-slate-300">Photos and school results from past years of Howard County Hour of Code.</p>
+      </header>
 
-        {/* Year Selection Grid */}
-        <section className="rounded-2xl border border-slate-800 bg-slate-900/50 p-8 shadow-xl">
-          <div className="mb-8">
-            <p className="text-xs font-semibold uppercase tracking-[0.4em] text-sky-400 font-mono">
-              Select Year
-            </p>
-            <h2 className="text-2xl md:text-3xl font-mono font-bold text-slate-100 mt-2">
-              Choose an Event
-            </h2>
+      {picturesByYear.map((group) => (
+        <section key={group.year} aria-labelledby={`photos-${group.year}`} className="pt-10">
+          <div className="mb-6 flex items-baseline justify-between gap-4">
+            <h2 id={`photos-${group.year}`} className="text-2xl font-semibold text-white">{group.year}</h2>
+            <p className="text-sm text-slate-400">{group.images.length} photos</p>
           </div>
 
-          {/* Year Buttons */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-            {picturesByYear.map((yearGroup) => (
-              <button
-                key={yearGroup.year}
-                onClick={() => setSelectedYear(yearGroup.year)}
-                className="relative p-8 rounded-xl border border-slate-700 hover:border-sky-400 transition-all duration-300 bg-slate-800 hover:bg-slate-800/80 hover:-translate-y-1 hover:shadow-[0_0_20px_rgba(56,189,248,0.15)] group cursor-pointer overflow-hidden"
-              >
-                <div className="absolute inset-0 bg-gradient-to-br from-sky-500/0 to-sky-500/0 group-hover:from-sky-500/5 group-hover:to-transparent transition-all duration-500"></div>
-                <div className="relative flex flex-col items-center justify-center gap-2 z-10">
-                  <span className="text-4xl md:text-5xl font-mono font-bold text-white group-hover:text-sky-300 transition-colors">
-                    {yearGroup.year}
-                  </span>
-                  {yearGroup.images.length > 0 && (
-                    <span className="text-xs font-medium text-slate-400 group-hover:text-sky-200 transition-colors">
-                      {yearGroup.images.length} photo{yearGroup.images.length !== 1 ? 's' : ''}
-                    </span>
-                  )}
-                </div>
-              </button>
+          <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">
+            {group.images.map((photo, index) => (
+              <figure key={photo.src}>
+                <button
+                  type="button"
+                  aria-label={`Enlarge photo: ${photo.alt}`}
+                  aria-haspopup="dialog"
+                  className="relative block aspect-[4/3] w-full overflow-hidden rounded-sm bg-slate-950 focus-visible:outline-offset-4"
+                  onClick={(event) => {
+                    opener.current = event.currentTarget
+                    setSelectedPhoto({ year: group.year, index })
+                  }}
+                >
+                  <Image
+                    src={photo.src.replace("/hoco-hoc-winners/", "/optimized/thumbnails/")}
+                    alt={photo.alt}
+                    fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px"
+                    className="object-cover"
+                  />
+                </button>
+                <figcaption className="mt-3 text-sm leading-relaxed text-slate-300">{photo.alt}</figcaption>
+              </figure>
             ))}
           </div>
+
+          {group.winners && group.winners.length > 0 && (
+            <div className="mt-10 border-t border-slate-700 pt-6">
+              <h3 className="mb-4 text-lg font-semibold text-white">School results</h3>
+              <ol className="grid gap-x-8 sm:grid-cols-3">
+                {group.winners.map((winner) => (
+                  <li key={winner.rank} className="flex gap-4 py-3">
+                    <span className="text-sm tabular-nums text-slate-400">{winner.rank}.</span>
+                    <div>
+                      <p className="text-sm font-medium leading-relaxed text-slate-100">{winner.school}</p>
+                      <p className="mt-1 text-sm tabular-nums text-slate-400">{winner.points.toLocaleString("en-US")} points</p>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          )}
         </section>
-      </div>
+      ))}
 
-      {/* Year Modal */}
-      {selectedYear && currentYearData && (
-        <div
-          className="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 sm:p-6 cursor-pointer transition-opacity"
-          onClick={() => setSelectedYear(null)}
+      {image && selectedGroup && selectedPhoto && (
+        <dialog
+          ref={imageDialog}
+          aria-label={`${selectedGroup.year} event photo viewer`}
+          onCancel={(event) => { event.preventDefault(); closePhoto() }}
+          onClick={(event) => { if (event.target === event.currentTarget) closePhoto() }}
+          onKeyDown={(event) => {
+            if (event.key === "ArrowLeft") { event.preventDefault(); movePhoto(-1) }
+            if (event.key === "ArrowRight") { event.preventDefault(); movePhoto(1) }
+          }}
+          className="fixed inset-0 m-auto h-[90dvh] max-h-[90dvh] w-[calc(100%_-_2rem)] max-w-6xl border border-slate-700 bg-slate-950 p-4 text-slate-100 backdrop:bg-black/80 sm:p-6"
         >
-          <div
-            className="relative w-full h-full max-w-5xl max-h-[90vh] flex flex-col rounded-2xl border border-slate-700 bg-slate-900 shadow-2xl overflow-hidden cursor-auto"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Modal Header */}
-            <div className="flex items-center justify-between p-6 md:p-8 border-b border-slate-800 bg-slate-900/80 backdrop-blur-sm">
-              <div>
-                <p className="text-xs uppercase tracking-[0.4em] text-sky-400 font-mono font-semibold">
-                  Year Gallery
-                </p>
-                <h3 className="text-3xl font-mono font-bold text-white mt-1">
-                  {currentYearData.year} HoCoHOC
-                </h3>
-              </div>
-              <button
-                onClick={() => setSelectedYear(null)}
-                className="bg-slate-800 hover:bg-sky-500 text-slate-300 hover:text-white rounded-full w-10 h-10 flex items-center justify-center text-lg transition-all border border-slate-700 hover:border-sky-400 flex-shrink-0"
-              >
-                ✕
-              </button>
+          <div className="flex h-full flex-col gap-4">
+            <div className="flex items-center justify-between gap-4">
+              <p className="text-sm text-slate-400">{selectedGroup.year} · Photo {selectedPhoto.index + 1} of {selectedGroup.images.length}</p>
+              <button autoFocus type="button" onClick={closePhoto} className="min-h-10 px-3 text-sm text-slate-200 underline underline-offset-4 hover:text-white">Close</button>
             </div>
-
-            {/* Modal Content - Image Grid */}
-            <div className="flex-1 overflow-y-auto p-6 md:p-8 space-y-10 custom-scrollbar">
-              {/* Winners Section */}
-              {currentYearData.winners && currentYearData.winners.length > 0 && (
-                <div className="space-y-6">
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.4em] text-sky-400 font-mono">
-                      School Leaders
-                    </p>
-                    <h4 className="text-2xl font-mono font-bold text-white mt-2">
-                      Top Schools
-                    </h4>
-                  </div>
-                  <div className="grid gap-3">
-                    {currentYearData.winners.map((winner) => {
-                      const medals = ["1st", "2nd", "3rd"]
-                      const medal = medals[winner.rank - 1] || `#${winner.rank}`
-                      
-                      // Dynamic styling based on rank
-                      let rankStyle = "text-slate-400 bg-slate-800 border-slate-700"
-                      if (winner.rank === 1) rankStyle = "text-yellow-400 bg-yellow-400/10 border-yellow-400/20 shadow-[0_0_15px_rgba(250,204,21,0.05)]"
-                      if (winner.rank === 2) rankStyle = "text-slate-300 bg-slate-300/10 border-slate-300/20"
-                      if (winner.rank === 3) rankStyle = "text-amber-600 bg-amber-900/20 border-amber-700/30"
-
-                      return (
-                        <div
-                          key={winner.rank}
-                          className="flex items-center justify-between p-4 rounded-xl bg-slate-800/50 border border-slate-700/50 hover:border-sky-500/50 hover:bg-slate-800 transition-all group"
-                        >
-                          <div className="flex items-center gap-5">
-                            <div className={`flex items-center justify-center w-14 h-14 rounded-lg border ${rankStyle}`}>
-                              <span className="text-xl font-bold font-mono">{medal}</span>
-                            </div>
-                            <div>
-                              <p className="font-semibold text-lg text-slate-100 group-hover:text-white transition-colors">{winner.school}</p>
-                              <p className="text-sm font-mono text-sky-400/80">{winner.points.toLocaleString()} pts</p>
-                            </div>
-                          </div>
-                        </div>
-                      )
-                    })}
-                  </div>
-                </div>
-              )}
-
-              {/* Images Section */}
-              {currentYearData.images.length > 0 && (
-                <div className="space-y-6">
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.4em] text-sky-400 font-mono">
-                      Photos
-                    </p>
-                    <h4 className="text-2xl font-mono font-bold text-white mt-2">
-                      Event Gallery
-                    </h4>
-                  </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
-                    {currentYearData.images.map((image, index) => (
-                      <div
-                        key={index}
-                        className="relative aspect-square rounded-xl overflow-hidden border border-slate-700 hover:border-sky-400 hover:shadow-[0_0_20px_rgba(56,189,248,0.2)] transition-all duration-300 cursor-pointer group bg-slate-800"
-                        onClick={() => setSelectedImage(image.src)}
-                      >
-                        <Image
-                          src={image.src}
-                          alt={image.alt}
-                          fill
-                          className="object-cover group-hover:scale-110 group-hover:rotate-1 transition-all duration-500 ease-out"
-                        />
-                        <div className="absolute inset-0 bg-slate-950/0 group-hover:bg-slate-950/40 backdrop-blur-[0px] group-hover:backdrop-blur-[2px] transition-all duration-300 flex items-center justify-center">
-                          <span className="translate-y-4 group-hover:translate-y-0 text-white opacity-0 group-hover:opacity-100 transition-all duration-300 font-semibold bg-sky-500/80 px-4 py-2 rounded-full text-sm">
-                            View Image
-                          </span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {currentYearData.images.length === 0 && (!currentYearData.winners || currentYearData.winners.length === 0) && (
-                <div className="flex flex-col items-center justify-center py-16 px-4 text-center space-y-4 bg-slate-800/30 rounded-xl border border-slate-800 border-dashed">
-                  <div className="w-16 h-16 rounded-full bg-slate-800 flex items-center justify-center mb-2">
-                    <span className="text-2xl text-slate-500">📸</span>
-                  </div>
-                  <p className="text-slate-300 text-lg max-w-md">
-                    {currentYearData.year === 2026
-                      ? "HocoHOC 2026 is in the planning phase. Photos and results will appear here after the event!"
-                      : `We're still hunting for photos from ${currentYearData.year}.`}
-                  </p>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Image Lightbox Modal */}
-      {selectedImage && (
-        <div
-          className="fixed inset-0 bg-slate-950/95 backdrop-blur-xl z-[60] flex items-center justify-center p-4 sm:p-8 cursor-pointer transition-opacity"
-          onClick={() => setSelectedImage(null)}
-        >
-          <div
-            className="relative w-full h-full max-w-6xl max-h-[90vh] flex items-center justify-center cursor-auto"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              onClick={() => setSelectedImage(null)}
-              className="absolute top-0 right-0 md:-top-4 md:-right-4 bg-slate-800 hover:bg-sky-500 text-slate-300 hover:text-white rounded-full w-12 h-12 flex items-center justify-center text-xl transition-all border border-slate-700 hover:border-sky-400 z-10 shadow-xl"
-            >
-              ✕
-            </button>
-            <div className="relative w-full h-full">
+            <div className="relative min-h-0 flex-1">
               <Image
-                src={selectedImage}
-                alt="Full size view"
+                src={image.src.replace("/hoco-hoc-winners/", "/optimized/gallery/")}
+                alt={image.alt}
                 fill
-                className="object-contain drop-shadow-2xl"
-                priority
                 sizes="(max-width: 1200px) 100vw, 1200px"
+                className="object-contain"
               />
             </div>
+            <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-800 pt-4">
+              <p aria-live="polite" className="text-sm text-slate-300">{image.alt}</p>
+              <div className="flex gap-2">
+                <button type="button" onClick={() => movePhoto(-1)} className="min-h-10 rounded border border-slate-700 px-4 text-sm hover:bg-slate-800">Previous</button>
+                <button type="button" onClick={() => movePhoto(1)} className="min-h-10 rounded border border-slate-700 px-4 text-sm hover:bg-slate-800">Next</button>
+              </div>
+            </div>
           </div>
-        </div>
+        </dialog>
       )}
     </div>
   )

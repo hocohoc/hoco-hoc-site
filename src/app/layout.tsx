@@ -107,12 +107,12 @@ export default function RootLayout({ children }) {
   };
 
   return (
-    <html lang="en" className="flex flex-col w-full h-full">
+    <html lang="en" className={`${inter.variable} ${jbm.variable} flex flex-col w-full h-full`}>
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <script id="site-structured-data" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
       </head>
-      <body className={`${inter.className} ${inter.variable} ${jbm.variable} w-full h-full antialiased`}>
+      <body className="font-sans w-full h-full antialiased">
         <Suspense>
             <ReactQueryClientProvider>
               <AuthProvider>

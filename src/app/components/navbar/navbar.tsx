@@ -62,7 +62,7 @@ export default function NavBar() {
       {/* Top Navigation Bar */}
       <nav
         ref={navRef}
-        className="bg-slate-900 bg-opacity-50 backdrop-blur-md min-h-16 py-2 px-2 sm:px-4 flex flex-row items-center justify-center border-b-2 border-b-sky-900 top-0 sticky z-40 w-full"
+        className="bg-slate-900 min-h-16 py-2 px-2 sm:px-4 flex flex-row items-center justify-center border-b-2 border-b-sky-900 top-0 sticky z-40 w-full"
         aria-label="Primary"
       >
         <div className="flex flex-row items-center w-full max-w-screen-xl gap-2 sm:gap-4 flex-wrap">

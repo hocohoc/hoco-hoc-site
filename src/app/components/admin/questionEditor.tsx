@@ -1,5 +1,5 @@
 import { Question } from "@/app/services/quizService"
-import { mdCodeBlockParser } from "@/app/services/utils"
+import { mdCodeBlockParser } from "@/app/services/codeBlockParser"
 import { useEffect, useId, useState } from "react"
 import Markdown from "react-markdown"
 import { useProfile } from "../auth-provider/authProvider"

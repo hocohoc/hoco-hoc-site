@@ -6,26 +6,40 @@ export default function TeamSection() {
         //directors
         { name: "Ankit Mohanty", position: "Director", image: "/headshots/ankit_headshot.png" },
         { name: "Nicholas Chen", position: "Co-Director", image: "/headshots/NicholasChen_headshot.jpg" },
-        { name: "Oluwadarasimi Adedeji", position: "Web Dev", image: "/headshots/dara_headshot.jpg" },
-        { name: "Jay Patel", position: "Article Lead", image: "/headshots/jay_headshot.jpg" },
-        { name: "Sai Chandra", position: "Articles", image: "/headshots/sai_headshot.png" },
-        { name: "Austen Shaheen", position: "Articles", image: "/headshots/austen_img.jpg" },
-        { name: "Raj Bhagat", position: "Articles", image: "/headshots/raj_headshot.jpg" },
-        { name: "Suhas Anumolu", position: "Articles", image: "/headshots/suhas_headshot.png" },
-        { name: "Daniel Oh", position: "Outreach", image: "/headshots/daniel_oh_headshot.png" },
+
+        //sponsorship
+        { name: "Roshan Gopi", position: "Sponsorship", image: "/headshots/roshan.jpg" },
+        { name: "Ruchi Basatwar", position: "Sponsorship", image: "/headshots/ruchi.jpg" },
+        //articles
+        { name: "Saibilila Abudukelimu", position: "Articles", image: "/headshots/saibi.jpg"},
+        { name: "Vrukshav Viswanath", position: "Articles", image: "/headshots/vrukshav.jpg" },
+        { name: "Rudra Jhawar", position: "Articles", image: "/headshots/rudra.jpg" },
+        { name: "Ehaan Akbar", position: "Articles",image: "/headshots/ehaan.jpg" },
+        { name: "Jonathan Barrett", position: "Articles", image: "/headshots/jonathan.jpg" },
+        { name: "Shwetha Vijayabhaskar", position: "Articles", image: "/headshots/shwetha.jpg" },
+        { name: "Norman Adams", position: "Articles", image: "/headshots/norman.jpg" },
+        //outreach
+        { name: "Austen Shaheen", position: "Outreach", image: "/headshots/austen_img.jpg" },
+        { name: "Temi Apata", position: "Outreach", image: "/headshots/temi.jpg" },
+        { name: "Asiya Nasher-Alneam" , position: "Outreach"},
+
     ];
 
     return (
-        <div className="flex flex-col items-center p-4 md:p-8 py-20 md:py-32">
-            <h3 className="font-mono text-sky-300 font-bold bg-gradient-to-b from-sky-300 to-sky-500 text-transparent bg-clip-text text-5xl md:text-6xl mb-10 text-center">Meet the Team</h3>
-            <div className="flex w-full flex-col max-w-screen-xl items-center">
-                <div className="gap-x-4 gap-y-4 grid grid-cols-1 w-full sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 auto-rows-fr justify-center">
-                    {teamMembers.map((member, index) => (
-                        <TeamCard key={index} member={member} />
+        <section aria-labelledby="team-heading" className="bg-slate-900 px-6 pt-12 pb-8 sm:px-8 md:pt-16 md:pb-10">
+            <div className="mx-auto max-w-screen-xl">
+                <header className="mb-4 border-b border-slate-700 pb-8">
+                    <h2 id="team-heading" className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">Meet the team</h2>
+                    <p className="mt-3 text-base leading-relaxed text-slate-300">The students behind Howard County Hour of Code.</p>
+                </header>
+                <ul className="grid grid-cols-1 gap-x-10 sm:grid-cols-2 xl:grid-cols-3">
+                    {teamMembers.map((member) => (
+                        <li key={member.name} className="border-b border-slate-800 py-6">
+                            <TeamCard member={member} />
+                        </li>
                     ))}
-                </div>
+                </ul>
             </div>
-        </div>
+        </section>
     );
-
 }

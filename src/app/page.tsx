@@ -11,14 +11,20 @@ import Team from './components/team/team';
 import Sponsors from "./components/sponsors/sponsors";
 
 export default function Home() {
-  let [stats, setStats] = useState<LiveStats>({ totalHours: 0, totalUsers: 0, totalViews: 0 })
+  const [stats, setStats] = useState<LiveStats | null>(null)
+  const [statsStatus, setStatsStatus] = useState<"loading" | "ready" | "unavailable">("loading")
 
   useEffect(() => {
-    console.log("Hello")
-    let unsub = onStatsChange((live) => {
+    const timeout = window.setTimeout(() => setStatsStatus("unavailable"), 10000)
+    const unsub = onStatsChange((live) => {
+      window.clearTimeout(timeout)
       setStats(live)
+      setStatsStatus("ready")
+    }, () => {
+      window.clearTimeout(timeout)
+      setStatsStatus("unavailable")
     })
-    return unsub
+    return () => { window.clearTimeout(timeout); unsub() }
   }, [])
 
   return (
@@ -45,7 +51,7 @@ export default function Home() {
       <div className="bg-slate-900" id="about" >
         <AboutSection></AboutSection>
       </div>
-      <StatsCounter liveStats={stats} className="w-full" />
+      <StatsCounter status={statsStatus} liveStats={stats} className="w-full" />
       <div className="bg-slate-900">
         <Prizes></Prizes>
       </div>

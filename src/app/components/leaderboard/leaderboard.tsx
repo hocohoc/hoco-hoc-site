@@ -11,11 +11,11 @@ export default function Leaderboard(props: Props) {
 
     function topStyles(rank: number): string {
         if(rank == 0) {
-            return "bg-gradient-to-b from-yellow-600/90 to-yellow-700/90 font-bold"
+            return "bg-yellow-800 text-white font-bold"
         } else if(rank == 1) {
-            return "bg-gradient-to-b from-slate-400 to-slate-500 font-bold"
+            return "bg-slate-600 text-white font-bold"
         } else if(rank == 2) {
-            return "bg-gradient-to-b from-amber-800 to-amber-900 font-bold"
+            return "bg-amber-900 text-white font-bold"
         } else {
             return "even:bg-gray-800"
         }
@@ -23,7 +23,7 @@ export default function Leaderboard(props: Props) {
 
     return <div className={`w-full h-full text-slate-300 bg-gray-900 rounded-md border-gray-800 border-2 overflow-hidden ${props.className}`}>
         <table className={`w-full h-full table-auto`}>
-            <thead className="bg-gradient-to-b from-sky-800 to-sky-900 font-mono md:text-xl text-left uppercase">
+            <thead className="bg-sky-900 bg-gradient-to-b from-sky-800 to-sky-900 font-mono md:text-xl text-left uppercase">
                 <tr>
                     <th className="p-2 text-center border-r border-r-gray-700">Place</th>
                     <th className="p-2 border-r border-r-gray-700">School</th>

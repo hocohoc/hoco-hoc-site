@@ -3,7 +3,7 @@
 import Markdown from 'react-markdown';
 import { Profile } from '@/app/services/userService';
 import { ExclamationTriangleIcon, InformationCircleIcon } from "@heroicons/react/24/solid"
-import { mdCodeBlockParser } from '@/app/services/utils';
+import { mdCodeBlockParser } from '@/app/services/codeBlockParser';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex'
 

@@ -1,7 +1,8 @@
 import Link from "next/link";
+import RotatingHeading from "./rotatingHeading";
 import Leaderboard from "../leaderboard/leaderboard";
 import { School } from "@/app/services/schoolsService";
-import ArticleRenderer from "@/app/components/article-renderer/articleRenderer";
+
 
 
 
@@ -33,7 +34,7 @@ export default function AboutSection() {
         <div className="p-4 md:p-8 md:py-32 py-16 w-full flex flex-wrap justify-center">
             <div className="max-w-screen-xl w-full flex flex-col gap-20 md:gap-32 justify-center">
                 <div>
-                    <h2 className="text-slate-200 font-bold  text-4xl md:text-6xl leading-tight pb-8">Learn <span className="block md:inline bg-gradient-to-b from-sky-300 to-sky-500 text-transparent bg-clip-text font-mono">computer science</span> <span className="underline">the fun way! </span> </h2>
+                    <RotatingHeading />
                     <p className="text-lg md:text-xl font-sans text-slate-300 flex flex-row gap-2 w-full max-w-4xl">
                         The Hour of Code started as a one-hour introduction to computer science, designed to demystify &quot;code&quot;, to show that anybody can learn the basics, and to broaden participation in the field of computer science. It has since become a worldwide effort to celebrate computer science, starting with 1-hour coding activities but expanding to all sorts of community efforts. Howard County&apos;s version of Hour of Code is made by students, for students.
                     </p>
@@ -41,7 +42,7 @@ export default function AboutSection() {
 
                 <div className="flex flex-col gap-8 md:gap-12 md:flex-row items-center md:space-x-4">
                     <div className="md:flex-1">
-                        <h2 className="font-mono text-4xl md:text-5xl bg-gradient-to-r from-sky-300 to-sky-500 text-transparent bg-clip-text font-bold pb-4 md:pb-10">Compete For Glory!</h2>
+                        <h2 className="font-mono text-4xl md:text-5xl font-bold pb-4 md:pb-10 text-sky-300">Compete For Glory!</h2>
                         <p className="font-sans mb-10  text-l text-slate-300 md:text-xl">We aim to provide aspiring computer scientists with an opportunity for skill development and friendly competition. When the 2026 event kicks off, all Howard County schools and corresponding points will be displayed on the leaderboard!</p>
                         <Link href={"/game"} className="btn-secondary font-mono text-lg">Play Games</Link>
                     </div>
@@ -69,13 +70,13 @@ export default function AboutSection() {
                                 ))}
                             </div>
                             <hr className="mt-3 border-b border-slate-600" />
-                            <ArticleRenderer markdown={article.content} />
+                            <p className="leading-snug my-4 text-slate-300">{article.content}</p>
                         </div>
                     </div>
 
 
                     <div className="md:flex-1 w-full font-mono">
-                        <h2 className="font-mono leading-tight text-4xl md:text-5xl bg-gradient-to-r from-sky-300 to-sky-500 text-transparent bg-clip-text font-bold pb-4 md:pb-10"> Learn New Topics! </h2>
+                        <h2 className="font-mono leading-tight text-4xl md:text-5xl font-bold pb-4 md:pb-10 text-sky-300"> Learn New Topics! </h2>
                         <p className="font-sans mb-10 text-lg md:text-xl text-slate-300">HocoHOC offers a wide variety of interesting and informative articles and games on computer science topics. By completing them, you&apos;ll not only acquire new skills but also earn your school points!</p>
                         <Link href={"/articles"} className="btn-secondary font-mono text-lg">View Articles</Link>
                     </div>
@@ -83,7 +84,7 @@ export default function AboutSection() {
 
                 <div className="flex flex-col md:flex-row gap-8 md:gap-12 items-center">
                     <div className="md:flex-1">
-                        <h2 className="font-mono leading-tight text-4xl md:text-5xl bg-gradient-to-r from-sky-300 to-sky-500 text-transparent bg-clip-text font-bold pb-4 md:pb-10">Track Your Progress!</h2>
+                        <h2 className="font-mono leading-tight text-4xl md:text-5xl font-bold pb-4 md:pb-10 text-sky-300">Track Your Progress!</h2>
                         <p className="font-sans text-lg text-slate-300 md:text-xl mb-10">Complete quizzes to earn points! You&apos;ll be able to see how you progress through four sections: Fundamentals, Data Structures & Algorithms, Web Development, and Machine Learning.</p>
                         <Link href={"/me"} className="btn-secondary font-mono text-lg">View Dashboard</Link>
                     </div>
