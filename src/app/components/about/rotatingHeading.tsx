@@ -1,10 +1,21 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const topics = ["CS", "Algorithms", "Web Dev", "ML", "Python", "Java", "C++"];
 
 export default function RotatingHeading() {
+    const headingRef = useRef<HTMLDivElement>(null);
+    const [visible, setVisible] = useState(false);
+    const [activeTab, setActiveTab] = useState(true);
+    useEffect(() => {
+        const observer = new IntersectionObserver(([entry]) => setVisible(entry.isIntersecting));
+        if (headingRef.current) observer.observe(headingRef.current);
+        const update = () => setActiveTab(!document.hidden);
+        update();
+        document.addEventListener("visibilitychange", update);
+        return () => { observer.disconnect(); document.removeEventListener("visibilitychange", update); };
+    }, []);
     const [reducedMotion, setReducedMotion] = useState(true);
     const [paused, setPaused] = useState(false);
     const [frame, setFrame] = useState({ index: 0, length: 2, deleting: false });
@@ -18,7 +29,7 @@ export default function RotatingHeading() {
     }, []);
 
     useEffect(() => {
-        if (reducedMotion || paused) return;
+        if (reducedMotion || paused || !visible || !activeTab) return;
         const word = topics[frame.index];
         const delay = !frame.deleting && frame.length === word.length ? 2000 : frame.deleting ? 60 : 100;
         const timer = window.setTimeout(() => {
@@ -31,10 +42,10 @@ export default function RotatingHeading() {
             }
         }, delay);
         return () => window.clearTimeout(timer);
-    }, [frame, paused, reducedMotion]);
+    }, [frame, paused, reducedMotion, visible, activeTab]);
 
     return (
-        <div className="pb-8">
+        <div ref={headingRef} className="pb-8">
             <h2 className="text-slate-200 font-bold text-4xl md:text-6xl leading-tight">
                 <span className="sr-only">Learn computer science the fun way!</span>
                 <span aria-hidden="true">

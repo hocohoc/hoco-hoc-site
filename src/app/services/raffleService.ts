@@ -55,23 +55,23 @@ const RAFFLE_DOC = "aggregate/raffle";
 export const DEFAULT_PRIZES: Prize[] = [
     {
         id: "ipad",
-        name: "Apple iPad (A16)",
-        quantity: 1,
-        description: "1x Apple iPad with A16 chip",
+        name: "Apple iPad",
+        quantity: 2,
+        description: "Apple iPad",
         tier: "major",
     },
     {
-        id: "jbl",
-        name: "JBL Tune 720BT",
+        id: "airpods",
+        name: "Apple AirPods",
         quantity: 1,
-        description: "1x JBL Tune 720BT Headphones",
+        description: "One pair of Apple AirPods",
         tier: "major",
     },
     {
         id: "giftcard",
-        name: "$10 Amazon Giftcard",
+        name: "$10 gift card",
         quantity: 10,
-        description: "10x $10 Amazon Giftcards",
+        description: "$10 gift card",
         tier: "minor",
     },
 ];

@@ -8,8 +8,8 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['var(--font-inter)'],
-        mono: ['var(--font-jbm)']
+        sans: ['var(--font-inter, Arial)', 'Arial', 'sans-serif'],
+        mono: ['var(--font-jbm, monospace)', 'ui-monospace', 'monospace']
       },
       colors: {
         "blurple": "#737efa",

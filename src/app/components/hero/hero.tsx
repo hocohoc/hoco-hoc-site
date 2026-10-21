@@ -1,84 +1,10 @@
 "use client"
-import { useCallback, useEffect, useRef, useState } from "react"
 import Link from "next/link"
 import { useProfile } from "../auth-provider/authProvider"
 import { logout, signInOrRegister } from "@/app/services/userService"
-import { motion } from "framer-motion"
 
 export default function Hero() {
     const profile = useProfile()
-    const canvasRef = useRef<HTMLCanvasElement>(null)
-
-    const draw = useCallback(() => {
-        const canvas = canvasRef.current;
-        if (!canvas) {
-            return;
-        }
-
-        const context = canvas.getContext("2d");
-        if (!context) {
-            return;
-        }
-
-        context.resetTransform?.();
-        context.clearRect(0, 0, canvas.width, canvas.height);
-        context.lineCap = "round";
-        const radius = canvas.width < 600 ? 200 : 300;
-        context.translate(canvas.width < 600 ? canvas.width : canvas.width * 0.75, canvas.height / 2);
-        context.beginPath();
-        context.arc(0, 0, radius * 0.85, -Math.PI / 2, Math.PI * 2 / 3);
-        context.lineWidth = 10;
-        context.strokeStyle = "#bfdbfe";
-        context.stroke();
-
-        context.beginPath();
-        context.arc(0, 0, radius * 0.95, -Math.PI / 2, Math.PI * 4 / 3);
-        context.lineWidth = 10;
-        context.strokeStyle = "#38bdf8";
-        context.stroke();
-
-        context.beginPath();
-        context.arc(0, 0, radius * 0.9, -Math.PI / 2, 2 * Math.PI);
-        context.lineWidth = 10;
-        context.strokeStyle = "#0c4a6e";
-        context.stroke();
-
-        context.beginPath();
-        context.moveTo(0, 0);
-        context.strokeStyle = "#FFFFFF";
-        context.lineWidth = 10;
-        context.lineTo(Math.cos(4 * Math.PI / 3) * (0.8 * radius), Math.sin(4 * Math.PI / 3) * (0.5 * radius));
-        context.stroke();
-
-        context.beginPath();
-        context.moveTo(0, 0);
-        context.strokeStyle = "#00b7ff";
-        context.lineWidth = 5;
-        context.lineTo(Math.cos((2.0 / 3.0) * Math.PI) * (0.95 * radius), Math.sin((2.0 / 3.0) * Math.PI) * (0.6 * radius));
-        context.stroke();
-    }, []);
-
-    const handleResize = useCallback(() => {
-        if (canvasRef.current) {
-            const parent = canvasRef.current.parentElement;
-
-            if (parent) {
-                const rect = parent.getBoundingClientRect()
-                canvasRef.current.width = rect.width;
-                canvasRef.current.height = rect.height;
-            }
-        }
-        draw();
-    }, [draw]);
-
-    useEffect(() => {
-        const resizeListener = () => handleResize();
-        window.addEventListener("resize", resizeListener);
-        handleResize();
-
-        return () => window.removeEventListener("resize", resizeListener);
-    }, [handleResize]);
-
     function handleAuth() {
         if (profile) {
             logout()
@@ -88,16 +14,17 @@ export default function Hero() {
     }
 
     return <section className="min-h-[30rem] bg-sky-950 relative border-b-2 border-b-sky-900 overflow-hidden">
-        <canvas ref={canvasRef} className="absolute inset-0" aria-hidden="true" role="presentation" tabIndex={-1}></canvas>
+        <svg className="absolute right-[-10rem] top-1/2 h-[36rem] w-[36rem] -translate-y-1/2 opacity-40 md:right-[3%] md:opacity-80" viewBox="0 0 600 600" fill="none" aria-hidden="true">
+            <circle cx="300" cy="300" r="270" stroke="#0c4a6e" strokeWidth="10" />
+            <circle cx="300" cy="300" r="285" stroke="#38bdf8" strokeWidth="10" strokeDasharray="1490 301" transform="rotate(-90 300 300)" strokeLinecap="round" />
+            <circle cx="300" cy="300" r="255" stroke="#bfdbfe" strokeWidth="10" strokeDasharray="1335 267" transform="rotate(-90 300 300)" strokeLinecap="round" />
+            <path d="M180 170 L300 300" stroke="white" strokeWidth="10" strokeLinecap="round" />
+            <path d="M300 300 L158 456" stroke="#00b7ff" strokeWidth="5" strokeLinecap="round" />
+        </svg>
 
         <div className="flex flex-row items-center justify-center z-20 relative w-full min-h-[30rem] md:min-h-[75vh] p-6 sm:p-8 py-16 bg-opacity-80 bg-slate-900 md:bg-opacity-100 md:bg-transparent md:bg-gradient-to-bl md:via-90% md:via-slate-900 md:from-transparent md:to-slate-900">
             <div className="flex flex-row items-center w-full max-w-screen-xl">
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, ease: "easeOut" }}
-                    className="md:w-2/3 w-full"
-                >
+                <div className="md:w-2/3 w-full">
                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-900/50 border border-sky-800 mb-4">
                         <span className="w-2 h-2 bg-sky-400 rounded-full" />
                         <span className="font-mono text-xs text-sky-300 tracking-wide">December 8 – 15, 2026</span>
@@ -130,7 +57,7 @@ export default function Hero() {
                             Play Games
                         </Link>
                     </div>
-                </motion.div>
+                </div>
             </div>
         </div>
     </section>

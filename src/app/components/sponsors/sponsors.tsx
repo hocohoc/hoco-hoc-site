@@ -1,8 +1,8 @@
 import Image from 'next/image'
 
 export default function Sponsors() {
-  return <div className='flex flex-col w-full justify-center md:flex-row bg-gray-900 px-4 md:px-8 py-28 gap-9 md:gap-9 items-center '>
-    <div className="max-w-screen-xl gap-16 flex flex-col w-full">
+  return <div className='flex flex-col w-full justify-center md:flex-row bg-gray-900 px-6 sm:px-8 py-10 md:py-12 gap-9 md:gap-9 items-center '>
+    <div className="max-w-screen-xl gap-8 flex flex-col w-full">
       <h1 className="text-4xl md:text-5xl font-bold"> Howard County Hour of Code is made possible by:</h1>
       <div className="flex flex-col gap-4">
         <h1 className="font-bold text-3xl text-amber-500">Gold</h1>
@@ -30,7 +30,7 @@ export default function Sponsors() {
         </div>
       </div>
 
-      <div className="border-t border-slate-700 pt-10 flex flex-col md:flex-row md:items-center gap-4">
+      <div className="border-t border-slate-700 pt-6 flex flex-col md:flex-row md:items-center gap-4">
         <div className="flex-1">
           <h2 className="text-2xl font-bold text-slate-100">Interested in sponsoring?</h2>
           <p className="text-slate-400 mt-1">Help us inspire the next generation of computer scientists in Howard County.</p>

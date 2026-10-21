@@ -1,14 +1,15 @@
-import { LiveStats } from "@/app/services/statsService"
 import { useEffect, useState } from "react"
+import { LiveStats } from "@/app/services/statsService"
 
 type Props = {
   className?: string
-  liveStats: LiveStats
+  liveStats: LiveStats | null
+  status: "loading" | "ready" | "unavailable"
 }
 
 export default function StatsCounter(props: Props) {
   const [paused, setPaused] = useState(false)
-  const [displayedStats, setDisplayedStats] = useState<LiveStats>(props.liveStats ?? { totalUsers: 0, totalViews: 0, totalHours: 0 })
+  const [displayedStats, setDisplayedStats] = useState<LiveStats | null>(props.liveStats)
   useEffect(() => {
     if (!paused && props.liveStats) setDisplayedStats(props.liveStats)
   }, [paused, props.liveStats])
@@ -30,14 +31,23 @@ export default function StatsCounter(props: Props) {
           <button type="button" className="btn-secondary self-start" aria-pressed={paused} onClick={() => setPaused(value => !value)}>
             {paused ? "Resume live statistics" : "Pause live statistics"}
           </button>
+          <p role="status" className="text-sm text-slate-300">
+            {props.status === "loading" ? "Loading community statistics…" : props.status === "unavailable" ? "Live statistics are temporarily unavailable." : ""}
+          </p>
           <div className="rounded flex flex-col md:flex-row gap-2 justify-center items-center">
             {[
-              { value: displayedStats.totalUsers, label: "Registered Users" },
-              { value: displayedStats.totalViews, label: "Article Views" },
-              { value: Math.round(displayedStats.totalHours), label: "Hours Served" },
+              { value: displayedStats?.totalUsers, label: "Registered Users" },
+              { value: displayedStats?.totalViews, label: "Article Views" },
+              { value: displayedStats ? Math.round(displayedStats.totalHours) : undefined, label: "Hours Served" },
             ].map(({ value, label }) => (
               <div key={label} className="p-4 bg-gray-800/50 rounded flex flex-col items-center w-full gap-2">
-                <p className="text-indigo-300 font-mono text-5xl sm:text-6xl font-bold">{value}</p>
+                {props.status === "loading" ? (
+                  <div className="h-14 w-24 rounded bg-indigo-900/50 animate-pulse" />
+                ) : (
+                  <p className="font-mono tabular-nums text-5xl sm:text-6xl font-bold text-indigo-300">
+                    {value ?? "—"}
+                  </p>
+                )}
                 <p className="font-mono text-left text-lg">{label}</p>
               </div>
             ))}

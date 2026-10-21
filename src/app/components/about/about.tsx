@@ -2,7 +2,7 @@ import Link from "next/link";
 import RotatingHeading from "./rotatingHeading";
 import Leaderboard from "../leaderboard/leaderboard";
 import { School } from "@/app/services/schoolsService";
-import ArticleRenderer from "@/app/components/article-renderer/articleRenderer";
+
 
 
 
@@ -70,7 +70,7 @@ export default function AboutSection() {
                                 ))}
                             </div>
                             <hr className="mt-3 border-b border-slate-600" />
-                            <ArticleRenderer markdown={article.content} />
+                            <p className="leading-snug my-4 text-slate-300">{article.content}</p>
                         </div>
                     </div>
 

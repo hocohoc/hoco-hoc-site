@@ -2,7 +2,7 @@
 
 import Markdown from 'react-markdown';
 import { Profile } from '@/app/services/userService';
-import { mdCodeBlockParser } from '@/app/services/utils';
+import { mdCodeBlockParser } from '@/app/services/codeBlockParser';
 import remarkMath from 'remark-math';
 import rehypeRaw from 'rehype-raw'
 import rehypeSanitize, { defaultSchema } from 'rehype-sanitize'

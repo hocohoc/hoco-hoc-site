@@ -2,7 +2,7 @@ import { Question } from "@/app/services/quizService"
 import { useId, useState } from "react"
 import Markdown from "react-markdown"
 import { useProfile } from "../auth-provider/authProvider"
-import { mdCodeBlockParser } from "@/app/services/utils"
+import { mdCodeBlockParser } from "@/app/services/codeBlockParser"
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex'
 
