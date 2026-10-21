@@ -25,9 +25,9 @@ export default function Leaderboard(props: Props) {
         <table className={`w-full h-full table-auto`}>
             <thead className="bg-sky-900 bg-gradient-to-b from-sky-800 to-sky-900 font-mono md:text-xl text-left uppercase">
                 <tr>
-                    <th className="p-2 text-center border-r border-r-gray-700">Place</th>
-                    <th className="p-2 border-r border-r-gray-700">School</th>
-                    <th className="p-2 text-center">Points</th>
+                    <th scope="col" className="p-2 text-center border-r border-r-gray-700">Place</th>
+                    <th scope="col" className="p-2 border-r border-r-gray-700">School</th>
+                    <th scope="col" className="p-2 text-center">Points</th>
                 </tr>
             </thead>
             <tbody ref={animationParent}>
