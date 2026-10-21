@@ -5,7 +5,7 @@ export default function TeamSection() {
     const teamMembers = [
         //directors
         { name: "Ankit Mohanty", position: "Director", image: "/headshots/ankit_headshot.png" },
-        { name: "Nicholas Chen", position: "Co-Director", image: "/headshots/NicholasChen_headshot.jpg" },
+        { name: "Nicholas Chen", position: "Co-Director", image: "/headshots/nicholas_headshot.png" },
 
         //sponsorship
         { name: "Roshan Gopi", position: "Sponsorship", image: "/headshots/roshan.jpg" },
