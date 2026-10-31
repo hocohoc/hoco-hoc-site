@@ -10,6 +10,8 @@ export default function TeamSection() {
         //sponsorship
         { name: "Roshan Gopi", position: "Sponsorship", image: "/headshots/roshan.jpg" },
         { name: "Ruchi Basatwar", position: "Sponsorship", image: "/headshots/ruchi.jpg" },
+        { name: "Ethan Zhang", position: "Sponsorship", image: "/headshots/ethan_headshot.jpg" },
+
         //articles
         { name: "Saibilila Abudukelimu", position: "Articles", image: "/headshots/saibi.jpg"},
         { name: "Vrukshav Viswanath", position: "Articles", image: "/headshots/vrukshav.jpg" },
@@ -18,6 +20,7 @@ export default function TeamSection() {
         { name: "Jonathan Barrett", position: "Articles", image: "/headshots/jonathan.jpg" },
         { name: "Shwetha Vijayabhaskar", position: "Articles", image: "/headshots/shwetha.jpg" },
         { name: "Norman Adams", position: "Articles", image: "/headshots/norman.jpg" },
+        { name: "Sherry Wei", position: "Articles", image: "/headshots/sherry_headshot.jpg" },
         //outreach
         { name: "Austen Shaheen", position: "Outreach", image: "/headshots/austen_img.jpg" },
         { name: "Temi Apata", position: "Outreach", image: "/headshots/temi.jpg" },
