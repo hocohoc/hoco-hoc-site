@@ -25,10 +25,14 @@ export default function Hero() {
         <div className="flex flex-row items-center justify-center z-20 relative w-full min-h-[30rem] md:min-h-[75vh] p-6 sm:p-8 py-16 bg-opacity-80 bg-slate-900 md:bg-opacity-100 md:bg-transparent md:bg-gradient-to-bl md:via-90% md:via-slate-900 md:from-transparent md:to-slate-900">
             <div className="flex flex-row items-center w-full max-w-screen-xl">
                 <div className="md:w-2/3 w-full">
-                    <p className="mb-6 font-sans text-base font-medium text-slate-300 sm:text-lg">
-                        <time dateTime="2026-12-08">December 8</time>
-                        {"–"}
-                        <time dateTime="2026-12-15">15, 2026</time>
+                    <p className="mb-6 flex flex-wrap items-baseline gap-x-3 gap-y-1 font-mono">
+                        <span className="text-xs font-medium uppercase tracking-[0.12em] text-sky-300">December</span>
+                        <span className="whitespace-nowrap text-lg font-medium text-slate-100">
+                            <time dateTime="2026-12-08">8</time>
+                            <span className="px-1.5 text-slate-400">–</span>
+                            <time dateTime="2026-12-15">15</time>
+                        </span>
+                        <span className="text-sm text-slate-400">2026</span>
                     </p>
 
                     <h1 className="mb-2">
