@@ -25,10 +25,11 @@ export default function Hero() {
         <div className="flex flex-row items-center justify-center z-20 relative w-full min-h-[30rem] md:min-h-[75vh] p-6 sm:p-8 py-16 bg-opacity-80 bg-slate-900 md:bg-opacity-100 md:bg-transparent md:bg-gradient-to-bl md:via-90% md:via-slate-900 md:from-transparent md:to-slate-900">
             <div className="flex flex-row items-center w-full max-w-screen-xl">
                 <div className="md:w-2/3 w-full">
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-900/50 border border-sky-800 mb-4">
-                        <span className="w-2 h-2 bg-sky-400 rounded-full" />
-                        <span className="font-mono text-xs text-sky-300 tracking-wide">December 8 – 15, 2026</span>
-                    </div>
+                    <p className="mb-6 font-sans text-base font-medium text-slate-300 sm:text-lg">
+                        <time dateTime="2026-12-08">December 8</time>
+                        {"–"}
+                        <time dateTime="2026-12-15">15, 2026</time>
+                    </p>
 
                     <h1 className="mb-2">
                         <span className="block text-2xl md:text-6xl">Howard County</span>
