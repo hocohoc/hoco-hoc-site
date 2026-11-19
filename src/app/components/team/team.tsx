@@ -1,4 +1,5 @@
 import TeamCard from './teamCard';
+import LeadershipIntro from './leadershipIntro';
 import React from 'react';
 
 export default function TeamSection() {
@@ -34,6 +35,7 @@ export default function TeamSection() {
                 <header className="mb-4 border-b border-slate-700 pb-8">
                     <h2 id="team-heading" className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">Meet the team</h2>
                     <p className="mt-3 text-base leading-relaxed text-slate-300">The students behind Howard County Hour of Code.</p>
+                    <LeadershipIntro />
                 </header>
                 <ul className="grid grid-cols-1 gap-x-10 sm:grid-cols-2 xl:grid-cols-3">
                     {teamMembers.map((member) => (

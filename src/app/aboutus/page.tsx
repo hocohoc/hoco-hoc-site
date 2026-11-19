@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
+import LeadershipIntro from "../components/team/leadershipIntro";
 
 export default function AboutUs() {
   return (
@@ -43,6 +44,7 @@ export default function AboutUs() {
               teaching students about the world of technology during the Hour of
               Code week each December.
             </p>
+            <LeadershipIntro />
           </div>
 
           {/* What We Do */}
