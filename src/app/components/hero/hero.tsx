@@ -44,7 +44,7 @@ export default function Hero() {
                     <p className="text-md mt-3 md:text-base">Compete, Learn, and Win Prizes!</p>
 
                     <p className="font-mono text-slate-400 text-sm">
-                        A 7-day event where students across Howard County explore computer science through articles, games, and coding challenges.
+                        Explore coding and AI with HoCoHOC, Howard County&apos;s student-led Hour of Code. Play games, solve coding challenges, and learn computer science.
                     </p>
 
                     <div className="font-mono flex flex-row flex-wrap mt-4 gap-2">

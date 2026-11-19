@@ -3,7 +3,7 @@ import { createPageMetadata } from "../seo";
 
 export const metadata = createPageMetadata({
   title: "Free Coding and AI Games",
-  description: "Play free interactive coding, algorithms, binary, and AI games created for Howard County students by the HoCoHOC team.",
+  description: "Play free coding and AI games from HoCoHOC. Explore algorithms, decode binary messages, and train your own machine learning models.",
   path: "/game",
 });
 

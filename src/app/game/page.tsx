@@ -57,9 +57,10 @@ const games: Game[] = [
 export default function GameHub() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-950 to-black text-white flex flex-col items-center py-16">
-      <h1 className="text-4xl font-bold mb-2">Games</h1>
+      <h1 className="text-4xl font-bold mb-2">Coding &amp; AI Games</h1>
       <p className="text-gray-400 mb-10 text-center max-w-lg">
-        Play games to learn CS concepts. Games marked with <span className="text-yellow-400 font-bold">⭐</span> earn you points toward prizes!
+        Play free coding and AI games from HoCoHOC. Explore algorithms, decode binary messages, and train your own machine learning models.
+        <span data-nosnippet className="block mt-2">Games marked with <span className="text-yellow-400 font-bold">⭐</span> earn you points toward prizes!</span>
       </p>
 
       <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 px-6 w-full max-w-5xl">
@@ -104,7 +105,7 @@ export default function GameHub() {
                 <h2 className="text-2xl font-semibold mb-2 group-hover:text-yellow-300">
                   {game.name}
                 </h2>
-                <p className="text-gray-300 text-sm">{game.description}</p>
+                <p className="text-gray-300 text-sm"><span data-nosnippet>{game.description}</span></p>
               </div>
 
               <span className="mt-4 text-indigo-300 font-medium group-hover:text-yellow-300">

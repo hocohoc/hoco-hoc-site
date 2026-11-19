@@ -30,7 +30,7 @@ export default function Home() {
   return (
     <div className="flex flex-col bg-black">
 
-      <section className="bg-slate-900">
+      <section data-nosnippet className="bg-slate-900">
         <div className="max-w-screen-xl mx-auto px-6 py-12 md:py-20 flex flex-col gap-6 text-center">
           <p className="text-sm uppercase tracking-[0.4em] text-sky-300/80 font-mono">2025 Champions</p>
           <h2 className="text-4xl md:text-6xl font-mono font-extrabold leading-tight text-sky-200">

@@ -501,10 +501,10 @@ export default function CodingChallengesPage() {
               Code Challenges
             </p>
             <h1 className="text-3xl md:text-4xl font-mono font-bold text-sky-200 tracking-tight">
-              Practice & Earn Points
+              Interactive Coding Challenges
             </h1>
             <p className="text-slate-400 text-sm mt-1 max-w-lg">
-              Solve coding challenges to sharpen your skills and climb the leaderboard.
+              Practice Python, predict code output, and solve interactive coding challenges with HoCoHOC. Build your skills with beginner to advanced problems.
             </p>
           </div>
 
@@ -967,7 +967,7 @@ export default function CodingChallengesPage() {
         )}
 
         {/* How It Works */}
-        <div className="rounded-xl border border-slate-700 bg-slate-800 p-6">
+        <div data-nosnippet className="rounded-xl border border-slate-700 bg-slate-800 p-6">
           <h2 className="font-mono font-bold text-sky-200 text-lg mb-4">How It Works</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
