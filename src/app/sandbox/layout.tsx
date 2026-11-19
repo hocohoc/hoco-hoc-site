@@ -3,7 +3,7 @@ import { createPageMetadata } from "../seo";
 
 export const metadata = createPageMetadata({
   title: "Interactive Coding Challenges",
-  description: "Practice predicting and writing code with interactive HoCoHOC challenges for students at every experience level.",
+  description: "Practice Python, predict code output, and solve interactive coding challenges with HoCoHOC. Build your skills with beginner to advanced problems.",
   path: "/sandbox",
 });
 

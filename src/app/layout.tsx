@@ -10,7 +10,7 @@ import type { Metadata } from "next";
 const inter = Inter({ subsets: ["latin"], display: 'swap', variable: '--font-inter' });
 const jbm = JetBrains_Mono({ subsets: ["latin"], display: 'swap', variable: '--font-jbm' })
 
-const siteDescription = "Join Howard County's 7-day computer science event with interactive tutorials, games, AI challenges, and hands-on projects for students of all skill levels.";
+const siteDescription = "Explore coding and AI with HoCoHOC, Howard County's student-led Hour of Code. Play games, solve coding challenges, and learn computer science.";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://hocohoc.org"),
